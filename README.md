@@ -9,3 +9,4 @@ Team05 members: span, snadde, guswe, demonicblue, hammarskold
 
 Gorillafötter i gelé! Mmmm...
 
+Griskalas onsdagar jämna veckor
