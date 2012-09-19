@@ -18,3 +18,7 @@ local.properties
 .classpath
 .project
 
+# mac and windows temp files
+.DS_Store
+Thumbs.db
+
