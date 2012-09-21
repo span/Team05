@@ -6,7 +6,7 @@
  * 
  */
 
-package se.team05;
+package se.team05.overlay;
 
 import java.util.List;
 
@@ -46,10 +46,10 @@ public class RouteOverlay extends Overlay
 		Paint ovalPaint = new Paint(paint);
 		ovalPaint.setStyle(Paint.Style.FILL_AND_STROKE);
 		ovalPaint.setStrokeWidth(3);
-		
+
 		int radius = 10;
 		RectF oval = new RectF(point.x - radius, point.y - radius, point.x + radius, point.y + radius);
-		
+
 		canvas.drawOval(oval, ovalPaint);
 	}
 
@@ -62,9 +62,9 @@ public class RouteOverlay extends Overlay
 			Point startPoint = null;
 			Point endPoint = null;
 			Path path = new Path();
-			
+
 			int i = 0;
-			for(GeoPoint firstPoint : geoPoints)
+			for (GeoPoint firstPoint : geoPoints)
 			{
 				Point secondPoint = new Point();
 				projection.toPixels(firstPoint, secondPoint);
@@ -90,7 +90,7 @@ public class RouteOverlay extends Overlay
 			paint.setStyle(Paint.Style.STROKE);
 			paint.setStrokeWidth(10);
 			paint.setAlpha(95);
-			
+
 			if (startPoint != null)
 			{
 				drawOval(canvas, paint, startPoint);
@@ -103,7 +103,7 @@ public class RouteOverlay extends Overlay
 			{
 				canvas.drawPath(path, paint);
 			}
-				
+
 		}
 		return super.draw(canvas, mapView, shadow, when);
 	}
