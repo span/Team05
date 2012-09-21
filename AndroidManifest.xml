@@ -18,13 +18,21 @@
         <uses-library android:name="com.google.android.maps" />
 
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:label="@string/title_activity_main" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.NewRouteActivity"
+            android:label="@string/new_route" >
+        </activity>
+        <activity
+            android:name=".activity.UseExistingRouteActivity"
+            android:label="@string/use_route" >
         </activity>
     </application>
 
