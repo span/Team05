@@ -3,6 +3,15 @@ package se.team05.content;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/**
+ * This is a classic plain old java object which stores information about a
+ * specific music track that the user has selected. The class implements the
+ * Parcelable interface so that it can be easily transferred via intents when
+ * the application is switching between activities.
+ * 
+ * @author Daniel Kvist
+ * 
+ */
 public class Track implements Parcelable
 {
 	private String id;
@@ -13,13 +22,20 @@ public class Track implements Parcelable
 	private String duration;
 
 	/**
+	 * A constructor which takes all the necessary fields as Strings.
 	 * 
 	 * @param id
+	 *            the id of the track
 	 * @param artist
+	 *            the artist of the track
 	 * @param title
+	 *            the title of the track
 	 * @param data
+	 *            the data file path
 	 * @param displayName
+	 *            the display name of the track
 	 * @param duration
+	 *            the duration of the track
 	 */
 	public Track(String id, String artist, String album, String title, String data, String displayName, String duration)
 	{
@@ -75,7 +91,7 @@ public class Track implements Parcelable
 	}
 
 	/**
-	 * @return the data
+	 * @return the data path
 	 */
 	public String getData()
 	{
@@ -98,12 +114,19 @@ public class Track implements Parcelable
 		return duration;
 	}
 
+	/**
+	 * This is used be the parcelable interface to describe the object content.
+	 */
 	@Override
 	public int describeContents()
 	{
 		return 0;
 	}
 
+	/**
+	 * This is used by the parcelable interface to temporarily store data when
+	 * being sent as a parcel.
+	 */
 	@Override
 	public void writeToParcel(Parcel dest, int flags)
 	{
@@ -111,7 +134,7 @@ public class Track implements Parcelable
 	}
 
 	/**
-	 * Parcelable construction
+	 * Parcelable construction, this is called automatically by the system when needed.
 	 */
 	public static final Parcelable.Creator CREATOR = new Parcelable.Creator()
 	{
