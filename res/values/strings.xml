@@ -25,5 +25,14 @@
     <string name="delete">Delete</string>
     <string name="select">Select</string>
     <string name="record">Record</string>
+    <string name="title_activity_new_route">NewRouteActivity</string>
+    <string name="button_run">RUN!!</string>
+    <string name="title_activity_while_running">Running like a fox</string>
+    <string name="button_edit_route">I want to edit my route before I go</string>
+    <string name="button_stop_and_save">Stop and Save</string>
+    <string name="button_choose_saved">OK (ska kunna välja rutt sedan)</string>
+    <string name="title_activity_while_running_old">WhileRunningOldActivity</string>
+    <string name="title_activity_activity_while_running_old">ActivityWhileRunningOld</string>
+    <string name="button_start_run">Start Run</string>
 
 </resources>
