@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/album"
+        android:showAsAction="collapseActionView"
+        android:title="Sort by album"/>
+    <item
+        android:id="@+id/artist"
+        android:showAsAction="collapseActionView"
+        android:title="Sort by artist"/>
+    <item
+        android:id="@+id/track"
+        android:showAsAction="collapseActionView"
+        android:title="Sort by track"/>
+    <item
+        android:id="@+id/done"
+        android:icon="@drawable/ic_action_done_holo_dark"
+        android:showAsAction="ifRoom"
+        android:title="Done"/>
+
+</menu>
