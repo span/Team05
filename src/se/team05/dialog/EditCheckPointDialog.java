@@ -14,7 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.team05.dialog;
+
 
 //import com.example.testmap.CheckPoint;
 //import com.example.testmap.CheckPointOverlay;
@@ -23,12 +23,16 @@ package se.team05.dialog;
 //import com.example.testmap.R.layout;
 
 import se.team05.R;
+import se.team05.activity.MediaSelectorActivity;
 import se.team05.overlay.CheckPoint;
 import se.team05.overlay.CheckPointOverlay;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
@@ -50,10 +54,13 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 
 	}
 
+	private final int REQUEST_MEDIA = 0;
+
 	private CheckPointOverlay callBack;
 	private CheckPoint checkPoint;
 	private TextView nameTextField;
 	private TextView radiusTextField;
+	private Button recordAudioButton;
 
 	public EditCheckPointDialog(Context context, CheckPointOverlay callback, CheckPoint checkPoint)
 	{
@@ -73,13 +80,21 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.edit_checkpoint_dialog);
 		setTitle("Edit CheckPoint");
+		
 		findViewById(R.id.delete_button).setOnClickListener(this);
 		findViewById(R.id.save_button).setOnClickListener(this);
+		
 		nameTextField = (TextView) findViewById(R.id.name);
 		nameTextField.setText(checkPoint.getName());
+		
 		SeekBar seekBar = (SeekBar) findViewById(R.id.seekBar1);
 		seekBar.setOnSeekBarChangeListener(this);
 		seekBar.setProgress(checkPoint.getRadius());
+		
+		recordAudioButton = (Button) findViewById(R.id.record_button);
+		recordAudioButton.setOnClickListener(this);
+		Button selectMediaButton = (Button) findViewById(R.id.select_button);
+		selectMediaButton.setOnClickListener(this);
 	}
 
 	/**
@@ -91,6 +106,13 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 	{
 		switch (v.getId())
 		{
+			case R.id.record_button:
+				break;
+			case R.id.select_button:
+				Context context = getContext();
+				Intent intent = new Intent(context, MediaSelectorActivity.class);
+				((Activity) context).startActivityForResult(intent, REQUEST_MEDIA);
+				break;
 			case R.id.delete_button:
 				callBack.onDelete();
 				dismiss();
