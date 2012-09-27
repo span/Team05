@@ -16,21 +16,23 @@
 */
 package se.team05.activity;
 
+import se.team05.R;
+import se.team05.listener.UseExistingRouteListener;
+import android.app.Activity;
 import android.os.Bundle;
+import android.widget.Button;
 
-import com.google.android.maps.MapActivity;
-
-public class UseExistingRouteActivity extends MapActivity
+public class UseExistingRouteActivity extends Activity
 {
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_use_existing_route);
+		
+		Button runButton = (Button) findViewById(R.id.choose_saved_route_button);
+		runButton.setOnClickListener(new UseExistingRouteListener(this));
 	}
 
-	@Override
-	protected boolean isRouteDisplayed()
-	{
-		return false;
-	}
+
 }
