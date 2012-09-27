@@ -55,11 +55,13 @@
         android:text="Audio" />
 
     <Button
+        android:id="@+id/record_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/record" />
 
     <Button
+        android:id="@+id/select_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/select" />
