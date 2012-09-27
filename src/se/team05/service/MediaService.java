@@ -27,8 +27,8 @@ import android.telephony.TelephonyManager;
 
 public class MediaService extends Service implements OnCompletionListener, OnPreparedListener, OnErrorListener, MediaServicePhoneStateListener.Callbacks
 {
-	public static final String ACTION_PLAY = "com.example.maptest.action.PLAY";
-	public static final String DATA_PLAYLIST = "com.example.maptest.data.PLAYLIST";
+	public static final String ACTION_PLAY = "se.team05.service.action.PLAY";
+	public static final String DATA_PLAYLIST = "se.team05.service.data.PLAYLIST";
 
 	private MediaPlayer mediaPlayer;
 	private ArrayList<String> playList;
