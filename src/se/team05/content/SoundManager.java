@@ -31,7 +31,7 @@ public class SoundManager
 	private Context context;
 	private MediaRecorder mediaRecorder;
 	private File soundFile = null;
-
+	private boolean recording = false;
 	private int soundID;
 
 	/**
@@ -66,6 +66,17 @@ public class SoundManager
 	}
 
 	/**
+	 * Checks if there is a recording taking place and returns true if it is and
+	 * false otherwise.
+	 * 
+	 * @return true if recording, else false
+	 */
+	public boolean isRecording()
+	{
+		return recording;
+	}
+
+	/**
 	 * Plays the sound given in the constructor and plays it at the volume given
 	 * as a paramter. The volume ranges from 0 to 1.
 	 * 
@@ -96,6 +107,7 @@ public class SoundManager
 	 */
 	public void startRecording() throws IOException
 	{
+		recording = true;
 		File storageDirectory = Environment.getExternalStorageDirectory();
 		try
 		{
@@ -126,6 +138,7 @@ public class SoundManager
 		mediaRecorder.stop();
 		mediaRecorder.release();
 		saveToLibrary();
+		recording = false;
 	}
 
 	/**
