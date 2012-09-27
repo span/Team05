@@ -92,10 +92,8 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 		seekBar.setOnSeekBarChangeListener(this);
 		seekBar.setProgress(checkPoint.getRadius());
 		
-		recordAudioButton = (Button) findViewById(R.id.record_button);
-		recordAudioButton.setOnClickListener(this);
-		Button selectMediaButton = (Button) findViewById(R.id.select_button);
-		selectMediaButton.setOnClickListener(this);
+		((Button) findViewById(R.id.record_button)).setOnClickListener(this);
+		((Button) findViewById(R.id.select_button)).setOnClickListener(this);
 	}
 
 	/**
