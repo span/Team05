@@ -55,7 +55,10 @@ public class CheckPointOverlay extends ItemizedOverlay<CheckPoint>
 		// TODO Auto-generated method stub
 		return checkPointList.size();
 	}
-
+	/**
+	 * Adds a checkpoint to the checkpointlist
+	 * @param checkPoint
+	 */
 	public void addCheckPoint(CheckPoint checkPoint)
 	{
 		checkPointList.add(checkPoint);
@@ -63,7 +66,7 @@ public class CheckPointOverlay extends ItemizedOverlay<CheckPoint>
 		populate();
 	}
 	/**
-	 * The onTap method 
+	 * The onTap method that initiates the dialog
 	 */
 	@Override
 	protected boolean onTap(int index)
@@ -83,7 +86,9 @@ public class CheckPointOverlay extends ItemizedOverlay<CheckPoint>
 	{
 		return checkPointList;
 	}
-
+	/**
+	 * Deletes the checkpoint from the checkpointlist, a callback from the dialog
+	 */
 	@Override
 	public void onDelete()
 	{
