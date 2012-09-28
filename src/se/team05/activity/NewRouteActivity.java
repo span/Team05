@@ -20,6 +20,7 @@ import java.util.ArrayList;
 
 import se.team05.R;
 import se.team05.content.Routes;
+import se.team05.content.Track;
 import se.team05.overlay.RouteOverlay;
 import se.team05.view.EditRouteMapView;
 import android.content.Context;
@@ -34,7 +35,6 @@ import android.widget.Button;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
-import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 
 public class NewRouteActivity extends MapActivity implements LocationListener, View.OnClickListener
@@ -98,6 +98,17 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 		mapView.getOverlays().add(myLocationOverlay);
 		
 		mapView.postInvalidate();
+	}
+	
+	@Override
+	protected void onActivityResult (int requestCode, int resultCode, Intent data)
+	{
+			super.onActivityResult(requestCode, resultCode, data);
+			if (requestCode == MediaSelectorActivity.REQUEST_MEDIA && resultCode == RESULT_OK)
+			{
+				ArrayList<Track> playList = data.getParcelableArrayListExtra(MediaSelectorActivity.EXTRA_SELECTED_ITEMS);
+				// TODO Save in database
+			}	
 	}
 
 	@Override

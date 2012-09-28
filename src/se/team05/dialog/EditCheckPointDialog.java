@@ -58,15 +58,12 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 
 	}
 
-	private final int REQUEST_MEDIA = 0;
-
 	private CheckPointOverlay callBack;
 	private CheckPoint checkPoint;
 	private TextView nameTextField;
 	private TextView radiusTextField;
 	private Button recordButton;
 	private Activity parentActivity;
-
 	private SoundManager soundManager;
 
 	public EditCheckPointDialog(Context context, CheckPointOverlay callback, CheckPoint checkPoint)
@@ -124,7 +121,7 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 				break;
 			case R.id.select_button:
 				Intent intent = new Intent(parentActivity, MediaSelectorActivity.class);
-				parentActivity.startActivityForResult(intent, REQUEST_MEDIA);
+				parentActivity.startActivityForResult(intent, MediaSelectorActivity.REQUEST_MEDIA);
 				break;
 			case R.id.delete_button:
 				callBack.onDelete();
@@ -191,5 +188,6 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 		// TODO Auto-generated method stub
 
 	}
+
 
 }

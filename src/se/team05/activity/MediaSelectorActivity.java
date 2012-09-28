@@ -42,7 +42,8 @@ public class MediaSelectorActivity extends Activity implements LoaderCallbacks<C
 	private static final int LOADER_ID_ALBUM = 4;
 	private static final int LOADER_ID_TITLE = 8;
 
-	public static final String EXTRA_SELECTED_ITEMS = "selected_songs";
+	public static final String EXTRA_SELECTED_ITEMS = "selected_media";
+	public static final int REQUEST_MEDIA = 0;
 
 	private MediaSelectorAdapter adapter;
 	private ListView listView;
