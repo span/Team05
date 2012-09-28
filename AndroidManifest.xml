@@ -38,6 +38,10 @@
             android:name=".activity.ActivityWhileRunningOld"
             android:label="@string/title_activity_activity_while_running_old" >
         </activity>
+        <activity
+            android:name=".activity.MediaSelectorActivity"
+            android:label="@string/select_media" >
+        </activity>
     </application>
 
 </manifest>

@@ -65,12 +65,14 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 	private TextView nameTextField;
 	private TextView radiusTextField;
 	private Button recordButton;
+	private Activity parentActivity;
 
 	public EditCheckPointDialog(Context context, CheckPointOverlay callback, CheckPoint checkPoint)
 	{
 		super(context);
 		this.callBack = callback;
 		this.checkPoint = checkPoint;
+		this.parentActivity = (Activity) context;
 		setCancelable(false); // Possible change to
 								// setCanceledOnTouchOutside(false)
 	}
@@ -119,9 +121,8 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 				recordSound();
 				break;
 			case R.id.select_button:
-				Context context = getContext();
-				Intent intent = new Intent(context, MediaSelectorActivity.class);
-				((Activity) context).startActivityForResult(intent, REQUEST_MEDIA);
+				Intent intent = new Intent(parentActivity, MediaSelectorActivity.class);
+				parentActivity.startActivityForResult(intent, REQUEST_MEDIA);
 				break;
 			case R.id.delete_button:
 				callBack.onDelete();
