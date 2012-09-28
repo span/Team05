@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package se.team05.activity;
 
 import java.util.ArrayList;
@@ -66,19 +66,18 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 
 		Button startRunButton = (Button) findViewById(R.id.start_run_button);
 		startRunButton.setOnClickListener(this);
-		
+
 		Button addCheckPointButton = (Button) findViewById(R.id.add_checkpoint);
 		addCheckPointButton.setOnClickListener(this);
 
 		mapView = (EditRouteMapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
 		mapView.setMapActivity(this);
-		
+
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500, 0, this);
-		//TODO Maybe move this ?!
-		
-		
+		// TODO Maybe move this ?!
+
 		Criteria criteria = new Criteria();
 		criteria.setAccuracy(Criteria.ACCURACY_FINE);
 		criteria.setCostAllowed(false);
@@ -93,22 +92,27 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 		RouteOverlay routeOverlay = new RouteOverlay(route, 78, true);
 
 		mapView.getOverlays().add(routeOverlay);
-		
+
 		myLocationOverlay = new MyLocationOverlay(this, mapView);
 		mapView.getOverlays().add(myLocationOverlay);
-		
+
 		mapView.postInvalidate();
 	}
-	
+
+	/**
+	 * This is called when the user has selected a media from the media
+	 * selection activity. A list of tracks is then passed back as a result
+	 * which this method then saves into the database.
+	 */
 	@Override
-	protected void onActivityResult (int requestCode, int resultCode, Intent data)
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
-			super.onActivityResult(requestCode, resultCode, data);
-			if (requestCode == MediaSelectorActivity.REQUEST_MEDIA && resultCode == RESULT_OK)
-			{
-				ArrayList<Track> playList = data.getParcelableArrayListExtra(MediaSelectorActivity.EXTRA_SELECTED_ITEMS);
-				// TODO Save in database
-			}	
+		super.onActivityResult(requestCode, resultCode, data);
+		if (requestCode == MediaSelectorActivity.REQUEST_MEDIA && resultCode == RESULT_OK)
+		{
+			ArrayList<Track> playList = data.getParcelableArrayListExtra(MediaSelectorActivity.EXTRA_SELECTED_ITEMS);
+			// TODO Save in database
+		}
 	}
 
 	@Override
@@ -128,20 +132,22 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 			mapView.postInvalidate();
 		}
 	}
-	
-	protected void onResume() {
+
+	protected void onResume()
+	{
 		super.onResume();
 		// when our activity resumes, we want to register for location updates
 		myLocationOverlay.enableMyLocation();
 	}
 
-	protected void onPause() {
+	protected void onPause()
+	{
 		super.onPause();
 		// when our activity pauses, we want to remove listening for location
 		// updates
 		myLocationOverlay.disableMyLocation();
 	}
-	
+
 	public void onProviderDisabled(String provider)
 	{
 		// TODO Auto-generated method stub
@@ -180,24 +186,25 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 				this.startActivity(intent);
 				break;
 			case R.id.add_checkpoint:
-				if(myLocationOverlay.isMyLocationEnabled())
+				if (myLocationOverlay.isMyLocationEnabled())
 				{
 					GeoPoint geoPoint = myLocationOverlay.getMyLocation();
-					if(geoPoint!=null)
-						{
-							mapView.setCheckPoint(geoPoint);
-						}
+					if (geoPoint != null)
+					{
+						mapView.setCheckPoint(geoPoint);
+					}
 				}
-				
+
 				break;
 			default:
 				break;
 
 		}
-		
-		
+
 	}
-	//TODO delete or edit ? temporarily to grant CheckpointOverlay access to update the mapview
+
+	// TODO delete or edit ? temporarily to grant CheckpointOverlay access to
+	// update the mapview
 	public EditRouteMapView getMapView()
 	{
 		return mapView;

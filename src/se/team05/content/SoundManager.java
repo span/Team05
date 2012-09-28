@@ -1,3 +1,19 @@
+/**
+	This file is part of Personal Trainer.
+
+    Personal Trainer is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    Personal Trainer is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.team05.content;
 
 import java.io.File;
@@ -143,10 +159,11 @@ public class SoundManager
 
 	/**
 	 * Saves the recording to the sd-card with the name
-	 * "personal-trainer-[current time].mp3. It then sends a broadcast to the
-	 * media store to let it know that a new sound is available. Finally a
-	 * message is shown to the user via a toast message that lets the user know
-	 * that a sound has been added.
+	 * "personal-trainer-[current time].mp3 and with recognizable titles, album
+	 * and artist information to make the sound easy to find. It then sends a
+	 * broadcast to the media store to let it know that a new sound is
+	 * available. Finally a message is shown to the user via a toast message
+	 * that lets the user know that a sound has been added.
 	 */
 	private void saveToLibrary()
 	{
