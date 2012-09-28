@@ -35,13 +35,6 @@
             android:label="@string/use_route" >
         </activity>
         <activity
-            android:name=".WhileRunningOldActivity"
-            android:label="@string/title_activity_while_running_old" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="se.team05.activity.UseExistingRouteActivity" />
-        </activity>
-        <activity
             android:name=".activity.ActivityWhileRunningOld"
             android:label="@string/title_activity_activity_while_running_old" >
         </activity>
