@@ -50,9 +50,9 @@ public class EditRouteMapView extends MapView {
 	            yScreenCoordinateForLongClick=event.getY();
 				break;
 			case MotionEvent.ACTION_MOVE:
-                float dY = event.getY()-yScreenCoordinateForLongClick;
-                float dX = event.getX()-xScreenCoordinateForLongClick;
-                if(dY<tolerance || dX<tolerance){
+                float dY = Math.abs(event.getY()-yScreenCoordinateForLongClick);
+                float dX = Math.abs(event.getX()-xScreenCoordinateForLongClick);
+                if(dY>tolerance || dX>tolerance){
                     timerIfLongClick=0;
                 }
 				break;
@@ -69,9 +69,6 @@ public class EditRouteMapView extends MapView {
 	                                p.getLongitudeE6() /1E6 ,                             
 	                                Toast.LENGTH_SHORT).show();
 	                                setCheckPoint(p);
-//	                                CheckPoint checkPoint = new CheckPoint(p, "CheckPoint", 30);
-//	                                checkPointOverlay.addCheckPoint(checkPoint);
-//	                        postInvalidate();
 	       	        }
 				break;
 	            }
