@@ -170,7 +170,14 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 				break;
 			case R.id.add_checkpoint:
 				if(myLocationOverlay.isMyLocationEnabled())
-					mapView.setCheckPoint(myLocationOverlay.getMyLocation());
+				{
+					GeoPoint geoPoint = myLocationOverlay.getMyLocation();
+					if(geoPoint!=null)
+						{
+							mapView.setCheckPoint(geoPoint);
+						}
+				}
+				
 				break;
 			default:
 				break;
