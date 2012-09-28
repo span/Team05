@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import se.team05.R;
 import se.team05.content.Routes;
 import se.team05.overlay.RouteOverlay;
+import se.team05.view.EditRouteMapView;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Criteria;
@@ -34,6 +35,7 @@ import android.widget.Button;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
+import com.google.android.maps.MyLocationOverlay;
 
 public class NewRouteActivity extends MapActivity implements LocationListener, View.OnClickListener
 {
@@ -42,8 +44,9 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 	private LocationManager locationManager;
 	private String providerName;
 	private int routeIdTag;
-	private MapView mapView;
+	private EditRouteMapView mapView;
 	private boolean started = false;
+	private MyLocationOverlay myLocationOverlay;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState)
@@ -63,13 +66,19 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 
 		Button startRunButton = (Button) findViewById(R.id.start_run_button);
 		startRunButton.setOnClickListener(this);
+		
+		Button addCheckPointButton = (Button) findViewById(R.id.add_checkpoint);
+		addCheckPointButton.setOnClickListener(this);
 
-		mapView = (MapView) findViewById(R.id.mapview);
+		mapView = (EditRouteMapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
-
+		mapView.setMapActivity(this);
+		
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500, 0, this);
-
+		//TODO Maybe move this ?!
+		
+		
 		Criteria criteria = new Criteria();
 		criteria.setAccuracy(Criteria.ACCURACY_FINE);
 		criteria.setCostAllowed(false);
@@ -84,7 +93,10 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 		RouteOverlay routeOverlay = new RouteOverlay(route, 78, true);
 
 		mapView.getOverlays().add(routeOverlay);
-
+		
+		myLocationOverlay = new MyLocationOverlay(this, mapView);
+		mapView.getOverlays().add(myLocationOverlay);
+		
 		mapView.postInvalidate();
 	}
 
@@ -105,7 +117,20 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 			mapView.postInvalidate();
 		}
 	}
+	
+	protected void onResume() {
+		super.onResume();
+		// when our activity resumes, we want to register for location updates
+		myLocationOverlay.enableMyLocation();
+	}
 
+	protected void onPause() {
+		super.onPause();
+		// when our activity pauses, we want to remove listening for location
+		// updates
+		myLocationOverlay.disableMyLocation();
+	}
+	
 	public void onProviderDisabled(String provider)
 	{
 		// TODO Auto-generated method stub
@@ -143,14 +168,22 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 				Intent intent = new Intent(this, MainActivity.class);
 				this.startActivity(intent);
 				break;
-
+			case R.id.add_checkpoint:
+				if(myLocationOverlay.isMyLocationEnabled())
+					mapView.setCheckPoint(myLocationOverlay.getMyLocation());
+				break;
 			default:
 				break;
 
 		}
-
+		
+		
 	}
-
+	//TODO delete or edit ? temporarily to grant CheckpointOverlay access to update the mapview
+	public EditRouteMapView getMapView()
+	{
+		return mapView;
+	}
 	// @Override
 	// public boolean onCreateOptionsMenu(Menu menu) {
 	// getMenuInflater().inflate(R.menu.activity_while_running, menu);

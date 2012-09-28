@@ -91,6 +91,8 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 
 		nameTextField = (TextView) findViewById(R.id.name);
 		nameTextField.setText(checkPoint.getName());
+		
+		radiusTextField = (TextView) findViewById(R.id.radius_text);
 
 		SeekBar seekBar = (SeekBar) findViewById(R.id.seekBar1);
 		seekBar.setOnSeekBarChangeListener(this);
@@ -127,7 +129,6 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 				break;
 			case R.id.save_button:
 				checkPoint.setName(nameTextField.getText().toString());
-				radiusTextField = (TextView) findViewById(R.id.radius_text);
 				String radiusString = radiusTextField.getText().toString();
 				int radius = Integer.parseInt(radiusString);
 				checkPoint.setRadius(radius);
