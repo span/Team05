@@ -20,8 +20,8 @@ public class EditRouteMapView extends MapView {
 	private float yScreenCoordinateForLongClick;
 	private float tolerance=10;//pixels that your finger can move but still be a long press
 	private MapActivity mapActivity;
-	Drawable drawable = this.getResources().getDrawable(R.drawable.green_markerc);
-    CheckPointOverlay checkPointOverlay; 
+	private Drawable drawable = this.getResources().getDrawable(R.drawable.green_markerc);
+    private CheckPointOverlay checkPointOverlay; 
     
     
 	public EditRouteMapView(Context arg0, String arg1) {
