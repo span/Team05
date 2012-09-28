@@ -111,11 +111,11 @@ public class SoundManager
 		File storageDirectory = Environment.getExternalStorageDirectory();
 		try
 		{
-			soundFile = File.createTempFile("personal-sound", ".mp3", storageDirectory);
+			soundFile = File.createTempFile("personal-sound-", ".mp3", storageDirectory);
 		}
 		catch (IOException e)
 		{
-			Log.e(TAG, "Could not access sd-card");
+			Log.e(TAG, "Could not access sd-card: " + e.getMessage());
 			return;
 		}
 

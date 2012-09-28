@@ -67,14 +67,16 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 	private Button recordButton;
 	private Activity parentActivity;
 
+	private SoundManager soundManager;
+
 	public EditCheckPointDialog(Context context, CheckPointOverlay callback, CheckPoint checkPoint)
 	{
 		super(context);
 		this.callBack = callback;
 		this.checkPoint = checkPoint;
 		this.parentActivity = (Activity) context;
-		setCancelable(false); // Possible change to
-								// setCanceledOnTouchOutside(false)
+		this.soundManager = new SoundManager(context);
+		setCancelable(false); // Possible change to setCanceledOnTouchOutside(false)?
 	}
 
 	/**
@@ -148,8 +150,7 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 	 */
 	private void recordSound()
 	{
-		SoundManager soundManager = new SoundManager(getContext());
-		if (soundManager.isRecording())
+		if (!soundManager.isRecording())
 		{
 			try
 			{
