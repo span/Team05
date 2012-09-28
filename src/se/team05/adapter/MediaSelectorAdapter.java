@@ -86,7 +86,18 @@ public class MediaSelectorAdapter extends SimpleCursorAdapter
 	@Override
 	public int getCount()
 	{
-		return itemChecked.size();
+		return listItems.size();
+	}
+	
+	@Override
+	public Track getItem(int position) {
+	    return listItems.get(position);
+	}
+
+
+	@Override
+	public long getItemId(int position) {
+	    return position;
 	}
 
 	/**

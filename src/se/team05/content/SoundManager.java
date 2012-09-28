@@ -111,7 +111,7 @@ public class SoundManager
 		File storageDirectory = Environment.getExternalStorageDirectory();
 		try
 		{
-			soundFile = File.createTempFile("personal-sound-", ".mp3", storageDirectory);
+			soundFile = File.createTempFile("Music/sound-", ".mp3", storageDirectory);
 		}
 		catch (IOException e)
 		{
@@ -152,17 +152,20 @@ public class SoundManager
 	{
 		ContentValues values = new ContentValues(4);
 		long currentTime = System.currentTimeMillis();
-		values.put(MediaStore.Audio.Media.TITLE, "audio-" + soundFile.getName());
+		values.put(MediaStore.Audio.Media.TITLE, "personal-trainer-" + soundFile.getName());
 		values.put(MediaStore.Audio.Media.DATE_ADDED, (int) (currentTime / 1000));
 		values.put(MediaStore.Audio.Media.MIME_TYPE, "audio/mp3");
 		values.put(MediaStore.Audio.Media.DATA, soundFile.getAbsolutePath());
+		values.put(MediaStore.Audio.Media.ARTIST, "Personal Trainer");
+		values.put(MediaStore.Audio.Media.ALBUM, "Personal Trainer Recordings");
+		values.put(MediaStore.Audio.Media.IS_MUSIC, true);
 
 		ContentResolver contentResolver = context.getContentResolver();
-		Uri base = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-		Uri newUri = contentResolver.insert(base, values);
+		Uri mediaStoreUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+		Uri newUri = contentResolver.insert(mediaStoreUri, values);
 		context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, newUri));
 
-		Toast.makeText(context, "Added new sound: " + soundFile.getAbsolutePath(), Toast.LENGTH_LONG).show();
+		Toast.makeText(context, "Added new recording: " + soundFile.getAbsolutePath(), Toast.LENGTH_LONG).show();
 	}
 
 }

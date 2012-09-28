@@ -146,11 +146,14 @@ public class MediaSelectorActivity extends Activity implements LoaderCallbacks<C
 	 */
 	public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor)
 	{
-		adapter = new MediaSelectorAdapter(getApplicationContext(), R.layout.activity_media_selector, cursor, new String[] {
+		if(adapter == null) 
+		{
+			adapter = new MediaSelectorAdapter(getApplicationContext(), R.layout.activity_media_selector, cursor, new String[] {
 				MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.TITLE }, new int[] { R.id.text_1,
 				R.id.text_2, R.id.text_3 }, Adapter.NO_SELECTION);
-		
-		listView.setAdapter(adapter);
+			listView.setAdapter(adapter);
+		}
+		adapter.swapCursor(cursor);
 	}
 
 	/**
