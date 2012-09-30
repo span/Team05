@@ -25,7 +25,7 @@ import android.widget.Button;
 /**
  * An activity that will present the user with the option to choose and old route. As of now it is just a button but 
  * a future release will include a ListView representing the older routes saved in the database that the user
- * can choose from.
+ * can choose from. TODO Change comments accordingly
  * 
  * @author Markus
  *
