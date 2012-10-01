@@ -37,6 +37,13 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MyLocationOverlay;
 
+
+/**
+ * This activity Presents at map to the user. It also tracks the users movement and will
+ * paint the route as the user moves. This is accomplished by using Google's map API.
+ * @author Markus
+ *
+ */
 public class NewRouteActivity extends MapActivity implements LocationListener, View.OnClickListener
 {
 
@@ -48,6 +55,14 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 	private boolean started = false;
 	private MyLocationOverlay myLocationOverlay;
 
+	
+	/**
+	 * Will present a map to the user and will also display a dot representing the user's location.
+	 * Also contains three buttons of which one (startRunButton) will start the recording of the user's
+	 * movement and will paint the track accordingly on the map. The button stopAndSaveButton will finish the run
+	 * and save it. As of now it is recorded in the memory but later it will have database functionality.
+	 * The button addCheckPointButton will place a checkpoint at the user's current location.
+	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
@@ -59,10 +74,8 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 		routeIdTag = Routes.getInstance().getCount();
 		route = new ArrayList<GeoPoint>();
 
-		System.out.println("IDTAG:::::::::::::::" + routeIdTag);
-
-		Button runButton = (Button) findViewById(R.id.stop_and_save_button);
-		runButton.setOnClickListener(this);
+		Button stopAndSaveButton = (Button) findViewById(R.id.stop_and_save_button);
+		stopAndSaveButton.setOnClickListener(this);
 
 		Button startRunButton = (Button) findViewById(R.id.start_run_button);
 		startRunButton.setOnClickListener(this);
@@ -76,7 +89,6 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500, 0, this);
-		// TODO Maybe move this ?!
 
 		Criteria criteria = new Criteria();
 		criteria.setAccuracy(Criteria.ACCURACY_FINE);
@@ -115,6 +127,9 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 		}
 	}
 
+	/**
+	 * Unused method, must implement this because of MapActivity inheritance. Might be implemented in a later stage.
+	 */
 	@Override
 	protected boolean isRouteDisplayed()
 	{
@@ -122,6 +137,12 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 		return false;
 	}
 
+	/**
+	 * This will be called when user changes location. It will create a new Geopoint consisting of longitude and latitude
+	 * represented by integers and put it in a list (route).
+	 * 
+	 * @param location the new location of the user
+	 */
 	public void onLocationChanged(Location location)
 	{
 
@@ -133,44 +154,65 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 		}
 	}
 
+	/**
+	 * When our activity resumes, we want to register for location updates.
+	 */
 	protected void onResume()
 	{
 		super.onResume();
-		// when our activity resumes, we want to register for location updates
 		myLocationOverlay.enableMyLocation();
 	}
 
+	/**
+	 * When our activity pauses, we want to remove listening for location updates
+	 */
 	protected void onPause()
 	{
 		super.onPause();
-		// when our activity pauses, we want to remove listening for location
-		// updates
 		myLocationOverlay.disableMyLocation();
 	}
 
+	/**
+	 * Unused method as of now.
+	 */
 	public void onProviderDisabled(String provider)
 	{
 		// TODO Auto-generated method stub
 
 	}
 
+	/**
+	 * Unused method as of now.
+	 */
 	public void onProviderEnabled(String provider)
 	{
 		// TODO Auto-generated method stub
 
 	}
 
+	/**
+	 * Unused method as of now.
+	 */
 	public void onStatusChanged(String provider, int status, Bundle extras)
 	{
 		// TODO Auto-generated method stub
 
 	}
 
+	/**
+	 * Get method for returning the Routelist consisting of geopoints.
+	 * @return ArrayList representing Geo Points.
+	 */
 	public ArrayList<GeoPoint> getRoute()
 	{
 		return route;
 	}
 
+	/**
+	 * Button listener for this activity. Will activate the desired outcome of any of the three buttons.
+	 * 
+	 * @param v the button being pressed.
+	 */
 	@Override
 	public void onClick(View v)
 	{
@@ -209,6 +251,8 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 	{
 		return mapView;
 	}
+	
+	
 	// @Override
 	// public boolean onCreateOptionsMenu(Menu menu) {
 	// getMenuInflater().inflate(R.menu.activity_while_running, menu);
