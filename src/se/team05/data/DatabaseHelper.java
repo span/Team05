@@ -20,6 +20,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 	public void onCreate(SQLiteDatabase database)
 	{
 		database.execSQL(DBRouteAdapter.DATABASE_CREATE_ROUTE_TABLE);
+		database.execSQL(DBTrackAdapter.DATABASE_CREATE_TRACK_TABLE);
 	}
 
 	@Override
@@ -28,6 +29,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 		Log.w(DatabaseHelper.class.getName(), "Upgrading database from version " + oldVersion + " to " + newVersion
 				+ ", which will destroy all old data");
 		db.execSQL("DROP TABLE IF EXISTS " + DBRouteAdapter.TABLE_ROUTES);
+		db.execSQL("DROP TABLE IF EXISTS " + DBTrackAdapter.TABLE_TRACKS);
 		onCreate(db);
 	}
 
