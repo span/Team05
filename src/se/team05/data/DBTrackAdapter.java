@@ -33,6 +33,7 @@ public class DBTrackAdapter
 {
 	public static final String TABLE_TRACKS = "tracks";
 	public static final String COLUMN_ID = "id";
+	public static final String COLUMN_CID = "cid";
 	public static final String COLUMN_ARTIST = "artist";
 	public static final String COLUMN_ALBUM = "album";
 	public static final String COLUMN_TITLE = "title";
@@ -41,9 +42,9 @@ public class DBTrackAdapter
 	public static final String COLUMN_DURATION = "duration";
 
 	public static final String DATABASE_CREATE_TRACK_TABLE = "create table " + TABLE_TRACKS + "(" + COLUMN_ID
-			+ " integer primary key autoincrement, " + COLUMN_ARTIST + " text not null, " + COLUMN_ALBUM
-			+ " text not null," + COLUMN_TITLE + " text not null," + COLUMN_DATA + " text not null,"
-			+ COLUMN_DISPLAY_NAME + " text not null," + COLUMN_DURATION + " text not null);";
+			+ " integer primary key autoincrement, " + COLUMN_CID + " integer not null," + COLUMN_ARTIST
+			+ " text not null, " + COLUMN_ALBUM + " text not null," + COLUMN_TITLE + " text not null," + COLUMN_DATA
+			+ " text not null," + COLUMN_DISPLAY_NAME + " text not null," + COLUMN_DURATION + " text not null);";
 
 	private DatabaseHelper databaseHelper;
 	private SQLiteDatabase db;
@@ -82,6 +83,8 @@ public class DBTrackAdapter
 	/**
 	 * This method inserts a new track into the database.
 	 * 
+	 * @param checkPointId
+	 * 
 	 * @param artist
 	 *            the artist name
 	 * @param album
@@ -95,9 +98,11 @@ public class DBTrackAdapter
 	 * @param duration
 	 *            the duration of the track
 	 */
-	public void createTrack(String artist, String album, String title, String data, String displayName, String duration)
+	public void createTrack(int checkPointId, String artist, String album, String title, String data,
+			String displayName, String duration)
 	{
 		ContentValues values = new ContentValues();
+		values.put(COLUMN_CID, checkPointId);
 		values.put(COLUMN_ALBUM, artist);
 		values.put(COLUMN_ALBUM, album);
 		values.put(COLUMN_ALBUM, title);

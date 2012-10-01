@@ -16,6 +16,7 @@ public class Track implements Parcelable
 {
 	private String id;
 	private String artist;
+	private String album;
 	private String title;
 	private String data;
 	private String displayName;
@@ -28,6 +29,8 @@ public class Track implements Parcelable
 	 *            the id of the track
 	 * @param artist
 	 *            the artist of the track
+	 * @param album
+	 *            the album of the track
 	 * @param title
 	 *            the title of the track
 	 * @param data
@@ -41,6 +44,7 @@ public class Track implements Parcelable
 	{
 		this.id = id;
 		this.artist = artist;
+		this.album = album;
 		this.title = title;
 		this.data = data;
 		this.displayName = displayName;
@@ -55,15 +59,16 @@ public class Track implements Parcelable
 	 */
 	public Track(Parcel in)
 	{
-		String[] stringData = new String[6];
+		String[] stringData = new String[7];
 		in.readStringArray(stringData);
 
 		this.id = stringData[0];
 		this.artist = stringData[1];
-		this.title = stringData[2];
-		this.data = stringData[3];
-		this.displayName = stringData[4];
-		this.duration = stringData[5];
+		this.album = stringData[2];
+		this.title = stringData[3];
+		this.data = stringData[4];
+		this.displayName = stringData[5];
+		this.duration = stringData[6];
 	}
 
 	/**
@@ -75,15 +80,23 @@ public class Track implements Parcelable
 	}
 
 	/**
-	 * @return the artist
+	 * @return the artist name
 	 */
 	public String getArtist()
 	{
 		return artist;
 	}
+	
+	/**
+	 * @return the album name
+	 */
+	public String getAlbum()
+	{
+		return album;
+	}
 
 	/**
-	 * @return the title
+	 * @return the title of the track
 	 */
 	public String getTitle()
 	{
@@ -107,7 +120,7 @@ public class Track implements Parcelable
 	}
 
 	/**
-	 * @return the duration
+	 * @return the duration of the track
 	 */
 	public String getDuration()
 	{
@@ -130,7 +143,7 @@ public class Track implements Parcelable
 	@Override
 	public void writeToParcel(Parcel dest, int flags)
 	{
-		dest.writeStringArray(new String[] { id, artist, title, data, displayName, duration });
+		dest.writeStringArray(new String[] { id, artist, album, title, data, displayName, duration });
 	}
 
 	/**
