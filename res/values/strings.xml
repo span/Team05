@@ -36,5 +36,7 @@
     <string name="button_start_run">Start Run</string>
     <string name="button_addcheckpoint">Add CP</string>
     <string name="select_media">Select media</string>
-
+    <string name="speed_of_run">Your Speed: </string>
+	<string name="distance_of_run">Total Distance: </string>
+	    
 </resources>
