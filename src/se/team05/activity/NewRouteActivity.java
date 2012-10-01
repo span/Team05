@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import se.team05.R;
 import se.team05.content.Routes;
 import se.team05.content.Track;
+import se.team05.data.DatabaseHandler;
 import se.team05.overlay.RouteOverlay;
 import se.team05.view.EditRouteMapView;
 import android.content.Context;
@@ -289,7 +290,9 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 				break;
 
 			case R.id.stop_and_save_button:
-				Routes.getInstance().addNewRoute(route, 1);
+//				Routes.getInstance().addNewRoute(route, 1);
+				DatabaseHandler dataBaseHandler = new DatabaseHandler(this);
+				dataBaseHandler.saveRoute();
 				Intent intent = new Intent(this, MainActivity.class);
 				this.startActivity(intent);
 				break;
