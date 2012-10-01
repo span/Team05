@@ -18,18 +18,11 @@
         android:orientation="horizontal" 
         android:layout_alignParentTop="true">
 
-        <Button
-            android:id="@+id/stop_and_save_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/button_stop_and_save" />
 
         <Button
             android:id="@+id/add_checkpoint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text="@string/button_addcheckpoint" />
     </LinearLayout>
 
@@ -39,5 +32,15 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:text="@string/button_start_run" />
+    
+    <Button
+        android:id="@+id/stop_and_save_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:visibility="invisible"
+        android:text="@string/button_stop_and_save" />
+    
+
 
 </RelativeLayout>

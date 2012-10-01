@@ -221,6 +221,11 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 		{
 			case R.id.start_run_button:
 				started = true;
+				View v2 = findViewById(R.id.start_run_button);
+				v2.setVisibility(View.INVISIBLE);
+				View v3 = findViewById(R.id.stop_and_save_button);
+				v3.setVisibility(View.VISIBLE);
+
 				break;
 
 			case R.id.stop_and_save_button:
