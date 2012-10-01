@@ -24,6 +24,14 @@ import android.os.Bundle;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
 
+
+/**
+ * Activity that fetches saved runs from the database and presents them to the user. The user will then be able to
+ * run along his or her old route and compete with oneself. As of now the routes are saved in a list for testing reasons
+ * but a future release will use database functionality. TODO Change as database functionality added.
+ * @author Markus
+ *
+ */
 public class ActivityWhileRunningOld extends MapActivity {
 
     @Override
@@ -50,6 +58,9 @@ public class ActivityWhileRunningOld extends MapActivity {
 
     
 
+    /**
+     * Unused method
+     */
 	@Override
 	protected boolean isRouteDisplayed() {
 		// TODO Auto-generated method stub
