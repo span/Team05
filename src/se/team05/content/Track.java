@@ -142,6 +142,13 @@ public class Track implements Parcelable
 	{
 		return duration;
 	}
+	
+	// TODO Implement equals correctly
+	public boolean equals(Object other)
+	{
+		Track t = (Track) other;
+		return t.getData().equals(this.getData());
+	}
 
 	/**
 	 * This is used be the parcelable interface to describe the object content.
