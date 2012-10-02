@@ -16,6 +16,7 @@
  */
 package se.team05.activity;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import se.team05.R;
@@ -31,8 +32,10 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -55,6 +58,22 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 	private EditRouteMapView mapView;
 	private boolean started = false;
 	private MyLocationOverlay myLocationOverlay;
+	private String userSpeed = "0";
+	private String userDistance = "0";
+	private GeoPoint lastPoint;
+	private Location lastLocation;
+	private float[] distanceResult = new float[3];
+	private float totalDistance = 0;
+	private String lengthPresentation = DISTANCE_UNIT_METRES;
+	private String userDistanceRun = TOTAL_DISTANCE + userDistance + lengthPresentation;
+	
+	private static String DISTANCE_UNIT_MILES = "miles";
+	private static String DISTANCE_UNIT_YARDS = "yards";
+	private static String DISTANCE_UNIT_KILOMETRE = "Km";
+	private static String DISTANCE_UNIT_METRES = " metres";
+	private static float DISTANCE_THRESHOLD_EU = 1000;
+	private static String TOTAL_DISTANCE = "Total Distance: ";
+
 
 	
 	/**
@@ -89,7 +108,7 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 		mapView.setMapActivity(this);
 
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500, 0, this);
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 
 		Criteria criteria = new Criteria();
 		criteria.setAccuracy(Criteria.ACCURACY_FINE);
@@ -110,6 +129,7 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 		mapView.getOverlays().add(myLocationOverlay);
 
 		mapView.postInvalidate();
+
 	}
 
 	/**
@@ -147,10 +167,51 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 	public void onLocationChanged(Location location)
 	{
 
+		
 		if (started)
 		{
 			GeoPoint p = new GeoPoint((int) (location.getLatitude() * 1E6), (int) (location.getLongitude() * 1E6));
 			route.add(p);
+
+			userSpeed = "Your Speed: " + location.getSpeed() + DISTANCE_UNIT_KILOMETRE + "/h";
+			
+//			if(lastPoint != null)
+//			{
+//				Location.distanceBetween(p.getLatitudeE6(), p.getLongitudeE6(), lastPoint.getLatitudeE6(), lastPoint.getLongitudeE6(), distanceResult);
+//				
+//				if(distanceResult[0] != 0)
+//				{
+//					totalDistance += distanceResult[0];
+//					userDistance = "Total Distance: " + totalDistance + "meter?";
+//				}
+//			}
+			
+			if(lastLocation != null)
+			{
+				totalDistance += lastLocation.distanceTo(location);
+					
+				if(totalDistance >= DISTANCE_THRESHOLD_EU)
+				{
+					lengthPresentation = DISTANCE_UNIT_KILOMETRE;
+					userDistance = new DecimalFormat("#.##").format(totalDistance/1000);
+				}
+				else
+				{
+					userDistance = "" + (int)totalDistance;
+				}
+					
+				userDistanceRun = TOTAL_DISTANCE + userDistance + lengthPresentation;
+			}
+				
+			lastPoint = p;
+			lastLocation = location;
+
+			TextView speedView = (TextView) findViewById(R.id.show_speed_textview);
+			speedView.setText(userSpeed);
+			
+			TextView distanceView = (TextView) findViewById(R.id.show_distance_textview);
+			distanceView.setText(userDistanceRun);
+
 			mapView.postInvalidate();
 		}
 	}
@@ -221,6 +282,11 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 		{
 			case R.id.start_run_button:
 				started = true;
+				View v2 = findViewById(R.id.start_run_button);
+				v2.setVisibility(View.GONE);
+				View v3 = findViewById(R.id.stop_and_save_button);
+				v3.setVisibility(View.VISIBLE);
+
 				break;
 
 			case R.id.stop_and_save_button:

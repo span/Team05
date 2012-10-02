@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,35 +9,41 @@
         android:id="@+id/mapview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:apiKey="0I2UCcv57MHZz_RXqTZvIH1A7GKKqKBiel4X_Iw"
         android:clickable="true" />
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/show_speed_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/speed_of_run"
+        tools:context=".DisplayMessageActivity" />
+
+    <TextView
+        android:id="@+id/show_distance_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/distance_of_run"
+        tools:context=".DisplayMessageActivity" />
+
+    <Button
+        android:id="@+id/add_checkpoint"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal" 
-        android:layout_alignParentTop="true">
-
-        <Button
-            android:id="@+id/stop_and_save_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/button_stop_and_save" />
-
-        <Button
-            android:id="@+id/add_checkpoint"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/button_addcheckpoint" />
-    </LinearLayout>
+        android:layout_height="wrap_content"
+        android:text="@string/button_addcheckpoint" />
 
     <Button
         android:id="@+id/start_run_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:text="@string/button_start_run" />
 
-</RelativeLayout>
+    <Button
+        android:id="@+id/stop_and_save_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/button_stop_and_save"
+        android:visibility="gone" />
+
+</LinearLayout>

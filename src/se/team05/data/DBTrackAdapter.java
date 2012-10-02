@@ -18,7 +18,6 @@ package se.team05.data;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 
 /**
  * This class is the track adapter class used to communicate with the "tracks"
@@ -29,10 +28,11 @@ import android.database.sqlite.SQLiteDatabase;
  * @author Daniel Kvist
  * 
  */
-public class DBTrackAdapter
+public class DBTrackAdapter extends DBAdapter
 {
 	public static final String TABLE_TRACKS = "tracks";
 	public static final String COLUMN_ID = "id";
+	public static final String COLUMN_CID = "cid";
 	public static final String COLUMN_ARTIST = "artist";
 	public static final String COLUMN_ALBUM = "album";
 	public static final String COLUMN_TITLE = "title";
@@ -41,12 +41,10 @@ public class DBTrackAdapter
 	public static final String COLUMN_DURATION = "duration";
 
 	public static final String DATABASE_CREATE_TRACK_TABLE = "create table " + TABLE_TRACKS + "(" + COLUMN_ID
-			+ " integer primary key autoincrement, " + COLUMN_ARTIST + " text not null, " + COLUMN_ALBUM
-			+ " text not null," + COLUMN_TITLE + " text not null," + COLUMN_DATA + " text not null,"
-			+ COLUMN_DISPLAY_NAME + " text not null," + COLUMN_DURATION + " text not null);";
+			+ " integer primary key autoincrement, " + COLUMN_CID + " integer not null," + COLUMN_ARTIST
+			+ " text not null, " + COLUMN_ALBUM + " text not null," + COLUMN_TITLE + " text not null," + COLUMN_DATA
+			+ " text not null," + COLUMN_DISPLAY_NAME + " text not null," + COLUMN_DURATION + " text not null);";
 
-	private DatabaseHelper databaseHelper;
-	private SQLiteDatabase db;
 
 	/**
 	 * The constructor of the class which creates a new instance of the database
@@ -57,30 +55,13 @@ public class DBTrackAdapter
 	 */
 	public DBTrackAdapter(Context context)
 	{
-		databaseHelper = new DatabaseHelper(context);
-	}
-
-	/**
-	 * Opens the database and stores the actual writable database object as an
-	 * instance in the class. You must remember to call close() after you have
-	 * finished the database operations to prevent memory leaks.
-	 */
-	public void open()
-	{
-		db = databaseHelper.getWritableDatabase();
-	}
-
-	/**
-	 * This method must be called after the database operations have been
-	 * completed to prevent memory leaks.
-	 */
-	public void close()
-	{
-		databaseHelper.close();
+		super(context);
 	}
 
 	/**
 	 * This method inserts a new track into the database.
+	 * 
+	 * @param checkPointId
 	 * 
 	 * @param artist
 	 *            the artist name
@@ -95,9 +76,11 @@ public class DBTrackAdapter
 	 * @param duration
 	 *            the duration of the track
 	 */
-	public void createTrack(String artist, String album, String title, String data, String displayName, String duration)
+	public void createTrack(int checkPointId, String artist, String album, String title, String data,
+			String displayName, String duration)
 	{
 		ContentValues values = new ContentValues();
+		values.put(COLUMN_CID, checkPointId);
 		values.put(COLUMN_ALBUM, artist);
 		values.put(COLUMN_ALBUM, album);
 		values.put(COLUMN_ALBUM, title);
