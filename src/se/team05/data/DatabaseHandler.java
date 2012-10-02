@@ -43,7 +43,7 @@ public class DatabaseHandler
 	public void saveRoute()
 	{
 		dBRouteAdapter.open();
-		dBRouteAdapter.createRoute();
+		dBRouteAdapter.createRoute("", "", 0, 0, 0);
 		dBRouteAdapter.close();
 	}
 
