@@ -51,16 +51,16 @@ public class DatabaseHandler
 	 * Saves a track into the database and relates it to a checkpoint through
 	 * the checkpoint id
 	 * 
+	 * @param cid
+	 *            the id of the checkpoint to relate the track to
 	 * @param track
 	 *            the track to save
-	 * @param checkPointId
-	 *            the id of the checkpoint to relate the track to
 	 */
-	public void saveTrack(Track track, int checkPointId)
+	public void saveTrack(int cid, Track track)
 	{
 		dbTrackAdapter.open();
-		dbTrackAdapter.createTrack(checkPointId, track.getArtist(), track.getAlbum(), track.getTitle(),
-				track.getData(), track.getDisplayName(), track.getDuration());
+		dbTrackAdapter.insertTrack(cid, track.getArtist(), track.getAlbum(), track.getTitle(), track.getData(),
+				track.getDisplayName(), track.getDuration());
 		dbTrackAdapter.close();
 	}
 
