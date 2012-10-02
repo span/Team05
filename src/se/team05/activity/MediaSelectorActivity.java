@@ -68,6 +68,7 @@ public class MediaSelectorActivity extends Activity implements LoaderCallbacks<C
 	private String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0";
 	private String[] projection = { MediaStore.Audio.Media._ID, MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM,
 			MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.DISPLAY_NAME, MediaStore.Audio.Media.DURATION };
+	private ArrayList<Track> selectedItems;
 
 	/**
 	 * The onCreate method loads the xml layout which contains the listview. It
@@ -82,6 +83,7 @@ public class MediaSelectorActivity extends Activity implements LoaderCallbacks<C
 		loaderManager = getLoaderManager();
 		loaderManager.initLoader(LOADER_ID_ARTIST, null, this);
 		listView = (ListView) findViewById(R.id.list);
+		selectedItems = new ArrayList<Track>();
 	}
 
 	/**
@@ -104,10 +106,10 @@ public class MediaSelectorActivity extends Activity implements LoaderCallbacks<C
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
+		selectedItems = adapter.getSelectedItems();
 		switch (item.getItemId())
 		{
 			case R.id.done:
-				ArrayList<Track> selectedItems = adapter.getSelectedItems();
 				Intent intent = new Intent();
 				intent.putParcelableArrayListExtra(EXTRA_SELECTED_ITEMS, selectedItems);
 				setResult(RESULT_OK, intent);
@@ -166,10 +168,10 @@ public class MediaSelectorActivity extends Activity implements LoaderCallbacks<C
 		{
 			adapter = new MediaSelectorAdapter(getApplicationContext(), R.layout.activity_media_selector, cursor, new String[] {
 				MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.TITLE }, new int[] { R.id.text_1,
-				R.id.text_2, R.id.text_3 }, Adapter.NO_SELECTION);
+				R.id.text_2, R.id.text_3 }, Adapter.NO_SELECTION, selectedItems);
 			listView.setAdapter(adapter);
 		}
-		adapter.swapCursor(cursor);
+		adapter.changeCursor(cursor);
 	}
 
 	/**
@@ -178,6 +180,6 @@ public class MediaSelectorActivity extends Activity implements LoaderCallbacks<C
 	 */
 	public void onLoaderReset(Loader<Cursor> cursorLoader)
 	{
-		adapter.swapCursor(null);
+		adapter.changeCursor(null);
 	}
 }
