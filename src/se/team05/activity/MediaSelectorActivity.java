@@ -171,7 +171,10 @@ public class MediaSelectorActivity extends Activity implements LoaderCallbacks<C
 				R.id.text_2, R.id.text_3 }, Adapter.NO_SELECTION, selectedItems);
 			listView.setAdapter(adapter);
 		}
-		adapter.changeCursor(cursor);
+		else
+		{
+			adapter.swapCursor(cursor);
+		}
 	}
 
 	/**
@@ -180,6 +183,6 @@ public class MediaSelectorActivity extends Activity implements LoaderCallbacks<C
 	 */
 	public void onLoaderReset(Loader<Cursor> cursorLoader)
 	{
-		adapter.changeCursor(null);
+		adapter.swapCursor(null);
 	}
 }
