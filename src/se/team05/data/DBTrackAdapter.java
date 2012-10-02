@@ -18,7 +18,6 @@ package se.team05.data;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 
 /**
  * This class is the track adapter class used to communicate with the "tracks"
@@ -29,7 +28,7 @@ import android.database.sqlite.SQLiteDatabase;
  * @author Daniel Kvist
  * 
  */
-public class DBTrackAdapter
+public class DBTrackAdapter extends DBAdapter
 {
 	public static final String TABLE_TRACKS = "tracks";
 	public static final String COLUMN_ID = "id";
@@ -46,8 +45,6 @@ public class DBTrackAdapter
 			+ " text not null, " + COLUMN_ALBUM + " text not null," + COLUMN_TITLE + " text not null," + COLUMN_DATA
 			+ " text not null," + COLUMN_DISPLAY_NAME + " text not null," + COLUMN_DURATION + " text not null);";
 
-	private DatabaseHelper databaseHelper;
-	private SQLiteDatabase db;
 
 	/**
 	 * The constructor of the class which creates a new instance of the database
@@ -58,26 +55,7 @@ public class DBTrackAdapter
 	 */
 	public DBTrackAdapter(Context context)
 	{
-		databaseHelper = new DatabaseHelper(context);
-	}
-
-	/**
-	 * Opens the database and stores the actual writable database object as an
-	 * instance in the class. You must remember to call close() after you have
-	 * finished the database operations to prevent memory leaks.
-	 */
-	public void open()
-	{
-		db = databaseHelper.getWritableDatabase();
-	}
-
-	/**
-	 * This method must be called after the database operations have been
-	 * completed to prevent memory leaks.
-	 */
-	public void close()
-	{
-		databaseHelper.close();
+		super(context);
 	}
 
 	/**
