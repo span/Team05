@@ -17,20 +17,19 @@
 package se.team05.activity;
 
 import se.team05.R;
+import se.team05.data.DatabaseHandler;
 import se.team05.listener.UseExistingRouteListener;
 import android.app.Activity;
 import android.content.Context;
+import android.database.Cursor;
 import android.os.Bundle;
-import android.view.Window;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.ProgressBar;
+import android.widget.SimpleCursorAdapter;
 
 /**
- * An activity that will present the user with the option to choose and old route. As of now it is just a button but 
- * a future release will include a ListView representing the older routes saved in the database that the user
- * can choose from. TODO Change comments accordingly
+ * An activity that will present the user with the option to choose and old route.
+ * Gets routes from database and presents them in a listview.
  * 
  * @author Markus, Henrik Hugo
  *
@@ -41,69 +40,51 @@ public class UseExistingRouteActivity extends Activity
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+		//requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.activity_use_existing_route);
 		
-		//Button runButton = (Button) findViewById(R.id.choose_saved_route_button);
-		//runButton.setOnClickListener(new UseExistingRouteListener(this));
+		//setProgressBarIndeterminateVisibility(true);
 		
-		setProgressBarIndeterminateVisibility(true);
+		// Setup database connection and get cursor with results
+		DatabaseHandler db = new DatabaseHandler(this);
+		Cursor cursor = db.getAllRoutesCursor();
 		
+		// Setup adapter
+		RouteListCursorAdapter routeListCursorAdapter = new RouteListCursorAdapter(
+				this,
+				android.R.layout.simple_list_item_1,
+				cursor,
+				new String[] {"name"}, new int[] {android.R.id.text1}
+		);
+		
+		// Retrieve reference to listview and apply the adapter
 		ListView listView = (ListView) findViewById(R.id.mylist);
-		String[] values = new String[] { "Android", "iPhone", "Blackberry", "WindowsMobile",
-				"WebOS", "Ubuntu", "Windows7", "Max OS X", "Linux", "OS/2" };
+		listView.setAdapter(routeListCursorAdapter);
 		
-		Route[] routes = new Route[] { new Route("First", "Lätt"), new Route("Second", "Medel"), new Route("Third", "Svår") };
-		
-		RouteArrayAdapter myAdapter = new RouteArrayAdapter(this, android.R.layout.simple_list_item_1, routes);
-		
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_list_item_1, android.R.id.text1, values);
-		
-		listView.setAdapter(myAdapter);
-		try {
-			Thread.sleep(0);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		setProgressBarIndeterminateVisibility(false);
+		//setProgressBarIndeterminateVisibility(false);
 	}
 	
-	private class RouteArrayAdapter extends ArrayAdapter<Route>
-	{
-		
-		public RouteArrayAdapter(Context context, int textViewResourceId, Route[] routes)
-		{
-			super(context, textViewResourceId, routes);
-			
-		}
-	}
-	
-	private class Route
-	{
-		int _id;
-		String name;
-		String description;
-		int type;
-		boolean timecoach;
-		boolean lengthcoach;
-		
-		public Route(String name, String description)
-		{
-			this.name = name;
-			this.description = description;
-			this.type = 0;
-			this.timecoach = false;
-			this.lengthcoach = false;
+	/**
+	 * Simple class for automatically formating the content, from a cursor returned
+	 * by the database, to a listview.
+	 * @author Henrik Hugo
+	 *
+	 */
+	private class RouteListCursorAdapter extends SimpleCursorAdapter {
+
+		@SuppressWarnings("deprecation")
+		public RouteListCursorAdapter(Context context, int layout, Cursor c,
+				String[] from, int[] to) {
+			super(context, layout, c, from, to);
 		}
 		
-		public String toString()
+		@SuppressWarnings("deprecation")
+		public RouteListCursorAdapter(Context context, int layout, Cursor c)
 		{
-			// TODO Ajabaja, returnera ett nytt objekt!
-			return name;
+			super(context, layout, c, null, null);
 		}
-		
+
+
 	}
 
 }
