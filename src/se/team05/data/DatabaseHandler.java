@@ -19,6 +19,7 @@ package se.team05.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import se.team05.content.Route;
 import se.team05.content.Track;
 import android.content.Context;
 import android.database.Cursor;
@@ -44,10 +45,16 @@ public class DatabaseHandler
 		dbTrackAdapter = new DBTrackAdapter(context);
 	}
 
-	public void saveRoute()
+	/**
+	 * This method saves the route in the database.
+	 * 
+	 * @param route
+	 *            the route to save
+	 */
+	public void saveRoute(Route route)
 	{
 		dBRouteAdapter.open();
-		dBRouteAdapter.createRoute("", "", 0, 0, 0);
+		dBRouteAdapter.insertRoute(route.getName(), route.getDescription(), route.getType(), 0, 0);
 		dBRouteAdapter.close();
 	}
 
@@ -142,15 +149,12 @@ public class DatabaseHandler
 		Cursor cursor = dbTrackAdapter.fetchTrackByCid(cid);
 		while (cursor.moveToNext())
 		{
-			tracks.add(new Track(
-					cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_ID)), 
-					cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_ARTIST)), 
-					cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_ALBUM)),
-					cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_TITLE)), 
-					cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_DATA)), 
-					cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_DISPLAY_NAME)), 
-					cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_DURATION))
-				));
+			tracks.add(new Track(cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_ID)), cursor.getString(cursor
+					.getColumnIndex(DBTrackAdapter.COLUMN_ARTIST)), cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_ALBUM)),
+					cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_TITLE)), cursor.getString(cursor
+							.getColumnIndex(DBTrackAdapter.COLUMN_DATA)), cursor.getString(cursor
+							.getColumnIndex(DBTrackAdapter.COLUMN_DISPLAY_NAME)), cursor.getString(cursor
+							.getColumnIndex(DBTrackAdapter.COLUMN_DURATION))));
 		}
 		dbTrackAdapter.close();
 		return tracks;
