@@ -57,6 +57,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 	{
 		database.execSQL(DBRouteAdapter.DATABASE_CREATE_ROUTE_TABLE);
 		database.execSQL(DBTrackAdapter.DATABASE_CREATE_TRACK_TABLE);
+		database.execSQL(DBResultAdapter.DATABASE_CREATE_RESULT_TABLE);
 	}
 
 	/**
@@ -70,6 +71,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 				+ ", which will destroy all old data");
 		db.execSQL("DROP TABLE IF EXISTS " + DBRouteAdapter.TABLE_ROUTES);
 		db.execSQL("DROP TABLE IF EXISTS " + DBTrackAdapter.TABLE_TRACKS);
+		db.execSQL("DROP TABLE IF EXISTS " + DBResultAdapter.TABLE_RESULT);
 		onCreate(db);
 	}
 

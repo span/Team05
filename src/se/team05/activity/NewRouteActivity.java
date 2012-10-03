@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import se.team05.R;
+import se.team05.content.Route;
 import se.team05.content.Routes;
 import se.team05.content.Track;
 import se.team05.data.DatabaseHandler;
@@ -281,9 +282,8 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 				v3.setVisibility(View.VISIBLE);
 				break;
 			case R.id.stop_and_save_button:
-				// Routes.getInstance().addNewRoute(route, 1);
 				DatabaseHandler dataBaseHandler = new DatabaseHandler(this);
-				dataBaseHandler.saveRoute();
+				dataBaseHandler.saveRoute(new Route("name", "description", 0, -1, -1));
 				Intent intent = new Intent(this, MainActivity.class);
 				this.startActivity(intent);
 				break;
