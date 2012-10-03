@@ -25,6 +25,8 @@ import se.team05.content.Routes;
 import se.team05.content.Track;
 import se.team05.data.DatabaseHandler;
 import se.team05.dialog.EditCheckPointDialog;
+import se.team05.listener.MapLocationListener;
+import se.team05.listener.MapOnGestureListener;
 import se.team05.overlay.CheckPoint;
 import se.team05.overlay.CheckPointOverlay;
 import se.team05.overlay.RouteOverlay;
@@ -34,16 +36,11 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.view.GestureDetector.OnDoubleTapListener;
-import android.view.GestureDetector.OnGestureListener;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -58,8 +55,8 @@ import com.google.android.maps.Overlay;
  * @author Markus
  * 
  */
-public class NewRouteActivity extends MapActivity implements LocationListener, View.OnClickListener,
-		EditCheckPointDialog.Callbacks, CheckPointOverlay.Callbacks, OnGestureListener, OnDoubleTapListener
+public class NewRouteActivity extends MapActivity implements View.OnClickListener,
+		EditCheckPointDialog.Callbacks, CheckPointOverlay.Callbacks, MapOnGestureListener.Callbacks, MapLocationListener.Callbacks
 {
 
 	private ArrayList<GeoPoint> route;
@@ -118,9 +115,10 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 
 		mapView = (EditRouteMapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
-
+		mapView.setOnGestureListener(new MapOnGestureListener(this));
+		
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, new MapLocationListener(this));
 
 		Criteria criteria = new Criteria();
 		criteria.setAccuracy(Criteria.ACCURACY_FINE);
@@ -181,7 +179,8 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 	 * @param location
 	 *            the new location of the user
 	 */
-	public void onLocationChanged(Location location)
+	@Override
+	public void updateLocation(Location location)
 	{
 
 		if (started)
@@ -253,30 +252,6 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 	}
 
 	/**
-	 * Unused method as of now.
-	 */
-	public void onProviderDisabled(String provider)
-	{
-
-	}
-
-	/**
-	 * Unused method as of now.
-	 */
-	public void onProviderEnabled(String provider)
-	{
-
-	}
-
-	/**
-	 * Unused method as of now.
-	 */
-	public void onStatusChanged(String provider, int status, Bundle extras)
-	{
-
-	}
-
-	/**
 	 * Get method for returning the Routelist consisting of geopoints.
 	 * 
 	 * @return ArrayList representing Geo Points.
@@ -318,9 +293,6 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 					GeoPoint geoPoint = myLocationOverlay.getMyLocation();
 					if (geoPoint != null)
 					{
-//						CheckPoint checkPoint = new CheckPoint(geoPoint);
-//						checkPointOverlay.addCheckPoint(checkPoint);
-//						showCheckPointDialog(checkPoint);
 						createCheckPoint(geoPoint);
 					}
 				}
@@ -347,84 +319,32 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 		checkPointDialog.show();
 	}
 
-	@Override
-	public boolean onDoubleTap(MotionEvent event)
-	{
-		mapView.getController().zoomInFixing((int) event.getX(), (int) event.getY());
-		return true;
-	}
 
-	@Override
-	public boolean onDoubleTapEvent(MotionEvent e)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean onSingleTapConfirmed(MotionEvent event)
-	{
-		if(checkPointDialog == null || !checkPointDialog.isShowing())
-		{
-			GeoPoint geoPoint = mapView.getProjection().fromPixels(
-	                (int) event.getX(),
-	                (int) event.getY());
-			
-			Toast.makeText(this.getBaseContext(),                             
-	                geoPoint.getLatitudeE6() / 1E6 + "," + 
-	                geoPoint.getLongitudeE6() /1E6 ,                             
-	                Toast.LENGTH_SHORT).show();
-			createCheckPoint(geoPoint);
-		}	
-		return true;
-	}
-
-	@Override
-	public boolean onDown(MotionEvent e)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void onLongPress(MotionEvent e)
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void onShowPress(MotionEvent e)
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean onSingleTapUp(MotionEvent event)
-	{
-		return false;
-	}
 	
 	private void createCheckPoint(GeoPoint geoPoint)
 	{
 		CheckPoint checkPoint = new CheckPoint(geoPoint);
 		checkPointOverlay.addCheckPoint(checkPoint);
 		showCheckPointDialog(checkPoint, EditCheckPointDialog.MODE_ADD);
+	}
+
+	@Override
+	public void onTap(int x, int y, int eventType)
+	{
+		switch (eventType)
+		{
+			case MapOnGestureListener.EVENT_DOUBLE_TAP:
+				mapView.getController().zoomInFixing(x,y);
+				break;
+			case MapOnGestureListener.EVENT_SINGLE_TAP:
+				if (checkPointDialog == null || !checkPointDialog.isShowing())
+				{
+					GeoPoint geoPoint = mapView.getProjection().fromPixels(x, y);
+					createCheckPoint(geoPoint);
+				}
+				break;
+		}
+		
 	}
 
 	// @Override
