@@ -45,11 +45,77 @@ public class DatabaseHandler
 		dbTrackAdapter = new DBTrackAdapter(context);
 	}
 
-	public void saveRoute()
+	/**
+	 * This method saves the route in the database.
+	 * 
+	 * @param route
+	 *            the route to save
+	 */
+	public void saveRoute(Route route)
 	{
 		dBRouteAdapter.open();
-		dBRouteAdapter.createRoute("", "", 0, 0, 0);
+		dBRouteAdapter.insertRoute(route.getName(), route.getDescription(), route.getType(), 0, 0);
 		dBRouteAdapter.close();
+	}
+
+	/**
+	 * Gets a Route from the database by the id provided.
+	 * 
+	 * @param id
+	 * @return a Route if id is found, null otherwise
+	 */
+	public Route getRoute(int id)
+	{
+		// TODO Write this
+		return null;
+	}
+
+	/**
+	 * Get all routes from the database.
+	 * 
+	 * @return an array with Route objects
+	 */
+	public Route[] getAllRoutes()
+	{
+		dBRouteAdapter.open();
+		Cursor cursor = dBRouteAdapter.getAllRoutes();
+		List<Route> routeList = null;
+		if (cursor != null)
+		{
+			Route route;
+			cursor.moveToFirst();
+			routeList = new ArrayList<Route>();
+
+			while (!cursor.isAfterLast())
+			{
+				route = new Route(cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_ID)), cursor.getString(cursor
+						.getColumnIndex(DBRouteAdapter.COLUMN_NAME)), cursor.getString(cursor
+						.getColumnIndex(DBRouteAdapter.COLUMN_DESCRIPTION)), cursor.getInt(cursor
+						.getColumnIndex(DBRouteAdapter.COLUMN_TYPE)),
+						cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_TIMECOACH)) != 0, // Quick
+																									// conversion
+																									// to
+																									// boolean
+						cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_LENGTHCOACH)) != 0);
+
+				routeList.add(route);
+				cursor.moveToNext();
+			}
+		}
+
+		return (Route[]) routeList.toArray();
+	}
+
+	/**
+	 * Get the cursor with att routes in the database unformatted.
+	 * 
+	 * @return a cursor.
+	 */
+	public Cursor getAllRoutesCursor()
+	{
+		dBRouteAdapter.open();
+		Cursor cursor = dBRouteAdapter.getAllRoutes();
+		return cursor;
 	}
 
 	/**
@@ -64,65 +130,34 @@ public class DatabaseHandler
 	public void saveTrack(int cid, Track track)
 	{
 		dbTrackAdapter.open();
-		dbTrackAdapter.insertTrack(cid, track.getArtist(), track.getAlbum(), track.getTitle(), track.getData(),
-				track.getDisplayName(), track.getDuration());
+		dbTrackAdapter.insertTrack(cid, track.getArtist(), track.getAlbum(), track.getTitle(), track.getData(), track.getDisplayName(),
+				track.getDuration());
 		dbTrackAdapter.close();
 	}
-	
+
 	/**
-	 * Gets a Route from the database by the id provided.
-	 * @param id
-	 * @return a Route if id is found, null otherwise
+	 * Gets the tracks related to a specific checkpoint from the database.
+	 * 
+	 * @param cid
+	 *            the checkpoint id that the tracks are related to
+	 * @return an ArrayList of Track's
 	 */
-	public Route getRoute(int id)
+	public ArrayList<Track> getTracks(int cid)
 	{
-		// TODO Write this
-		return null;
-	}
-	
-	/**
-	 * Get all routes from the database.
-	 * @return an array with Route objects
-	 */
-	public Route[] getAllRoutes()
-	{
-		dBRouteAdapter.open();
-		Cursor cursor = dBRouteAdapter.getAllRoutes();
-		List<Route> routeList = null;
-		if(cursor != null)
+		ArrayList<Track> tracks = new ArrayList<Track>();
+		dbTrackAdapter.open();
+		Cursor cursor = dbTrackAdapter.fetchTrackByCid(cid);
+		while (cursor.moveToNext())
 		{
-			Route route;
-			cursor.moveToFirst();
-			routeList = new ArrayList<Route>();
-			
-			while(!cursor.isAfterLast())
-			{
-				route = new Route(
-						cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_ID)),
-						cursor.getString(cursor.getColumnIndex(DBRouteAdapter.COLUMN_NAME)),
-						cursor.getString(cursor.getColumnIndex(DBRouteAdapter.COLUMN_DESCRIPTION)),
-						cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_TYPE)),
-						cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_TIMECOACH)) != 0, //Quick conversion to boolean
-						cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_LENGTHCOACH)) != 0
-				);
-				
-				routeList.add(route);
-				cursor.moveToNext();
-			}
+			tracks.add(new Track(cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_ID)), cursor.getString(cursor
+					.getColumnIndex(DBTrackAdapter.COLUMN_ARTIST)), cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_ALBUM)),
+					cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_TITLE)), cursor.getString(cursor
+							.getColumnIndex(DBTrackAdapter.COLUMN_DATA)), cursor.getString(cursor
+							.getColumnIndex(DBTrackAdapter.COLUMN_DISPLAY_NAME)), cursor.getString(cursor
+							.getColumnIndex(DBTrackAdapter.COLUMN_DURATION))));
 		}
-		
-		return (Route[]) routeList.toArray();
-	}
-	
-	/**
-	 * Get the cursor with att routes in the database unformatted.
-	 * @return a cursor.
-	 */
-	public Cursor getAllRoutesCursor()
-	{
-		dBRouteAdapter.open();
-		Cursor cursor = dBRouteAdapter.getAllRoutes();
-		return cursor;
+		dbTrackAdapter.close();
+		return tracks;
 	}
 
 }

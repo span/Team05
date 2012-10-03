@@ -33,7 +33,7 @@ import android.database.Cursor;
 public class DBRouteAdapter extends DBAdapter
 {
 	public static final String TABLE_ROUTES = "routes";
-	public static final String COLUMN_ID = "id";
+	public static final String COLUMN_ID = "_id";
 	public static final String COLUMN_NAME = "name";
 	public static final String COLUMN_DESCRIPTION = "description";
 	public static final String COLUMN_TYPE = "type";
@@ -60,20 +60,20 @@ public class DBRouteAdapter extends DBAdapter
 	/**
 	 * Creates a route.
 	 * 
-	 * @param name
-	 * @param description
-	 * @param type
-	 * @param timeCoach
-	 * @param lengthCoach
+	 * @param name the name of the route
+	 * @param description the description of the route
+	 * @param type the type of the route walk/run/bike
+	 * @param timeCoach the time coach interval (-1 if inactive)
+	 * @param lengthCoach the lenth coach interval (-1 if inactive)
 	 */
-	public void createRoute(String name, String description, int type, int timeCoach, int lengthCoach)
+	public void insertRoute(String name, String description, int type, int timeCoach, int lengthCoach)
 	{
 		ContentValues values = new ContentValues();
-		values.put(COLUMN_NAME, "myRoute");
-		values.put(COLUMN_DESCRIPTION, "myDescription");
-		values.put(COLUMN_TYPE, 0);
-		values.put(COLUMN_TIMECOACH, 0);
-		values.put(COLUMN_LENGTHCOACH, 0);
+		values.put(COLUMN_NAME, name);
+		values.put(COLUMN_DESCRIPTION, description);
+		values.put(COLUMN_TYPE, type);
+		values.put(COLUMN_TIMECOACH, timeCoach);
+		values.put(COLUMN_LENGTHCOACH, lengthCoach);
 		db.insert(TABLE_ROUTES, null, values);
 	}
 	
