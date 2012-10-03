@@ -37,9 +37,13 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.view.GestureDetector.OnDoubleTapListener;
+import android.view.GestureDetector.OnGestureListener;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -55,7 +59,7 @@ import com.google.android.maps.Overlay;
  * 
  */
 public class NewRouteActivity extends MapActivity implements LocationListener, View.OnClickListener,
-		EditCheckPointDialog.Callbacks, CheckPointOverlay.Callbacks
+		EditCheckPointDialog.Callbacks, CheckPointOverlay.Callbacks, OnGestureListener, OnDoubleTapListener
 {
 
 	private ArrayList<GeoPoint> route;
@@ -74,6 +78,7 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 	private String lengthPresentation = DISTANCE_UNIT_METRES;
 	private String userDistanceRun = TOTAL_DISTANCE + userDistance + lengthPresentation;
 	private CheckPointOverlay checkPointOverlay;
+	private EditCheckPointDialog checkPointDialog;
 
 	private static String DISTANCE_UNIT_MILES = "miles";
 	private static String DISTANCE_UNIT_YARDS = "yards";
@@ -313,9 +318,10 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 					GeoPoint geoPoint = myLocationOverlay.getMyLocation();
 					if (geoPoint != null)
 					{
-						CheckPoint checkPoint = new CheckPoint(geoPoint);
-						checkPointOverlay.addCheckPoint(checkPoint);
-						showCheckPointDialog(checkPoint);
+//						CheckPoint checkPoint = new CheckPoint(geoPoint);
+//						checkPointOverlay.addCheckPoint(checkPoint);
+//						showCheckPointDialog(checkPoint);
+						createCheckPoint(geoPoint);
 					}
 				}
 				break;
@@ -336,8 +342,88 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 
 	private void showCheckPointDialog(CheckPoint checkPoint)
 	{
-		EditCheckPointDialog checkPointDialog = new EditCheckPointDialog(this, checkPoint);
+		checkPointDialog = new EditCheckPointDialog(this, checkPoint);
 		checkPointDialog.show();
+	}
+
+	@Override
+	public boolean onDoubleTap(MotionEvent event)
+	{
+		mapView.getController().zoomInFixing((int) event.getX(), (int) event.getY());
+		return true;
+	}
+
+	@Override
+	public boolean onDoubleTapEvent(MotionEvent e)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean onSingleTapConfirmed(MotionEvent event)
+	{
+		if(checkPointDialog == null || !checkPointDialog.isShowing())
+		{
+			GeoPoint geoPoint = mapView.getProjection().fromPixels(
+	                (int) event.getX(),
+	                (int) event.getY());
+			
+			Toast.makeText(this.getBaseContext(),                             
+	                geoPoint.getLatitudeE6() / 1E6 + "," + 
+	                geoPoint.getLongitudeE6() /1E6 ,                             
+	                Toast.LENGTH_SHORT).show();
+			createCheckPoint(geoPoint);
+		}	
+		return true;
+	}
+
+	@Override
+	public boolean onDown(MotionEvent e)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void onLongPress(MotionEvent e)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void onShowPress(MotionEvent e)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public boolean onSingleTapUp(MotionEvent event)
+	{
+		return false;
+	}
+	
+	private void createCheckPoint(GeoPoint geoPoint)
+	{
+		CheckPoint checkPoint = new CheckPoint(geoPoint);
+		checkPointOverlay.addCheckPoint(checkPoint);
+		showCheckPointDialog(checkPoint);
 	}
 
 	// @Override

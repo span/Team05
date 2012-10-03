@@ -5,6 +5,9 @@ import se.team05.overlay.CheckPointOverlay;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.view.GestureDetector;
+import android.view.GestureDetector.OnDoubleTapListener;
+import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
 
 import com.google.android.maps.MapActivity;
@@ -19,38 +22,40 @@ public class EditRouteMapView extends MapView {
 	private float tolerance=10;//pixels that your finger can move but still be a long press
 	private MapActivity mapActivity;
 	private Drawable drawable = this.getResources().getDrawable(R.drawable.green_markerc);
-    private CheckPointOverlay checkPointOverlay; 
+    private CheckPointOverlay checkPointOverlay;
+	private GestureDetector gestureDetector; 
     
-    
-	public EditRouteMapView(Context arg0, String arg1) {
-		super(arg0, arg1);
-	}
-
-	public EditRouteMapView(Context arg0, AttributeSet arg1) {
-		super(arg0, arg1);
-	}
-
-	public EditRouteMapView(Context arg0, AttributeSet arg1, int arg2) {
-		super(arg0, arg1, arg2);
+    /**
+     * 
+     * @param context
+     * @param attributes
+     */
+	public EditRouteMapView(Context context, AttributeSet attributes) {
+		super(context, attributes);
+		gestureDetector = new GestureDetector(context, (OnGestureListener) context);
+		gestureDetector.setOnDoubleTapListener((OnDoubleTapListener) context);
+		
 	}
 	
 	@Override
 	public boolean onTouchEvent(MotionEvent event)
 	{
-		switch (event.getAction())
-		{
-			case MotionEvent.ACTION_DOWN:
-				timerIfLongClick=event.getEventTime();
-	            xScreenCoordinateForLongClick=event.getX();
-	            yScreenCoordinateForLongClick=event.getY();
-				break;
-			case MotionEvent.ACTION_MOVE:
-                float dY = Math.abs(event.getY()-yScreenCoordinateForLongClick);
-                float dX = Math.abs(event.getX()-xScreenCoordinateForLongClick);
-                if(dY>tolerance || dX>tolerance){
-                    timerIfLongClick=0;
-                }
-				break;
+		
+		
+//		switch (event.getAction())
+//		{
+//			case MotionEvent.ACTION_DOWN:
+//				timerIfLongClick=event.getEventTime();
+//	            xScreenCoordinateForLongClick=event.getX();
+//	            yScreenCoordinateForLongClick=event.getY();
+//				break;
+//			case MotionEvent.ACTION_MOVE:
+//                float dY = Math.abs(event.getY()-yScreenCoordinateForLongClick);
+//                float dX = Math.abs(event.getX()-xScreenCoordinateForLongClick);
+//                if(dY>tolerance || dX>tolerance){
+//                    timerIfLongClick=0;
+//                }
+//				break;
 //			case MotionEvent.ACTION_UP:
 //				long eventTime = event.getEventTime();
 //	            long downTime = event.getDownTime(); 
@@ -67,9 +72,15 @@ public class EditRouteMapView extends MapView {
 //	       	        }
 //				break;
 //	            }
+//		}
+		if(this.gestureDetector.onTouchEvent(event))
+		{
+			return true;
 		}
-		return super.onTouchEvent(event);
-		
+		else
+		{
+			return super.onTouchEvent(event);
+		}
 	}
 
 	
