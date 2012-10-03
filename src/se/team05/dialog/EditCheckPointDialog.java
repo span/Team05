@@ -27,6 +27,7 @@ import java.io.IOException;
 
 import se.team05.R;
 import se.team05.activity.MediaSelectorActivity;
+import se.team05.activity.NewRouteActivity;
 import se.team05.content.SoundManager;
 import se.team05.overlay.CheckPoint;
 import se.team05.overlay.CheckPointOverlay;
@@ -55,10 +56,9 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 	public interface Callbacks
 	{
 		public void onDelete();
-
 	}
 
-	private CheckPointOverlay callBack;
+	private Callbacks callBack;
 	private CheckPoint checkPoint;
 	private TextView nameTextField;
 	private TextView radiusTextField;
@@ -66,10 +66,10 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 	private Activity parentActivity;
 	private SoundManager soundManager;
 
-	public EditCheckPointDialog(Context context, CheckPointOverlay callback, CheckPoint checkPoint)
+	public EditCheckPointDialog(Context context, CheckPoint checkPoint)
 	{
 		super(context);
-		this.callBack = callback;
+		this.callBack = (Callbacks) context;
 		this.checkPoint = checkPoint;
 		this.parentActivity = (Activity) context;
 		this.soundManager = new SoundManager(context);
