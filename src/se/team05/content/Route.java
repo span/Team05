@@ -31,10 +31,10 @@ public class Route
 	String name;
 	String description;
 	int type;
-	boolean timecoach;
-	boolean lengthcoach;
+	int timecoach;
+	int lengthcoach;
 	
-	public Route(int _id,String name, String description, int type, boolean timecoach, boolean lengthcoach)
+	public Route(int _id,String name, String description, int type, int timecoach, int lengthcoach)
 	{
 		this._id = _id;
 		this.name = name;
@@ -44,7 +44,7 @@ public class Route
 		this.lengthcoach = lengthcoach;
 	}
 	
-	public Route(String name, String description, int type, boolean timecoach, boolean lengthcoach)
+	public Route(String name, String description, int type, int timecoach, int lengthcoach)
 	{
 		this.name = name;
 		this.description = description;
@@ -59,8 +59,8 @@ public class Route
 		this.description = description;
 		this.type = 0;
 		// TODO Global variables for default values of timecoach and lengthcoach
-		this.timecoach = false;
-		this.lengthcoach = false;
+		this.timecoach = -1;
+		this.lengthcoach = -1;
 	}
 	
 	public String toString()
@@ -100,19 +100,19 @@ public class Route
 		this.type = type;
 	}
 
-	public boolean isTimecoach() {
+	public int isTimecoach() {
 		return timecoach;
 	}
 
-	public void setTimecoach(boolean timecoach) {
+	public void setTimecoach(int timecoach) {
 		this.timecoach = timecoach;
 	}
 
-	public boolean isLengthcoach() {
+	public int isLengthcoach() {
 		return lengthcoach;
 	}
 
-	public void setLengthcoach(boolean lengthcoach) {
+	public void setLengthcoach(int lengthcoach) {
 		this.lengthcoach = lengthcoach;
 	}
 	

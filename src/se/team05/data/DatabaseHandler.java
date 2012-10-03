@@ -92,15 +92,14 @@ public class DatabaseHandler
 
 			while (!cursor.isAfterLast())
 			{
-				route = new Route(cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_ID)), cursor.getString(cursor
-						.getColumnIndex(DBRouteAdapter.COLUMN_NAME)), cursor.getString(cursor
-						.getColumnIndex(DBRouteAdapter.COLUMN_DESCRIPTION)), cursor.getInt(cursor
-						.getColumnIndex(DBRouteAdapter.COLUMN_TYPE)),
-						cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_TIMECOACH)) != 0, // Quick
-																									// conversion
-																									// to
-																									// boolean
-						cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_LENGTHCOACH)) != 0);
+				route = new Route(cursor.getInt(
+						cursor.getColumnIndex(DBRouteAdapter.COLUMN_ID)),
+						cursor.getString(cursor.getColumnIndex(DBRouteAdapter.COLUMN_NAME)),
+						cursor.getString(cursor.getColumnIndex(DBRouteAdapter.COLUMN_DESCRIPTION)),
+						cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_TYPE)),
+						cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_TIMECOACH)),
+						cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_LENGTHCOACH))
+				);
 
 				routeList.add(route);
 				cursor.moveToNext();
