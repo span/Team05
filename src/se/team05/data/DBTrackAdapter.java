@@ -23,7 +23,7 @@ import android.database.Cursor;
 /**
  * This class is the track adapter class used to communicate with the "tracks"
  * table in the SQLite database. It contains information about the columns,
- * basic Create, Read, Update, Delete operations and also the initial
+ * basic Create, Read, Delete operations and also the initial
  * "create table" statement.
  * 
  * @author Daniel Kvist
@@ -32,7 +32,7 @@ import android.database.Cursor;
 public class DBTrackAdapter extends DBAdapter
 {
 	public static final String TABLE_TRACKS = "tracks";
-	public static final String COLUMN_ID = "id";
+	public static final String COLUMN_ID = "_id";
 	public static final String COLUMN_CID = "cid";
 	public static final String COLUMN_ARTIST = "artist";
 	public static final String COLUMN_ALBUM = "album";
@@ -40,10 +40,7 @@ public class DBTrackAdapter extends DBAdapter
 	public static final String COLUMN_DATA = "data";
 	public static final String COLUMN_DISPLAY_NAME = "display_name";
 	public static final String COLUMN_DURATION = "duration";
-
-	private final String[] columns = new String[] { COLUMN_ID, COLUMN_CID, COLUMN_ARTIST, COLUMN_ALBUM, COLUMN_DATA,
-			COLUMN_DISPLAY_NAME, COLUMN_DURATION, COLUMN_TITLE };
-
+	
 	public static final String DATABASE_CREATE_TRACK_TABLE = "create table " + TABLE_TRACKS + "(" + COLUMN_ID
 			+ " integer primary key autoincrement, " + COLUMN_CID + " integer not null," + COLUMN_ARTIST
 			+ " text not null, " + COLUMN_ALBUM + " text not null," + COLUMN_TITLE + " text not null," + COLUMN_DATA
@@ -103,7 +100,7 @@ public class DBTrackAdapter extends DBAdapter
 	 */
 	public Cursor fetchTrackById(int id)
 	{
-		return db.query(TABLE_TRACKS, columns, "where id=" + id, null, null, null, null);
+		return db.query(TABLE_TRACKS, null, "where " + COLUMN_ID + "=" + id, null, null, null, null);
 	}
 
 	/**
@@ -115,7 +112,7 @@ public class DBTrackAdapter extends DBAdapter
 	 */
 	public Cursor fetchTrackByCid(int cid)
 	{
-		return db.query(TABLE_TRACKS, columns, "where cid=" + cid, null, null, null, COLUMN_ID + " asc");
+		return db.query(TABLE_TRACKS, null, "where " + COLUMN_CID + "=" + cid, null, null, null, COLUMN_ID + " asc");
 	}
 
 	/**
@@ -127,7 +124,7 @@ public class DBTrackAdapter extends DBAdapter
 	 */
 	public int deleteTrackById(int id)
 	{
-		return db.delete(TABLE_TRACKS, "where id=" + id, null);
+		return db.delete(TABLE_TRACKS, "where " + COLUMN_ID + "=" + id, null);
 	}
 
 	/**
@@ -139,7 +136,7 @@ public class DBTrackAdapter extends DBAdapter
 	 */
 	public int deleteTrackByCid(int cid)
 	{
-		return db.delete(TABLE_TRACKS, "where cid=" + cid, null);
+		return db.delete(TABLE_TRACKS, "where " + COLUMN_CID + "=" + cid, null);
 	}
 
 }
