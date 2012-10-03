@@ -16,8 +16,13 @@
  */
 package se.team05.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import se.team05.content.Route;
 import se.team05.content.Track;
 import android.content.Context;
+import android.database.Cursor;
 
 /**
  * This class handles the communication between the database, its adapters and
@@ -40,28 +45,118 @@ public class DatabaseHandler
 		dbTrackAdapter = new DBTrackAdapter(context);
 	}
 
-	public void saveRoute()
+	/**
+	 * This method saves the route in the database.
+	 * 
+	 * @param route
+	 *            the route to save
+	 */
+	public void saveRoute(Route route)
 	{
 		dBRouteAdapter.open();
-		dBRouteAdapter.createRoute("", "", 0, 0, 0);
+		dBRouteAdapter.insertRoute(route.getName(), route.getDescription(), route.getType(), 0, 0);
 		dBRouteAdapter.close();
+	}
+
+	/**
+	 * Gets a Route from the database by the id provided.
+	 * 
+	 * @param id
+	 * @return a Route if id is found, null otherwise
+	 */
+	public Route getRoute(int id)
+	{
+		// TODO Write this
+		return null;
+	}
+
+	/**
+	 * Get all routes from the database.
+	 * 
+	 * @return an array with Route objects
+	 */
+	public Route[] getAllRoutes()
+	{
+		dBRouteAdapter.open();
+		Cursor cursor = dBRouteAdapter.getAllRoutes();
+		List<Route> routeList = null;
+		if (cursor != null)
+		{
+			Route route;
+			cursor.moveToFirst();
+			routeList = new ArrayList<Route>();
+
+			while (!cursor.isAfterLast())
+			{
+				route = new Route(cursor.getInt(
+						cursor.getColumnIndex(DBRouteAdapter.COLUMN_ID)),
+						cursor.getString(cursor.getColumnIndex(DBRouteAdapter.COLUMN_NAME)),
+						cursor.getString(cursor.getColumnIndex(DBRouteAdapter.COLUMN_DESCRIPTION)),
+						cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_TYPE)),
+						cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_TIMECOACH)),
+						cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_LENGTHCOACH))
+				);
+
+				routeList.add(route);
+				cursor.moveToNext();
+			}
+		}
+
+		return (Route[]) routeList.toArray();
+	}
+
+	/**
+	 * Get the cursor with att routes in the database unformatted.
+	 * 
+	 * @return a cursor.
+	 */
+	public Cursor getAllRoutesCursor()
+	{
+		dBRouteAdapter.open();
+		Cursor cursor = dBRouteAdapter.getAllRoutes();
+		return cursor;
 	}
 
 	/**
 	 * Saves a track into the database and relates it to a checkpoint through
 	 * the checkpoint id
 	 * 
+	 * @param cid
+	 *            the id of the checkpoint to relate the track to
 	 * @param track
 	 *            the track to save
-	 * @param checkPointId
-	 *            the id of the checkpoint to relate the track to
 	 */
-	public void saveTrack(Track track, int checkPointId)
+	public void saveTrack(int cid, Track track)
 	{
 		dbTrackAdapter.open();
-		dbTrackAdapter.createTrack(checkPointId, track.getArtist(), track.getAlbum(), track.getTitle(),
-				track.getData(), track.getDisplayName(), track.getDuration());
+		dbTrackAdapter.insertTrack(cid, track.getArtist(), track.getAlbum(), track.getTitle(), track.getData(), track.getDisplayName(),
+				track.getDuration());
 		dbTrackAdapter.close();
+	}
+
+	/**
+	 * Gets the tracks related to a specific checkpoint from the database.
+	 * 
+	 * @param cid
+	 *            the checkpoint id that the tracks are related to
+	 * @return an ArrayList of Track's
+	 */
+	public ArrayList<Track> getTracks(int cid)
+	{
+		ArrayList<Track> tracks = new ArrayList<Track>();
+		dbTrackAdapter.open();
+		Cursor cursor = dbTrackAdapter.fetchTrackByCid(cid);
+		while (cursor.moveToNext())
+		{
+			tracks.add(new Track(cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_ID)), cursor.getString(cursor
+					.getColumnIndex(DBTrackAdapter.COLUMN_ARTIST)), cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_ALBUM)),
+					cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_TITLE)), cursor.getString(cursor
+							.getColumnIndex(DBTrackAdapter.COLUMN_DATA)), cursor.getString(cursor
+							.getColumnIndex(DBTrackAdapter.COLUMN_DISPLAY_NAME)), cursor.getString(cursor
+							.getColumnIndex(DBTrackAdapter.COLUMN_DURATION))));
+		}
+		dbTrackAdapter.close();
+		return tracks;
 	}
 
 }

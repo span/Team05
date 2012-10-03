@@ -18,11 +18,12 @@ package se.team05.data;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 
 /**
  * This class is the track adapter class used to communicate with the "tracks"
  * table in the SQLite database. It contains information about the columns,
- * basic Create, Read, Update, Delete operations and also the initial
+ * basic Create, Read, Delete operations and also the initial
  * "create table" statement.
  * 
  * @author Daniel Kvist
@@ -31,7 +32,7 @@ import android.content.Context;
 public class DBTrackAdapter extends DBAdapter
 {
 	public static final String TABLE_TRACKS = "tracks";
-	public static final String COLUMN_ID = "id";
+	public static final String COLUMN_ID = "_id";
 	public static final String COLUMN_CID = "cid";
 	public static final String COLUMN_ARTIST = "artist";
 	public static final String COLUMN_ALBUM = "album";
@@ -39,12 +40,11 @@ public class DBTrackAdapter extends DBAdapter
 	public static final String COLUMN_DATA = "data";
 	public static final String COLUMN_DISPLAY_NAME = "display_name";
 	public static final String COLUMN_DURATION = "duration";
-
+	
 	public static final String DATABASE_CREATE_TRACK_TABLE = "create table " + TABLE_TRACKS + "(" + COLUMN_ID
 			+ " integer primary key autoincrement, " + COLUMN_CID + " integer not null," + COLUMN_ARTIST
 			+ " text not null, " + COLUMN_ALBUM + " text not null," + COLUMN_TITLE + " text not null," + COLUMN_DATA
 			+ " text not null," + COLUMN_DISPLAY_NAME + " text not null," + COLUMN_DURATION + " text not null);";
-
 
 	/**
 	 * The constructor of the class which creates a new instance of the database
@@ -61,8 +61,8 @@ public class DBTrackAdapter extends DBAdapter
 	/**
 	 * This method inserts a new track into the database.
 	 * 
-	 * @param checkPointId
-	 * 
+	 * @param cid
+	 *            the checkpoint id
 	 * @param artist
 	 *            the artist name
 	 * @param album
@@ -75,18 +75,68 @@ public class DBTrackAdapter extends DBAdapter
 	 *            the display name of the track
 	 * @param duration
 	 *            the duration of the track
+	 * @return the id of the inserted of
 	 */
-	public void createTrack(int checkPointId, String artist, String album, String title, String data,
-			String displayName, String duration)
+	public long insertTrack(int cid, String artist, String album, String title, String data, String displayName,
+			String duration)
 	{
 		ContentValues values = new ContentValues();
-		values.put(COLUMN_CID, checkPointId);
+		values.put(COLUMN_CID, cid);
 		values.put(COLUMN_ALBUM, artist);
 		values.put(COLUMN_ALBUM, album);
 		values.put(COLUMN_ALBUM, title);
 		values.put(COLUMN_ALBUM, data);
 		values.put(COLUMN_ALBUM, displayName);
 		values.put(COLUMN_ALBUM, duration);
-		db.insert(TABLE_TRACKS, null, values);
+		return db.insert(TABLE_TRACKS, null, values);
 	}
+
+	/**
+	 * Fetches a track from the database with the corresponding id.
+	 * 
+	 * @param id
+	 *            the id of the track
+	 * @return a Cursor pointing to the result set
+	 */
+	public Cursor fetchTrackById(int id)
+	{
+		return db.query(TABLE_TRACKS, null, "where " + COLUMN_ID + "=" + id, null, null, null, null);
+	}
+
+	/**
+	 * Fetches all tracks from the database with the corresponding cid.
+	 * 
+	 * @param cid
+	 *            the checkpoint id for the tracks
+	 * @return a Cursor pointing to the result set
+	 */
+	public Cursor fetchTrackByCid(int cid)
+	{
+		return db.query(TABLE_TRACKS, null, "where " + COLUMN_CID + "=" + cid, null, null, null, COLUMN_ID + " asc");
+	}
+
+	/**
+	 * Deletes a single track with the corresponding id from the database.
+	 * 
+	 * @param id
+	 *            the id of the track
+	 * @return the number of rows affected
+	 */
+	public int deleteTrackById(int id)
+	{
+		return db.delete(TABLE_TRACKS, "where " + COLUMN_ID + "=" + id, null);
+	}
+
+	/**
+	 * Deletes all tracks with the corresponding cid from the database.
+	 * 
+	 * @param cid
+	 *            the checkpoint id for the tracks
+	 * @return the number of rows affected
+	 */
+	public int deleteTrackByCid(int cid)
+	{
+		return db.delete(TABLE_TRACKS, "where " + COLUMN_CID + "=" + cid, null);
+	}
+
 }
