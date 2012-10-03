@@ -80,6 +80,10 @@ public class DatabaseHandler
 		return null;
 	}
 	
+	/**
+	 * Get all routes from the database.
+	 * @return an array with Route objects
+	 */
 	public Route[] getAllRoutes()
 	{
 		dBRouteAdapter.open();
@@ -110,6 +114,10 @@ public class DatabaseHandler
 		return (Route[]) routeList.toArray();
 	}
 	
+	/**
+	 * Get the cursor with att routes in the database unformatted.
+	 * @return a cursor.
+	 */
 	public Cursor getAllRoutesCursor()
 	{
 		dBRouteAdapter.open();

@@ -77,14 +77,13 @@ public class DBRouteAdapter extends DBAdapter
 		db.insert(TABLE_ROUTES, null, values);
 	}
 	
-	// TODO Write javadoc
-		/**
-		 * 
-		 * @return
-		 */
-		public Cursor getAllRoutes()
-		{
-			return db.query(TABLE_ROUTES, new String[] {COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION, COLUMN_TYPE,
-					COLUMN_TIMECOACH, COLUMN_LENGTHCOACH}, null, null, null, null, null);
-		}
+	/**
+	 * Execute query on the database, asking for all routes.
+	 * @return a cursor contraining the results
+	 */
+	public Cursor getAllRoutes()
+	{
+		return db.query(TABLE_ROUTES, new String[] {COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION, COLUMN_TYPE,
+				COLUMN_TIMECOACH, COLUMN_LENGTHCOACH}, null, null, null, null, null);
+	}
 }
