@@ -25,13 +25,18 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:orientation="vertical" >
-        
+        <!--
         <Button
             android:id="@+id/choose_saved_route_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/button_choose_saved" />
-
+        -->"
+		<ListView
+		    android:id="@+id/mylist"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content" >
+		</ListView>
     </LinearLayout>
 
 </RelativeLayout>
