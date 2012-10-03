@@ -39,6 +39,8 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -369,22 +371,17 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 		}
 
 	}
-
-	// @Override
-	// public boolean onCreateOptionsMenu(Menu menu) {
-	// getMenuInflater().inflate(R.menu.activity_while_running, menu);
-	// return true;
-	// }
-	//
-	//
-	// @Override
-	// public boolean onOptionsItemSelected(MenuItem item) {
-	// switch (item.getItemId()) {
-	// case android.R.id.home:
-	// NavUtils.navigateUpFromSameTask(this);
-	// return true;
-	// }
-	// return super.onOptionsItemSelected(item);
-	// }
+	
+	 @Override
+	 public boolean onOptionsItemSelected(MenuItem item) 
+	 {
+		 switch (item.getItemId()) 
+		 {
+			 case android.R.id.home:
+				 NavUtils.navigateUpFromSameTask(this);
+				 return true;
+		 }
+		 return super.onOptionsItemSelected(item);
+	 }
 
 }
