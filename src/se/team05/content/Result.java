@@ -103,7 +103,7 @@ public class Result {
 	 * Get timestamp.
 	 * 
 	 * @return time and date when the result was created 
-	 * in the format of nanoseconds passed since year 1970
+	 * 			in the format of nanoseconds passed since year 1970
 	 */
 	public int getTimestamp() {
 		return timestamp;
@@ -131,7 +131,7 @@ public class Result {
 	/**
 	 * Set time it took to complete route.
 	 * 
-	 * @param
+	 * @param time
 	 * 		time (seconds) it took to complete route.
 	 */
 	public void setTime(int time) {
@@ -150,7 +150,7 @@ public class Result {
 	/**
 	 * Set the average speed accomplished during round.
 	 * 
-	 * @param
+	 * @param speed
 	 * 		the average speed (kilometers/hour) performed during route.
 	 */
 	public void setSpeed(int speed) {
@@ -169,8 +169,8 @@ public class Result {
 	/**
 	 * Set calories consumed during route.
 	 * 
-	 * @param
-	 * 	calories (kcal) consumed during route.
+	 * @param calories
+	 * 		calories (kcal) consumed during route.
 	 */
 	public void setCalories(int calories) {
 		this.calories = calories;
