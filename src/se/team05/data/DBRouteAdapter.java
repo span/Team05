@@ -33,7 +33,7 @@ import android.database.Cursor;
 public class DBRouteAdapter extends DBAdapter
 {
 	public static final String TABLE_ROUTES = "routes";
-	public static final String COLUMN_ID = "id";
+	public static final String COLUMN_ID = "_id";
 	public static final String COLUMN_NAME = "name";
 	public static final String COLUMN_DESCRIPTION = "description";
 	public static final String COLUMN_TYPE = "type";
