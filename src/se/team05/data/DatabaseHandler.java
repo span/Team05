@@ -17,8 +17,10 @@
 package se.team05.data;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import se.team05.content.Result;
 import se.team05.content.Route;
 import se.team05.content.Track;
 import android.content.Context;
@@ -38,11 +40,13 @@ public class DatabaseHandler
 
 	private DBRouteAdapter dBRouteAdapter;
 	private DBTrackAdapter dbTrackAdapter;
+	private DBResultAdapter dbResultAdapter;
 
 	public DatabaseHandler(Context context)
 	{
 		dBRouteAdapter = new DBRouteAdapter(context);
 		dbTrackAdapter = new DBTrackAdapter(context);
+		dbResultAdapter = new DBResultAdapter(context);
 	}
 
 	/**
@@ -102,12 +106,14 @@ public class DatabaseHandler
 				cursor.moveToNext();
 			}
 		}
-
+		// TODO
+		// dbResultAdapter.close(); ??? /guswer
+		//
 		return (Route[]) routeList.toArray();
 	}
 
 	/**
-	 * Get the cursor with att routes in the database unformatted.
+	 * Get the cursor with all routes in the database unformatted.
 	 * 
 	 * @return a cursor.
 	 */
@@ -158,6 +164,118 @@ public class DatabaseHandler
 		}
 		dbTrackAdapter.close();
 		return tracks;
+	}
+	
+	/**
+	 * This method returns a result (an instance of class Result)
+	 * retrieved from database via a database adapter.
+	 * 
+	 * @param id
+	 * 		id tells which row to get from database.
+	 * @return result
+	 */
+	public Result getResultById(int id)
+	{
+		Result result;
+		
+		dbResultAdapter.open();
+		Cursor cursor = dbResultAdapter.fetchResultById(id);
+		result = createResultFromCursor(cursor);
+		dbResultAdapter.close();
+		
+		return result;
+	}
+	
+	/**
+	 * This method returns an array of results (instances of class Result)
+	 * retrieved from database via a database adapter.
+	 * 
+	 * @param routId
+	 * 		id tells which row to get from database.
+	 * @return result
+	 */
+	public Result[] getAllResultsByRoutId(int routId)
+	{
+		List<Result> resultList = null;
+		
+		dbResultAdapter.open();
+		Cursor cursor = dbResultAdapter.fetchResultById(routId);
+		dbResultAdapter.close();		
+		
+		if (cursor != null)
+		{
+			resultList =  new ArrayList<Result>();
+			Result result;
+			cursor.moveToFirst();
+			
+			while(!cursor.isLast())
+			{
+				result = createResultFromCursor(cursor);
+				resultList.add(result);
+				cursor.moveToNext();
+			}
+		}		
+		return (Result[]) resultList.toArray();
+	}
+	
+	/**
+	 * This help method will return a result made from values gotten through 
+	 * a cursor given in parameter
+	 * 
+	 * @param cursor
+	 * 		the cursor gives read/write access to a set retrieved from database.
+	 * @return result retrieved from database.
+	 */
+	private Result createResultFromCursor(Cursor cursor)
+	{
+		//Cursor cursor = dbResultAdapter.fetchResultById(id);
+		Result result = new Result(cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_ID)),
+									cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_TIMESTAMP)),
+									cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_TIME)),
+									cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_SPEED)),
+									cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_CALORIES)));
+		return result;		
+	}
+	
+	public void setResult(Result result)
+	{
+		dbResultAdapter.open();
+		dbResultAdapter.instertResult(result.getRoutId(),
+										result.getTimestamp(),
+										result.getTime(),
+										result.getSpeed(),
+										result.getCalories());
+		dbResultAdapter.close();
+	}
+	
+	/**
+	 * This method deletes a result from the database.
+	 * 
+	 * @param id
+	 * 		id of result to be deleted.
+	 */
+	public void deleteResultById(int id)
+	{
+		dbResultAdapter.open();
+		dbResultAdapter.deleteResultById(id);
+		dbResultAdapter.close();
+	}
+	
+	public void deleteAllResultsByRoutId(int routId)
+	{		
+		Result[] resultArray = getAllResultsByRoutId(routId);
+		if (resultArray != null)
+		{
+			List<Result> resultList = Arrays.asList(resultArray);	
+			dbResultAdapter.open();
+			
+			for(Result result : resultList)
+			{
+				dbResultAdapter.deleteResultById(result.get_id());
+			}
+			
+			dbResultAdapter.close();
+		}		
 	}
 
 }
