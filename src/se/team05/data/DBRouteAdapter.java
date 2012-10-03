@@ -18,6 +18,7 @@ package se.team05.data;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 
 /**
  * This class is the route table adapter class used to communicate with the
@@ -75,4 +76,15 @@ public class DBRouteAdapter extends DBAdapter
 		values.put(COLUMN_LENGTHCOACH, 0);
 		db.insert(TABLE_ROUTES, null, values);
 	}
+	
+	// TODO Write javadoc
+		/**
+		 * 
+		 * @return
+		 */
+		public Cursor getAllRoutes()
+		{
+			return db.query(TABLE_ROUTES, new String[] {COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION, COLUMN_TYPE,
+					COLUMN_TIMECOACH, COLUMN_LENGTHCOACH}, null, null, null, null, null);
+		}
 }

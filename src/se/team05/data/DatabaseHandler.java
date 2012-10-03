@@ -16,8 +16,13 @@
  */
 package se.team05.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import se.team05.content.Route;
 import se.team05.content.Track;
 import android.content.Context;
+import android.database.Cursor;
 
 /**
  * This class handles the communication between the database, its adapters and
@@ -62,6 +67,54 @@ public class DatabaseHandler
 		dbTrackAdapter.insertTrack(cid, track.getArtist(), track.getAlbum(), track.getTitle(), track.getData(),
 				track.getDisplayName(), track.getDuration());
 		dbTrackAdapter.close();
+	}
+	
+	/**
+	 * Gets a Route from the database by the id provided.
+	 * @param id
+	 * @return a Route if id is found, null otherwise
+	 */
+	public Route getRoute(int id)
+	{
+		// TODO Write this
+		return null;
+	}
+	
+	public Route[] getAllRoutes()
+	{
+		dBRouteAdapter.open();
+		Cursor cursor = dBRouteAdapter.getAllRoutes();
+		List<Route> routeList = null;
+		if(cursor != null)
+		{
+			Route route;
+			cursor.moveToFirst();
+			routeList = new ArrayList<Route>();
+			
+			while(!cursor.isAfterLast())
+			{
+				route = new Route(
+						cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_ID)),
+						cursor.getString(cursor.getColumnIndex(DBRouteAdapter.COLUMN_NAME)),
+						cursor.getString(cursor.getColumnIndex(DBRouteAdapter.COLUMN_DESCRIPTION)),
+						cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_TYPE)),
+						cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_TIMECOACH)) != 0, //Quick conversion to boolean
+						cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_LENGTHCOACH)) != 0
+				);
+				
+				routeList.add(route);
+				cursor.moveToNext();
+			}
+		}
+		
+		return (Route[]) routeList.toArray();
+	}
+	
+	public Cursor getAllRoutesCursor()
+	{
+		dBRouteAdapter.open();
+		Cursor cursor = dBRouteAdapter.getAllRoutes();
+		return cursor;
 	}
 
 }
