@@ -29,7 +29,6 @@ import se.team05.R;
 import se.team05.activity.MediaSelectorActivity;
 import se.team05.content.SoundManager;
 import se.team05.overlay.CheckPoint;
-import se.team05.overlay.CheckPointOverlay;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -55,25 +54,29 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 	public interface Callbacks
 	{
 		public void onDelete();
-
 	}
 
-	private CheckPointOverlay callBack;
+	public static final int MODE_ADD = 0;
+	public static final int MODE_EDIT = 1;
+
+	private Callbacks callBack;
 	private CheckPoint checkPoint;
 	private TextView nameTextField;
 	private TextView radiusTextField;
 	private Button recordButton;
 	private Activity parentActivity;
 	private SoundManager soundManager;
+	private int mode;
 
-	public EditCheckPointDialog(Context context, CheckPointOverlay callback, CheckPoint checkPoint)
+	public EditCheckPointDialog(Context context, CheckPoint checkPoint, int mode)
 	{
 		super(context);
-		this.callBack = callback;
+		this.callBack = (Callbacks) context;
 		this.checkPoint = checkPoint;
 		this.parentActivity = (Activity) context;
 		this.soundManager = new SoundManager(context);
-		setCancelable(false); // Possible change to setCanceledOnTouchOutside(false)?
+		this.mode = mode;
+		setCanceledOnTouchOutside(false);
 	}
 
 	/**
@@ -87,9 +90,15 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 		setContentView(R.layout.edit_checkpoint_dialog);
 		setTitle("Edit CheckPoint");
 
-		findViewById(R.id.delete_button).setOnClickListener(this);
+		Button deleteButton = (Button) findViewById(R.id.delete_button);
+		deleteButton.setOnClickListener(this);
 		findViewById(R.id.save_button).setOnClickListener(this);
-
+		
+		if(mode==MODE_ADD)
+		{
+			deleteButton.setText("Cancel");
+		}
+		
 		nameTextField = (TextView) findViewById(R.id.name);
 		nameTextField.setText(checkPoint.getName());
 		
@@ -188,6 +197,16 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 		// TODO Auto-generated method stub
 
 	}
-
+	
+	@Override
+	public void onBackPressed()
+	{
+		if(mode==MODE_ADD)
+		{
+			callBack.onDelete();
+		}
+			
+		super.onBackPressed();
+	}
 
 }
