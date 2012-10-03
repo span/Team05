@@ -31,14 +31,23 @@ public class CheckPoint extends OverlayItem{
 	private String name;
 	private int radius;
 	
+	/**
+	 * The default Constructor
+	 * @param geoPoint
+	 */
+	public CheckPoint(GeoPoint geoPoint)
+	{
+		this(geoPoint, "CheckPoint", 30);
+		
+	}
 	
-	public CheckPoint(GeoPoint geoPoint, String name, int radius) 
+	private CheckPoint(GeoPoint geoPoint, String name, int radius) 
 	{
 		super(geoPoint, "", "");
 		this.setName(name);
 		this.setRadius(radius);
-		
 	}
+
 
 
 	/**
