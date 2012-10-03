@@ -22,6 +22,13 @@ import android.graphics.drawable.Drawable;
 
 import com.google.android.maps.ItemizedOverlay;
 
+/**
+ * The CheckPointOverLay class contains a list of checkpoints and a default
+ * marker that will show up on map.
+ * 
+ * @author Patrik Thituson
+ * @version 1.0
+ */
 public class CheckPointOverlay extends ItemizedOverlay<CheckPoint>
 {
 	public interface Callbacks
@@ -33,6 +40,12 @@ public class CheckPointOverlay extends ItemizedOverlay<CheckPoint>
 	private int selectedCheckpointIndex;
 	private Callbacks callback;
 
+	/**
+	 * The Constructor
+	 * 
+	 * @param defaultMarker
+	 * @param context
+	 */
 	public CheckPointOverlay(Drawable defaultMarker, Callbacks context)
 	{
 		super(boundCenterBottom(defaultMarker));
@@ -40,12 +53,18 @@ public class CheckPointOverlay extends ItemizedOverlay<CheckPoint>
 		populate();
 	}
 
+	/**
+	 * Unused Method
+	 */
 	@Override
 	protected CheckPoint createItem(int i)
 	{
 		return checkPointList.get(i);
 	}
 
+	/**
+	 * @return the size of the list
+	 */
 	@Override
 	public int size()
 	{
@@ -53,7 +72,8 @@ public class CheckPointOverlay extends ItemizedOverlay<CheckPoint>
 	}
 
 	/**
-	 * Adds a checkpoint to the checkpointlist
+	 * Adds a checkpoint to the checkpointlist and marks is as the selected
+	 * checkpoint
 	 * 
 	 * @param checkPoint
 	 */
@@ -61,12 +81,14 @@ public class CheckPointOverlay extends ItemizedOverlay<CheckPoint>
 	{
 		checkPointList.add(checkPoint);
 		setLastFocusedIndex(-1);
-		selectedCheckpointIndex = checkPointList.size()-1;
+		selectedCheckpointIndex = checkPointList.size() - 1;
 		populate();
 	}
 
 	/**
-	 * The onTap method that initiates the dialog
+	 * The onTap method that uses callback to send the checkpoint where the
+	 * dialog initiates, it also marks the checkpoint as the selected checkpoint
+	 * wich is used for deleting a checkpoint
 	 */
 	@Override
 	protected boolean onTap(int index)

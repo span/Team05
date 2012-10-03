@@ -55,8 +55,8 @@ import com.google.android.maps.Overlay;
  * @author Markus
  * 
  */
-public class NewRouteActivity extends MapActivity implements View.OnClickListener,
-		EditCheckPointDialog.Callbacks, CheckPointOverlay.Callbacks, MapOnGestureListener.Callbacks, MapLocationListener.Callbacks
+public class NewRouteActivity extends MapActivity implements View.OnClickListener, EditCheckPointDialog.Callbacks,
+		CheckPointOverlay.Callbacks, MapOnGestureListener.Callbacks, MapLocationListener.Callbacks
 {
 
 	private ArrayList<GeoPoint> route;
@@ -116,7 +116,7 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 		mapView = (EditRouteMapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
 		mapView.setOnGestureListener(new MapOnGestureListener(this));
-		
+
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, new MapLocationListener(this));
 
@@ -300,6 +300,10 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 		}
 	}
 
+	/**
+	 * Calls on the checkpoint overlay to delete its current selected checkpoint
+	 * and update the mapview
+	 */
 	@Override
 	public void onDelete()
 	{
@@ -307,20 +311,35 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 		mapView.postInvalidate();
 	}
 
+	/**
+	 * When a checkpoint is tapped this method calls the showCheckPointDialog
+	 * method with MODE_EDIT which marks it as a edit dialog
+	 */
 	@Override
 	public void onCheckPointTap(CheckPoint checkPoint)
 	{
 		showCheckPointDialog(checkPoint, EditCheckPointDialog.MODE_EDIT);
 	}
 
+	/**
+	 * Initiates a new checkpoint dialog
+	 * 
+	 * @param checkPoint
+	 * @param mode
+	 */
 	private void showCheckPointDialog(CheckPoint checkPoint, int mode)
 	{
 		checkPointDialog = new EditCheckPointDialog(this, checkPoint, mode);
 		checkPointDialog.show();
 	}
 
-
-	
+	/**
+	 * Creates a checkpoint with the geopoint and adds it to the checkpoint
+	 * overlay, it also calls showCheckPointDialog with the MODE_ADD which marks
+	 * it as a add dialog
+	 * 
+	 * @param geoPoint
+	 */
 	private void createCheckPoint(GeoPoint geoPoint)
 	{
 		CheckPoint checkPoint = new CheckPoint(geoPoint);
@@ -328,13 +347,17 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 		showCheckPointDialog(checkPoint, EditCheckPointDialog.MODE_ADD);
 	}
 
+	/**
+	 * The onTap method zooms in on double tap and creates a geopoint on single
+	 * tap which it sends to createCheckPoint
+	 */
 	@Override
 	public void onTap(int x, int y, int eventType)
 	{
 		switch (eventType)
 		{
 			case MapOnGestureListener.EVENT_DOUBLE_TAP:
-				mapView.getController().zoomInFixing(x,y);
+				mapView.getController().zoomInFixing(x, y);
 				break;
 			case MapOnGestureListener.EVENT_SINGLE_TAP:
 				if (checkPointDialog == null || !checkPointDialog.isShowing())
@@ -344,7 +367,7 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 				}
 				break;
 		}
-		
+
 	}
 
 	// @Override
