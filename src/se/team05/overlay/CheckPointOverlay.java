@@ -61,6 +61,7 @@ public class CheckPointOverlay extends ItemizedOverlay<CheckPoint>
 	{
 		checkPointList.add(checkPoint);
 		setLastFocusedIndex(-1);
+		selectedCheckpointIndex = checkPointList.size()-1;
 		populate();
 	}
 

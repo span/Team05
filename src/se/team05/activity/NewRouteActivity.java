@@ -332,17 +332,18 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 	public void onDelete()
 	{
 		checkPointOverlay.deleteCheckPoint();
+		mapView.postInvalidate();
 	}
 
 	@Override
 	public void onCheckPointTap(CheckPoint checkPoint)
 	{
-		showCheckPointDialog(checkPoint);
+		showCheckPointDialog(checkPoint, EditCheckPointDialog.MODE_EDIT);
 	}
 
-	private void showCheckPointDialog(CheckPoint checkPoint)
+	private void showCheckPointDialog(CheckPoint checkPoint, int mode)
 	{
-		checkPointDialog = new EditCheckPointDialog(this, checkPoint);
+		checkPointDialog = new EditCheckPointDialog(this, checkPoint, mode);
 		checkPointDialog.show();
 	}
 
@@ -423,7 +424,7 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 	{
 		CheckPoint checkPoint = new CheckPoint(geoPoint);
 		checkPointOverlay.addCheckPoint(checkPoint);
-		showCheckPointDialog(checkPoint);
+		showCheckPointDialog(checkPoint, EditCheckPointDialog.MODE_ADD);
 	}
 
 	// @Override
