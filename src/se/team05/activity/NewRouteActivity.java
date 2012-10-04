@@ -291,7 +291,7 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 				v3.setVisibility(View.VISIBLE);
 				break;
 			case R.id.stop_and_save_button:
-				SaveRouteDialog saveRouteDialog = new SaveRouteDialog(this);
+				SaveRouteDialog saveRouteDialog = new SaveRouteDialog(this, this);
 				saveRouteDialog.show();
 				break;
 			case R.id.add_checkpoint:
@@ -419,11 +419,28 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 		return super.onOptionsItemSelected(item);
 	}
 
+	/**
+	 * This method is called from the save route dialog when the user has
+	 * pressed the "save" button. It creates a new route with the information
+	 * given in the dialog and then saves it to the database. After that, the
+	 * user is taken back to the main activity.
+	 */
 	@Override
 	public void onSaveRoute(String name, String description, boolean saveResult)
 	{
 		Route route = new Route(name, description);
 		databaseHandler.saveRoute(route);
+		launchMainActivity();
+	}
+
+	@Override
+	public void onDismissRoute()
+	{
+		launchMainActivity();
+	}
+	
+	private void launchMainActivity()
+	{
 		Intent intent = new Intent(this, MainActivity.class);
 		this.startActivity(intent);
 	}
