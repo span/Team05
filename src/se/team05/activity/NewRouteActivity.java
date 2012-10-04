@@ -22,7 +22,6 @@ import java.util.List;
 
 import se.team05.R;
 import se.team05.content.Route;
-import se.team05.content.Routes;
 import se.team05.content.Track;
 import se.team05.data.DatabaseHandler;
 import se.team05.dialog.EditCheckPointDialog;
@@ -139,7 +138,7 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 		}
 
 		List<Overlay> overlays = mapView.getOverlays();
-		Drawable drawable = getResources().getDrawable(R.drawable.green_markerc);
+		Drawable drawable = getResources().getDrawable(R.drawable.ic_launcher);
 
 		RouteOverlay routeOverlay = new RouteOverlay(geoPointList, 78, true);
 		myLocationOverlay = new MyLocationOverlay(this, mapView);
