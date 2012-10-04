@@ -19,10 +19,12 @@ package se.team05.dialog;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import se.team05.R;
 import se.team05.activity.MediaSelectorActivity;
 import se.team05.content.SoundManager;
+import se.team05.content.Track;
 import se.team05.overlay.CheckPoint;
 import android.app.Activity;
 import android.app.Dialog;
@@ -48,7 +50,8 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 {
 	public interface Callbacks
 	{
-		public void onDelete();
+		public void onDeleteCheckPoint(long checkPointId);
+		public void onSaveCheckPoint(CheckPoint checkPoint);
 	}
 
 	public static final int MODE_ADD = 0;
@@ -62,6 +65,7 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 	private Activity parentActivity;
 	private SoundManager soundManager;
 	private int mode;
+	private ArrayList<Track> selectedTracks;
 	
 	/**
 	 * The constructor
@@ -77,6 +81,7 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 		this.parentActivity = (Activity) context;
 		this.soundManager = new SoundManager(context);
 		this.mode = mode;
+		this.selectedTracks = checkPoint.getTracks();
 		setCanceledOnTouchOutside(false);
 	}
 
@@ -131,17 +136,18 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 				break;
 			case R.id.select_button:
 				Intent intent = new Intent(parentActivity, MediaSelectorActivity.class);
+				intent.putParcelableArrayListExtra(MediaSelectorActivity.EXTRA_SELECTED_ITEMS, selectedTracks);
 				parentActivity.startActivityForResult(intent, MediaSelectorActivity.REQUEST_MEDIA);
 				break;
 			case R.id.delete_button:
-				callBack.onDelete();
+				callBack.onDeleteCheckPoint(checkPoint.getId());
 				dismiss();
 				break;
 			case R.id.save_button:
+				int radius = Integer.parseInt(radiusTextField.getText().toString());
 				checkPoint.setName(nameTextField.getText().toString());
-				String radiusString = radiusTextField.getText().toString();
-				int radius = Integer.parseInt(radiusString);
 				checkPoint.setRadius(radius);
+				callBack.onSaveCheckPoint(checkPoint);
 				dismiss();
 				break;
 			default:
@@ -209,12 +215,17 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 	@Override
 	public void onBackPressed()
 	{
-		if(mode==MODE_ADD)
+		if(mode == MODE_ADD)
 		{
-			callBack.onDelete();
+			callBack.onDeleteCheckPoint(checkPoint.getId());
 		}
 			
 		super.onBackPressed();
+	}
+
+	public void setSelectedTracks(ArrayList<Track> selectedTracks)
+	{
+		this.selectedTracks = selectedTracks;
 	}
 
 }
