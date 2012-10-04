@@ -86,8 +86,9 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 	private static String DISTANCE_UNIT_METRES = " metres";
 	private static float DISTANCE_THRESHOLD_EU = 1000;
 	private static String TOTAL_DISTANCE = "Total Distance: ";
-	private ArrayList<Track> playList = new ArrayList<Track>();
-	private DatabaseHandler databaseHandler;;
+	private ArrayList<Track> selectedTracks = new ArrayList<Track>();
+	private DatabaseHandler databaseHandler;
+	private CheckPoint currentCheckPoint;;
 
 	/**
 	 * Will present a map to the user and will also display a dot representing
@@ -163,7 +164,8 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == MediaSelectorActivity.REQUEST_MEDIA && resultCode == RESULT_OK)
 		{
-			playList = data.getParcelableArrayListExtra(MediaSelectorActivity.EXTRA_SELECTED_ITEMS);
+			selectedTracks = data.getParcelableArrayListExtra(MediaSelectorActivity.EXTRA_SELECTED_ITEMS);
+			currentCheckPoint.addTracks(selectedTracks);
 		}
 	}
 
@@ -331,19 +333,22 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 	public void onSaveCheckPoint(CheckPoint checkPoint)
 	{
 		checkPoint.setId(databaseHandler.saveCheckPoint(checkPoint));
-		for (Track track : playList)
+		for (Track track : selectedTracks)
 		{
 			databaseHandler.saveTrack(checkPoint.getId(), track);
 		}
+		selectedTracks.clear();
 	}
 
 	/**
 	 * When a checkpoint is tapped this method calls the showCheckPointDialog
-	 * method with MODE_EDIT which marks it as a edit dialog
+	 * method with MODE_EDIT which marks it as a edit dialog. This method also
+	 * sets the current checkpoint to the last tapped.
 	 */
 	@Override
 	public void onCheckPointTap(CheckPoint checkPoint)
 	{
+		currentCheckPoint = checkPoint;
 		showCheckPointDialog(checkPoint, EditCheckPointDialog.MODE_EDIT);
 	}
 
@@ -362,13 +367,15 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 	/**
 	 * Creates a checkpoint with the geopoint and adds it to the checkpoint
 	 * overlay, it also calls showCheckPointDialog with the MODE_ADD which marks
-	 * it as a add dialog
+	 * it as a add dialog. This method also saves the newly created checkpoint as
+	 * the current checkpoint for future reference.
 	 * 
 	 * @param geoPoint
 	 */
 	private void createCheckPoint(GeoPoint geoPoint)
 	{
 		CheckPoint checkPoint = new CheckPoint(geoPoint);
+		currentCheckPoint = checkPoint;
 		checkPointOverlay.addCheckPoint(checkPoint);
 		showCheckPointDialog(checkPoint, EditCheckPointDialog.MODE_ADD);
 	}

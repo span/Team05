@@ -83,7 +83,7 @@ public class MediaSelectorActivity extends Activity implements LoaderCallbacks<C
 		loaderManager = getLoaderManager();
 		loaderManager.initLoader(LOADER_ID_ARTIST, null, this);
 		listView = (ListView) findViewById(R.id.list);
-		selectedItems = new ArrayList<Track>();
+		selectedItems = getIntent().getParcelableArrayListExtra(EXTRA_SELECTED_ITEMS);
 	}
 
 	/**

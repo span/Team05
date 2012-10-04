@@ -17,6 +17,10 @@
 
 package se.team05.overlay;
 
+import java.util.ArrayList;
+
+import se.team05.content.Track;
+
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.OverlayItem;
 
@@ -34,6 +38,7 @@ public class CheckPoint extends OverlayItem
 	private long rid;
 	private String name;
 	private int radius;
+	private ArrayList<Track> tracks;
 
 	/**
 	 * The default Constructor which initiates the route id to -1
@@ -50,6 +55,7 @@ public class CheckPoint extends OverlayItem
 		super(geoPoint, "", "");
 		this.setName(name);
 		this.setRadius(radius);
+		tracks = new ArrayList<Track>();
 	}
 
 	/**
@@ -112,10 +118,32 @@ public class CheckPoint extends OverlayItem
 	}
 
 	/**
-	 * @param rid the route id to set
+	 * @param rid
+	 *            the route id to set
 	 */
 	public void setRid(long rid)
 	{
 		this.rid = rid;
+	}
+
+	/**
+	 * Adds all the tracks of the selected tracks to the checkpoint
+	 * 
+	 * @param selectedTracks
+	 *            the tracks that have been selected
+	 */
+	public void addTracks(ArrayList<Track> selectedTracks)
+	{
+		tracks.addAll(selectedTracks);
+	}
+
+	/**
+	 * Gets the tracks of the checkpoint
+	 * 
+	 * @return an arraylist with the selected tracks
+	 */
+	public ArrayList<Track> getTracks()
+	{
+		return tracks;
 	}
 }
