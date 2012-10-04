@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import se.team05.R;
+import se.team05.content.Route;
 import se.team05.content.Routes;
 import se.team05.content.Track;
 import se.team05.data.DatabaseHandler;
@@ -59,7 +60,7 @@ import com.google.android.maps.Overlay;
  * 
  */
 public class NewRouteActivity extends MapActivity implements View.OnClickListener, EditCheckPointDialog.Callbacks,
-		CheckPointOverlay.Callbacks, MapOnGestureListener.Callbacks, MapLocationListener.Callbacks
+		SaveRouteDialog.Callbacks, CheckPointOverlay.Callbacks, MapOnGestureListener.Callbacks, MapLocationListener.Callbacks
 {
 
 	private ArrayList<GeoPoint> route;
@@ -292,9 +293,6 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 			case R.id.stop_and_save_button:
 				SaveRouteDialog saveRouteDialog = new SaveRouteDialog(this);
 				saveRouteDialog.show();
-//				databaseHandler.saveRoute(new Route("name", "description", 0, -1, -1));
-//				Intent intent = new Intent(this, MainActivity.class);
-//				this.startActivity(intent);
 				break;
 			case R.id.add_checkpoint:
 				if (myLocationOverlay.isMyLocationEnabled())
@@ -368,8 +366,8 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 	/**
 	 * Creates a checkpoint with the geopoint and adds it to the checkpoint
 	 * overlay, it also calls showCheckPointDialog with the MODE_ADD which marks
-	 * it as a add dialog. This method also saves the newly created checkpoint as
-	 * the current checkpoint for future reference.
+	 * it as a add dialog. This method also saves the newly created checkpoint
+	 * as the current checkpoint for future reference.
 	 * 
 	 * @param geoPoint
 	 */
@@ -419,5 +417,14 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 				return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public void onSaveRoute(String name, String description, boolean saveResult)
+	{
+		Route route = new Route(name, description);
+		databaseHandler.saveRoute(route);
+		Intent intent = new Intent(this, MainActivity.class);
+		this.startActivity(intent);
 	}
 }

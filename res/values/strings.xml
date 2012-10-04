@@ -24,6 +24,7 @@
     <string name="save">Save</string>
     <string name="delete">Delete</string>
     <string name="select">Select</string>
+    <string name="cancel">Cancel</string>
     <string name="record">Record</string>
     <string name="title_activity_new_route">NewRouteActivity</string>
     <string name="button_run">RUN!!</string>
@@ -42,5 +43,6 @@
 	<string name="save_results">Save results</string>
 	<string name="results">Results</string>
 	<string name="save_route">Save route</string>
+	<string name="description">Description</string>
 	    
 </resources>
