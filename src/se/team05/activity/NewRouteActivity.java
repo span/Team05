@@ -191,31 +191,15 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 	@Override
 	public void updateLocation(Location location)
 	{
-
 		if (started)
 		{
 			GeoPoint p = new GeoPoint((int) (location.getLatitude() * 1E6), (int) (location.getLongitude() * 1E6));
 			route.add(p);
 
 			userSpeed = "Your Speed: " + location.getSpeed() + DISTANCE_UNIT_KILOMETRE + "/h";
-
-			// if(lastPoint != null)
-			// {
-			// Location.distanceBetween(p.getLatitudeE6(), p.getLongitudeE6(),
-			// lastPoint.getLatitudeE6(), lastPoint.getLongitudeE6(),
-			// distanceResult);
-			//
-			// if(distanceResult[0] != 0)
-			// {
-			// totalDistance += distanceResult[0];
-			// userDistance = "Total Distance: " + totalDistance + "meter?";
-			// }
-			// }
-
 			if (lastLocation != null)
 			{
 				totalDistance += lastLocation.distanceTo(location);
-
 				if (totalDistance >= DISTANCE_THRESHOLD_EU)
 				{
 					lengthPresentation = DISTANCE_UNIT_KILOMETRE;
@@ -225,10 +209,9 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 				{
 					userDistance = "" + (int) totalDistance;
 				}
-
 				userDistanceRun = TOTAL_DISTANCE + userDistance + lengthPresentation;
 			}
-
+			
 			lastPoint = p;
 			lastLocation = location;
 
@@ -399,7 +382,6 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 				}
 				break;
 		}
-
 	}
 
 	/**
@@ -433,12 +415,19 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 		launchMainActivity();
 	}
 
+	/**
+	 * Called from the save route dialog when a route has been dismissed. This
+	 * method just launches the main activity.
+	 */
 	@Override
 	public void onDismissRoute()
 	{
 		launchMainActivity();
 	}
-	
+
+	/**
+	 * Private helper method to launch the main activity.
+	 */
 	private void launchMainActivity()
 	{
 		Intent intent = new Intent(this, MainActivity.class);
