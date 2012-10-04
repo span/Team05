@@ -100,7 +100,7 @@ public class DBTrackAdapter extends DBAdapter
 	 */
 	public Cursor fetchTrackById(long id)
 	{
-		return db.query(TABLE_TRACKS, null, "where " + COLUMN_ID + "=" + id, null, null, null, null);
+		return db.query(TABLE_TRACKS, null, COLUMN_ID + "=" + id, null, null, null, null);
 	}
 
 	/**
@@ -112,7 +112,7 @@ public class DBTrackAdapter extends DBAdapter
 	 */
 	public Cursor fetchTrackByCid(long cid)
 	{
-		return db.query(TABLE_TRACKS, null, "where " + COLUMN_CID + "=" + cid, null, null, null, COLUMN_ID + " asc");
+		return db.query(TABLE_TRACKS, null, COLUMN_CID + "=" + cid, null, null, null, COLUMN_ID + " asc");
 	}
 
 	/**
@@ -124,7 +124,7 @@ public class DBTrackAdapter extends DBAdapter
 	 */
 	public int deleteTrackById(long id)
 	{
-		return db.delete(TABLE_TRACKS, "where " + COLUMN_ID + "=" + id, null);
+		return db.delete(TABLE_TRACKS, COLUMN_ID + "=" + id, null);
 	}
 
 	/**
