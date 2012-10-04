@@ -290,8 +290,7 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 				v3.setVisibility(View.VISIBLE);
 				break;
 			case R.id.stop_and_save_button:
-				DatabaseHandler dataBaseHandler = new DatabaseHandler(this);
-				dataBaseHandler.saveRoute(new Route("name", "description", 0, -1, -1));
+				databaseHandler.saveRoute(new Route("name", "description", 0, -1, -1));
 				Intent intent = new Intent(this, MainActivity.class);
 				this.startActivity(intent);
 				break;
