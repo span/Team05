@@ -39,6 +39,7 @@
     <string name="select_media">Select media</string>
     <string name="speed_of_run">Your Speed: </string>
 	<string name="distance_of_run">Total Distance: </string>
+	<string name="time_of_run">Time: </string>
 	<string name="name">Name</string>
 	<string name="save_results">Save results</string>
 	<string name="results">Results</string>
