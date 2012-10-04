@@ -1,94 +1,81 @@
+/**
+	This file is part of Personal Trainer.
+
+    Personal Trainer is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    Personal Trainer is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.team05.view;
 
-import se.team05.R;
-import se.team05.overlay.CheckPoint;
-import se.team05.overlay.CheckPointOverlay;
+import se.team05.listener.MapOnGestureListener;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
-import android.widget.Toast;
-import com.google.android.maps.GeoPoint;
-import com.google.android.maps.MapActivity;
+
 import com.google.android.maps.MapView;
 
-public class EditRouteMapView extends MapView {
-	
-	private int minTimeForLongClick = 800;
-	private long timerIfLongClick = 0;
-	private float xScreenCoordinateForLongClick;
-	private float yScreenCoordinateForLongClick;
-	private float tolerance=10;//pixels that your finger can move but still be a long press
-	private MapActivity mapActivity;
-	private Drawable drawable = this.getResources().getDrawable(R.drawable.green_markerc);
-    private CheckPointOverlay checkPointOverlay; 
-    
-    
-	public EditRouteMapView(Context arg0, String arg1) {
-		super(arg0, arg1);
-		// TODO Auto-generated constructor stub
+/**
+ * The EditRouteMapView class is a subclass from mapView with a overwritten
+ * onTouchEvent method which is used for putting checkpoints anywhere on the
+ * map.
+ * 
+ * @author Patrik Thituson
+ * @version 1.0
+ */
+public class EditRouteMapView extends MapView
+{
+
+	private GestureDetector gestureDetector;
+	private Context context;
+
+	/**
+	 * The Constructor
+	 * 
+	 * @param context
+	 * @param attributes
+	 */
+	public EditRouteMapView(Context context, AttributeSet attributes)
+	{
+		super(context, attributes);
+		this.context = context;
 	}
 
-	public EditRouteMapView(Context arg0, AttributeSet arg1) {
-		super(arg0, arg1);
-		// TODO Auto-generated constructor stub
-	}
-
-	public EditRouteMapView(Context arg0, AttributeSet arg1, int arg2) {
-		super(arg0, arg1, arg2);
-		// TODO Auto-generated constructor stub
-	}
-	
+	/**
+	 * The on touch event uses a gestureDetector for its events, the
+	 * gestureDetector can detect single tap and double tap
+	 */
 	@Override
 	public boolean onTouchEvent(MotionEvent event)
 	{
-		switch (event.getAction())
+		if (gestureDetector!=null&&this.gestureDetector.onTouchEvent(event))
 		{
-			case MotionEvent.ACTION_DOWN:
-				timerIfLongClick=event.getEventTime();
-	            xScreenCoordinateForLongClick=event.getX();
-	            yScreenCoordinateForLongClick=event.getY();
-				break;
-			case MotionEvent.ACTION_MOVE:
-                float dY = Math.abs(event.getY()-yScreenCoordinateForLongClick);
-                float dX = Math.abs(event.getX()-xScreenCoordinateForLongClick);
-                if(dY>tolerance || dX>tolerance){
-                    timerIfLongClick=0;
-                }
-				break;
-			case MotionEvent.ACTION_UP:
-				long eventTime = event.getEventTime();
-	            long downTime = event.getDownTime(); 
-	            if (timerIfLongClick==downTime){          
-	                if ((eventTime-timerIfLongClick)>minTimeForLongClick){ 
-	                    	GeoPoint p = this.getProjection().fromPixels(
-	                                (int) event.getX(),
-	                                (int) event.getY());
-	                                Toast.makeText(mapActivity.getBaseContext(),                             
-	                                p.getLatitudeE6() / 1E6 + "," + 
-	                                p.getLongitudeE6() /1E6 ,                             
-	                                Toast.LENGTH_SHORT).show();
-	                                setCheckPoint(p);
-	       	        }
-				break;
-	            }
+			return true;
+		} else
+		{
+			return super.onTouchEvent(event);
 		}
-		return super.onTouchEvent(event);
-		
 	}
 
-	
-	public void setMapActivity(MapActivity mapActivity) {
-		this.mapActivity = mapActivity;
-		checkPointOverlay = new CheckPointOverlay(drawable, mapActivity);
-		this.getOverlays().add(checkPointOverlay);
-	}
-	public void setCheckPoint(GeoPoint geoPoint)
+	/**
+	 * Sets the GestureDetector with mapOnGestureListener so it can handle the
+	 * events this method must be called after creation of the class or it«s
+	 * functionality will not work
+	 * 
+	 * @param mapOnGestureListener
+	 */
+	public void setOnGestureListener(MapOnGestureListener mapOnGestureListener)
 	{
-		CheckPoint checkPoint = new CheckPoint(geoPoint, "CheckPoint", 30);
-        checkPointOverlay.addCheckPoint(checkPoint);
-        postInvalidate();
+		gestureDetector = new GestureDetector(context, mapOnGestureListener);
+		gestureDetector.setOnDoubleTapListener(mapOnGestureListener);
 	}
-	
-
 }

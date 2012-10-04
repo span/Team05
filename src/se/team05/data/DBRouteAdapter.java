@@ -66,7 +66,7 @@ public class DBRouteAdapter extends DBAdapter
 	 * @param timeCoach the time coach interval (-1 if inactive)
 	 * @param lengthCoach the lenth coach interval (-1 if inactive)
 	 */
-	public void insertRoute(String name, String description, int type, int timeCoach, int lengthCoach)
+	public long insertRoute(String name, String description, int type, int timeCoach, int lengthCoach)
 	{
 		ContentValues values = new ContentValues();
 		values.put(COLUMN_NAME, name);
@@ -74,7 +74,7 @@ public class DBRouteAdapter extends DBAdapter
 		values.put(COLUMN_TYPE, type);
 		values.put(COLUMN_TIMECOACH, timeCoach);
 		values.put(COLUMN_LENGTHCOACH, lengthCoach);
-		db.insert(TABLE_ROUTES, null, values);
+		return db.insert(TABLE_ROUTES, null, values);
 	}
 	
 	/**
@@ -85,5 +85,17 @@ public class DBRouteAdapter extends DBAdapter
 	{
 		return db.query(TABLE_ROUTES, new String[] {COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION, COLUMN_TYPE,
 				COLUMN_TIMECOACH, COLUMN_LENGTHCOACH}, null, null, null, null, null);
+	}
+	
+	/**
+	 * Deletes a route with the corresponding id from the database.
+	 * 
+	 * @param id
+	 *            the id of the route
+	 * @return the number of rows affected
+	 */
+	public int deleteRoute(long id)
+	{
+		return db.delete(TABLE_ROUTES, COLUMN_ID + "=" + id, null);
 	}
 }

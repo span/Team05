@@ -13,12 +13,22 @@
         android:apiKey="0I2UCcv57MHZz_RXqTZvIH1A7GKKqKBiel4X_Iw"
         android:clickable="true" />
 
-    <TextView
-        android:id="@+id/show_speed_textview"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/speed_of_run"
-        tools:context=".DisplayMessageActivity" />
+        android:orientation="horizontal" >
+
+        <TextView
+            android:text="@string/speed_of_run"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/show_speed_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:context=".DisplayMessageActivity" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/show_distance_textview"

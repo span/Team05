@@ -17,12 +17,17 @@
 package se.team05.data;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import se.team05.content.Result;
 import se.team05.content.Route;
 import se.team05.content.Track;
+import se.team05.overlay.CheckPoint;
 import android.content.Context;
 import android.database.Cursor;
+
+import com.google.android.maps.GeoPoint;
 
 /**
  * This class handles the communication between the database, its adapters and
@@ -38,11 +43,30 @@ public class DatabaseHandler
 
 	private DBRouteAdapter dBRouteAdapter;
 	private DBTrackAdapter dbTrackAdapter;
+	private DBResultAdapter dbResultAdapter;
+	private DBCheckPointAdapter dbCheckPointAdapter;
+	private DBGeoPointAdapter dbGeoPointAdapter;
 
 	public DatabaseHandler(Context context)
 	{
 		dBRouteAdapter = new DBRouteAdapter(context);
 		dbTrackAdapter = new DBTrackAdapter(context);
+		dbResultAdapter = new DBResultAdapter(context);
+		dbCheckPointAdapter = new DBCheckPointAdapter(context);
+		dbGeoPointAdapter = new DBGeoPointAdapter(context);
+	}
+	
+	/**
+	 * This deletes the route given from the database
+	 * 
+	 * @param route 
+	 * 			the route to delete
+	 */
+	public void deleteRoute(Route route)
+	{
+		dBRouteAdapter.open();
+		dBRouteAdapter.deleteRoute(route.getId());
+		dBRouteAdapter.close();
 	}
 
 	/**
@@ -51,11 +75,12 @@ public class DatabaseHandler
 	 * @param route
 	 *            the route to save
 	 */
-	public void saveRoute(Route route)
+	public long saveRoute(Route route)
 	{
 		dBRouteAdapter.open();
-		dBRouteAdapter.insertRoute(route.getName(), route.getDescription(), route.getType(), 0, 0);
+		long id = dBRouteAdapter.insertRoute(route.getName(), route.getDescription(), route.getType(), 0, 0);
 		dBRouteAdapter.close();
+		return id;
 	}
 
 	/**
@@ -88,26 +113,26 @@ public class DatabaseHandler
 
 			while (!cursor.isAfterLast())
 			{
-				route = new Route(cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_ID)), cursor.getString(cursor
-						.getColumnIndex(DBRouteAdapter.COLUMN_NAME)), cursor.getString(cursor
-						.getColumnIndex(DBRouteAdapter.COLUMN_DESCRIPTION)), cursor.getInt(cursor
-						.getColumnIndex(DBRouteAdapter.COLUMN_TYPE)),
-						cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_TIMECOACH)) != 0, // Quick
-																									// conversion
-																									// to
-																									// boolean
-						cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_LENGTHCOACH)) != 0);
+				route = new Route(cursor.getInt(
+						cursor.getColumnIndex(DBRouteAdapter.COLUMN_ID)), 
+						cursor.getString(cursor.getColumnIndex(DBRouteAdapter.COLUMN_NAME)), 
+						cursor.getString(cursor.getColumnIndex(DBRouteAdapter.COLUMN_DESCRIPTION)), 
+						cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_TYPE)),
+						cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_TIMECOACH)), 
+						cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_LENGTHCOACH)));
 
 				routeList.add(route);
 				cursor.moveToNext();
 			}
 		}
-
+		// TODO
+		// dbResultAdapter.close(); ??? /guswer
+		//
 		return (Route[]) routeList.toArray();
 	}
 
 	/**
-	 * Get the cursor with att routes in the database unformatted.
+	 * Get the cursor with all routes in the database unformatted.
 	 * 
 	 * @return a cursor.
 	 */
@@ -127,7 +152,7 @@ public class DatabaseHandler
 	 * @param track
 	 *            the track to save
 	 */
-	public void saveTrack(int cid, Track track)
+	public void saveTrack(long cid, Track track)
 	{
 		dbTrackAdapter.open();
 		dbTrackAdapter.insertTrack(cid, track.getArtist(), track.getAlbum(), track.getTitle(), track.getData(), track.getDisplayName(),
@@ -149,15 +174,175 @@ public class DatabaseHandler
 		Cursor cursor = dbTrackAdapter.fetchTrackByCid(cid);
 		while (cursor.moveToNext())
 		{
-			tracks.add(new Track(cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_ID)), cursor.getString(cursor
-					.getColumnIndex(DBTrackAdapter.COLUMN_ARTIST)), cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_ALBUM)),
-					cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_TITLE)), cursor.getString(cursor
-							.getColumnIndex(DBTrackAdapter.COLUMN_DATA)), cursor.getString(cursor
-							.getColumnIndex(DBTrackAdapter.COLUMN_DISPLAY_NAME)), cursor.getString(cursor
-							.getColumnIndex(DBTrackAdapter.COLUMN_DURATION))));
+			tracks.add(new Track(
+					cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_ID)), 
+					cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_ARTIST)), 
+					cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_ALBUM)),
+					cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_TITLE)), 
+					cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_DATA)), 
+					cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_DISPLAY_NAME)), 
+					cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_DURATION))));
 		}
 		dbTrackAdapter.close();
 		return tracks;
+	}
+
+	/**
+	 * This method returns a result (an instance of class Result) retrieved from
+	 * database via a database adapter.
+	 * 
+	 * @param id
+	 *            id tells which row to get from database.
+	 * @return result
+	 */
+	public Result getResultById(int id)
+	{
+		Result result;
+
+		dbResultAdapter.open();
+		Cursor cursor = dbResultAdapter.fetchResultById(id);
+		result = createResultFromCursor(cursor);
+		dbResultAdapter.close();
+
+		return result;
+	}
+
+	/**
+	 * This method returns an array of results (instances of class Result)
+	 * retrieved from database via a database adapter.
+	 * 
+	 * @param routId
+	 *            id tells which row to get from database.
+	 * @return result
+	 */
+	public Result[] getAllResultsByRoutId(int routId)
+	{
+		List<Result> resultList = null;
+
+		dbResultAdapter.open();
+		Cursor cursor = dbResultAdapter.fetchResultById(routId);
+		dbResultAdapter.close();
+
+		if (cursor != null)
+		{
+			resultList = new ArrayList<Result>();
+			Result result;
+			cursor.moveToFirst();
+
+			while (!cursor.isLast())
+			{
+				result = createResultFromCursor(cursor);
+				resultList.add(result);
+				cursor.moveToNext();
+			}
+		}
+		return (Result[]) resultList.toArray();
+	}
+
+	/**
+	 * This help method will return a result made from values gotten through a
+	 * cursor given in parameter
+	 * 
+	 * @param cursor
+	 *            the cursor gives read/write access to a set retrieved from
+	 *            database.
+	 * @return result retrieved from database.
+	 */
+	private Result createResultFromCursor(Cursor cursor)
+	{
+		// Cursor cursor = dbResultAdapter.fetchResultById(id);
+		Result result = new Result(cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_ID)), cursor.getInt(cursor
+				.getColumnIndex(DBResultAdapter.COLUMN_TIMESTAMP)), cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_TIME)),
+				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_SPEED)), cursor.getInt(cursor
+						.getColumnIndex(DBResultAdapter.COLUMN_CALORIES)));
+		return result;
+	}
+
+	public void setResult(Result result)
+	{
+		dbResultAdapter.open();
+		dbResultAdapter.instertResult(result.getRoutId(), result.getTimestamp(), result.getTime(), result.getSpeed(), result.getCalories());
+		dbResultAdapter.close();
+	}
+
+	/**
+	 * This method deletes a result from the database.
+	 * 
+	 * @param id
+	 *            id of result to be deleted.
+	 */
+	public void deleteResultById(int id)
+	{
+		dbResultAdapter.open();
+		dbResultAdapter.deleteResultById(id);
+		dbResultAdapter.close();
+	}
+
+	public void deleteAllResultsByRoutId(int routId)
+	{
+		Result[] resultArray = getAllResultsByRoutId(routId);
+		if (resultArray != null)
+		{
+			List<Result> resultList = Arrays.asList(resultArray);
+			dbResultAdapter.open();
+
+			for (Result result : resultList)
+			{
+				dbResultAdapter.deleteResultById(result.get_id());
+			}
+
+			dbResultAdapter.close();
+		}
+	}
+
+	/**
+	 * Saves a checkpoint in the database
+	 * 
+	 * @param checkPoint
+	 *            the checkpoint to save
+	 * @return the new checkpoint id
+	 */
+	public long saveCheckPoint(CheckPoint checkPoint)
+	{
+		dbCheckPointAdapter.open();
+		long id = dbCheckPointAdapter.insertCheckpoint(checkPoint.getRid(), checkPoint.getRadius(), checkPoint.getName());
+		dbCheckPointAdapter.close();
+		return id;
+	}
+
+	/**
+	 * Deletes a checkpoint from the database with the corresponding checkpoint
+	 * id.
+	 * 
+	 * @param cid
+	 *            the checkpoint id that matches the row to delete
+	 */
+	public void deleteCheckPoint(long cid)
+	{
+		dbCheckPointAdapter.open();
+		dbCheckPointAdapter.deleteCheckPointById(cid);
+		dbCheckPointAdapter.close();
+	}
+
+	/**
+	 * Deletes all tracks from the database with the corresponding checkpoint
+	 * id.
+	 * 
+	 * @param cid
+	 *            the checkpoint id that matches the tracks to delete
+	 */
+	public void deleteTracksByCid(long cid)
+	{
+		dbTrackAdapter.open();
+		dbTrackAdapter.deleteTrackByCid(cid);
+		dbTrackAdapter.close();
+	}
+
+	public void saveGeoPoints(long rid, ArrayList<GeoPoint> geoPointList)
+	{
+		dbGeoPointAdapter.open();
+		dbGeoPointAdapter.insertGeoPoints(rid, geoPointList);
+		dbGeoPointAdapter.close();
 	}
 
 }

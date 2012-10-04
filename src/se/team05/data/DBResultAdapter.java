@@ -1,3 +1,19 @@
+/**
+	This file is part of Personal Trainer.
+
+    Personal Trainer is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    Personal Trainer is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.team05.data;
 
 import android.content.ContentValues;
@@ -77,7 +93,7 @@ public class DBResultAdapter extends DBAdapter {
 	 */
 	public Cursor fetchResultById(int id)
 	{
-		return db.query(TABLE_RESULT, null, "where " + COLUMN_ID + "=" + id, null, null, null, null);
+		return db.query(TABLE_RESULT, null, COLUMN_ID + "=" + id, null, null, null, null);
 	}
 	
 	/**
@@ -89,7 +105,7 @@ public class DBResultAdapter extends DBAdapter {
 	 */
 	public Cursor fetchResultByRoutId(int rid)
 	{
-		return db.query(TABLE_RESULT, null, "where " + COLUMN_RID + "=" + rid, null, null, null, null);
+		return db.query(TABLE_RESULT, null, COLUMN_RID + "=" + rid, null, null, null, null);
 	}
 	
 	/**
@@ -101,7 +117,7 @@ public class DBResultAdapter extends DBAdapter {
 	 */
 	public int deleteResultById(int id)
 	{
-		return db.delete(TABLE_RESULT, "where " + COLUMN_ID + "=" + id, null);
+		return db.delete(TABLE_RESULT, COLUMN_ID + "=" + id, null);
 	}
 	
 	/**
@@ -113,7 +129,7 @@ public class DBResultAdapter extends DBAdapter {
 	 */
 	public int deleteResultsByRoutId(int rid)
 	{
-		return db.delete(TABLE_RESULT, "where " + COLUMN_RID + "=" + rid, null);
+		return db.delete(TABLE_RESULT, COLUMN_RID + "=" + rid, null);
 	}
 
 }

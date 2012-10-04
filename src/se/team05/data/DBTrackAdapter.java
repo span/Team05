@@ -77,17 +77,17 @@ public class DBTrackAdapter extends DBAdapter
 	 *            the duration of the track
 	 * @return the id of the inserted of
 	 */
-	public long insertTrack(int cid, String artist, String album, String title, String data, String displayName,
+	public long insertTrack(long cid, String artist, String album, String title, String data, String displayName,
 			String duration)
 	{
 		ContentValues values = new ContentValues();
 		values.put(COLUMN_CID, cid);
-		values.put(COLUMN_ALBUM, artist);
+		values.put(COLUMN_ARTIST, artist);
 		values.put(COLUMN_ALBUM, album);
-		values.put(COLUMN_ALBUM, title);
-		values.put(COLUMN_ALBUM, data);
-		values.put(COLUMN_ALBUM, displayName);
-		values.put(COLUMN_ALBUM, duration);
+		values.put(COLUMN_TITLE, title);
+		values.put(COLUMN_DATA, data);
+		values.put(COLUMN_DISPLAY_NAME, displayName);
+		values.put(COLUMN_DURATION, duration);
 		return db.insert(TABLE_TRACKS, null, values);
 	}
 
@@ -98,9 +98,9 @@ public class DBTrackAdapter extends DBAdapter
 	 *            the id of the track
 	 * @return a Cursor pointing to the result set
 	 */
-	public Cursor fetchTrackById(int id)
+	public Cursor fetchTrackById(long id)
 	{
-		return db.query(TABLE_TRACKS, null, "where " + COLUMN_ID + "=" + id, null, null, null, null);
+		return db.query(TABLE_TRACKS, null, COLUMN_ID + "=" + id, null, null, null, null);
 	}
 
 	/**
@@ -110,9 +110,9 @@ public class DBTrackAdapter extends DBAdapter
 	 *            the checkpoint id for the tracks
 	 * @return a Cursor pointing to the result set
 	 */
-	public Cursor fetchTrackByCid(int cid)
+	public Cursor fetchTrackByCid(long cid)
 	{
-		return db.query(TABLE_TRACKS, null, "where " + COLUMN_CID + "=" + cid, null, null, null, COLUMN_ID + " asc");
+		return db.query(TABLE_TRACKS, null, COLUMN_CID + "=" + cid, null, null, null, COLUMN_ID + " asc");
 	}
 
 	/**
@@ -122,21 +122,21 @@ public class DBTrackAdapter extends DBAdapter
 	 *            the id of the track
 	 * @return the number of rows affected
 	 */
-	public int deleteTrackById(int id)
+	public int deleteTrackById(long id)
 	{
-		return db.delete(TABLE_TRACKS, "where " + COLUMN_ID + "=" + id, null);
+		return db.delete(TABLE_TRACKS, COLUMN_ID + "=" + id, null);
 	}
 
 	/**
-	 * Deletes all tracks with the corresponding cid from the database.
+	 * Deletes all tracks with the corresponding checkpoint id from the database.
 	 * 
 	 * @param cid
 	 *            the checkpoint id for the tracks
 	 * @return the number of rows affected
 	 */
-	public int deleteTrackByCid(int cid)
+	public int deleteTrackByCid(long cid)
 	{
-		return db.delete(TABLE_TRACKS, "where " + COLUMN_CID + "=" + cid, null);
+		return db.delete(TABLE_TRACKS, COLUMN_CID + "=" + cid, null);
 	}
 
 }
