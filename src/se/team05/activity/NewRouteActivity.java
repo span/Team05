@@ -86,7 +86,8 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 	private static String DISTANCE_UNIT_METRES = " metres";
 	private static float DISTANCE_THRESHOLD_EU = 1000;
 	private static String TOTAL_DISTANCE = "Total Distance: ";
-	private ArrayList<Track> playList = new ArrayList<Track>();;
+	private ArrayList<Track> playList = new ArrayList<Track>();
+	private DatabaseHandler databaseHandler;;
 
 	/**
 	 * Will present a map to the user and will also display a dot representing
@@ -107,6 +108,8 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 
 		routeIdTag = Routes.getInstance().getCount();
 		route = new ArrayList<GeoPoint>();
+
+		databaseHandler = new DatabaseHandler(this);
 
 		Button stopAndSaveButton = (Button) findViewById(R.id.stop_and_save_button);
 		stopAndSaveButton.setOnClickListener(this);
@@ -304,12 +307,16 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 	}
 
 	/**
-	 * Calls on the checkpoint overlay to delete its current selected checkpoint
-	 * and update the mapview
+	 * This method deletes the checkpoint with all its tracks from the database.
+	 * It also calls on the checkpoint overlay to delete its current selected
+	 * checkpoint from the view. We then need to invalidate the map view for it
+	 * to update.
 	 */
 	@Override
-	public void onDeleteCheckPoint()
+	public void onDeleteCheckPoint(long checkPointId)
 	{
+		databaseHandler.deleteCheckPoint(checkPointId);
+		databaseHandler.deleteTracksByCid(checkPointId);
 		checkPointOverlay.deleteCheckPoint();
 		mapView.postInvalidate();
 	}
@@ -323,7 +330,6 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 	@Override
 	public void onSaveCheckPoint(CheckPoint checkPoint)
 	{
-		DatabaseHandler databaseHandler = new DatabaseHandler(this);
 		checkPoint.setId(databaseHandler.saveCheckPoint(checkPoint));
 		for (Track track : playList)
 		{

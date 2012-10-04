@@ -80,7 +80,7 @@ public class DBCheckPointAdapter extends DBAdapter
 	 *            the id for the checkpoint
 	 * @return a Cursor pointing to the result set
 	 */
-	public Cursor fetchCheckPointById(int id)
+	public Cursor fetchCheckPointById(long id)
 	{
 		return db.query(TABLE_CHECKPOINTS, null, "where " + COLUMN_ID + "=" + id, null, null, null, COLUMN_ID + " asc");
 	}
@@ -93,7 +93,7 @@ public class DBCheckPointAdapter extends DBAdapter
 	 *            the route id for the checkpoint
 	 * @return a Cursor pointing to the result set
 	 */
-	public Cursor fetchCheckPointByRid(int rid)
+	public Cursor fetchCheckPointByRid(long rid)
 	{
 		return db.query(TABLE_CHECKPOINTS, null, "where " + COLUMN_RID + "=" + rid, null, null, null, COLUMN_ID + " asc");
 	}
@@ -101,13 +101,13 @@ public class DBCheckPointAdapter extends DBAdapter
 	/**
 	 * Deletes a single checkpoint with the corresponding id from the database.
 	 * 
-	 * @param id
+	 * @param cid
 	 *            the id of the checkpoint
 	 * @return the number of rows affected
 	 */
-	public int deleteCheckPointById(int id)
+	public int deleteCheckPointById(long cid)
 	{
-		return db.delete(TABLE_CHECKPOINTS, "where " + COLUMN_ID + "=" + id, null);
+		return db.delete(TABLE_CHECKPOINTS, COLUMN_ID + "=" + cid, null);
 	}
 
 	/**
@@ -118,7 +118,7 @@ public class DBCheckPointAdapter extends DBAdapter
 	 *            the route id for the checkpoint
 	 * @return the number of rows affected
 	 */
-	public int deleteCheckPointByRid(int rid)
+	public int deleteCheckPointByRid(long rid)
 	{
 		return db.delete(TABLE_CHECKPOINTS, "where " + COLUMN_RID + "=" + rid, null);
 	}

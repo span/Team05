@@ -48,7 +48,7 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 {
 	public interface Callbacks
 	{
-		public void onDeleteCheckPoint();
+		public void onDeleteCheckPoint(long checkPointId);
 		public void onSaveCheckPoint(CheckPoint checkPoint);
 	}
 
@@ -135,7 +135,7 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 				parentActivity.startActivityForResult(intent, MediaSelectorActivity.REQUEST_MEDIA);
 				break;
 			case R.id.delete_button:
-				callBack.onDeleteCheckPoint();
+				callBack.onDeleteCheckPoint(checkPoint.getId());
 				dismiss();
 				break;
 			case R.id.save_button:
@@ -212,7 +212,7 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 	{
 		if(mode==MODE_ADD)
 		{
-			callBack.onDeleteCheckPoint();
+			callBack.onDeleteCheckPoint(checkPoint.getId());
 		}
 			
 		super.onBackPressed();

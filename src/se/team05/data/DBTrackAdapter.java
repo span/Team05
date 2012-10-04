@@ -98,7 +98,7 @@ public class DBTrackAdapter extends DBAdapter
 	 *            the id of the track
 	 * @return a Cursor pointing to the result set
 	 */
-	public Cursor fetchTrackById(int id)
+	public Cursor fetchTrackById(long id)
 	{
 		return db.query(TABLE_TRACKS, null, "where " + COLUMN_ID + "=" + id, null, null, null, null);
 	}
@@ -110,7 +110,7 @@ public class DBTrackAdapter extends DBAdapter
 	 *            the checkpoint id for the tracks
 	 * @return a Cursor pointing to the result set
 	 */
-	public Cursor fetchTrackByCid(int cid)
+	public Cursor fetchTrackByCid(long cid)
 	{
 		return db.query(TABLE_TRACKS, null, "where " + COLUMN_CID + "=" + cid, null, null, null, COLUMN_ID + " asc");
 	}
@@ -122,21 +122,21 @@ public class DBTrackAdapter extends DBAdapter
 	 *            the id of the track
 	 * @return the number of rows affected
 	 */
-	public int deleteTrackById(int id)
+	public int deleteTrackById(long id)
 	{
 		return db.delete(TABLE_TRACKS, "where " + COLUMN_ID + "=" + id, null);
 	}
 
 	/**
-	 * Deletes all tracks with the corresponding cid from the database.
+	 * Deletes all tracks with the corresponding checkpoint id from the database.
 	 * 
 	 * @param cid
 	 *            the checkpoint id for the tracks
 	 * @return the number of rows affected
 	 */
-	public int deleteTrackByCid(int cid)
+	public int deleteTrackByCid(long cid)
 	{
-		return db.delete(TABLE_TRACKS, "where " + COLUMN_CID + "=" + cid, null);
+		return db.delete(TABLE_TRACKS, COLUMN_CID + "=" + cid, null);
 	}
 
 }
