@@ -29,6 +29,7 @@ package se.team05.content;
 public class Result {
 	
 	private int _id;
+	private int routId;
 	private int timestamp;
 	private int time;
 	private int speed;
@@ -39,7 +40,8 @@ public class Result {
 	 */
 	public Result()
 	{
-		this._id = 2;
+		this._id = 1;
+		this.routId = 1;
 		this.timestamp = 1349286608;	// Date: October 3 2012, Time: 18:50
 		this.time = 300;  				// 5 minutes
 		this.speed = 5;					// kilometers per hour
@@ -47,10 +49,12 @@ public class Result {
 	}
 
 	/**
-	 * Constructor that create an instance of the class and all fields are set on creation
+	 * Constructor that create an instance of the class. All fields must be set on creation.
 	 * 
 	 * @param _id
 	 * 		the id of this instance
+	 * @param routId
+	 * 		id of the rout 
 	 * @param timestamp
 	 * 		time and date when the result is created in the format of nanoseconds passed since year 1970
 	 * @param time
@@ -60,9 +64,10 @@ public class Result {
 	 * @param calories
 	 * 		calories (kcal) used during route
 	 */
-	public Result(int _id, int timestamp, int time, int speed, int calories)
+	public Result(int _id, int routId, int timestamp, int time, int speed, int calories)
 	{
 		this._id = _id;
+		this.routId = routId;
 		this.timestamp = timestamp;
 		this.time = time;
 		this.speed = speed;
@@ -73,7 +78,8 @@ public class Result {
 	 * Constructor that create an instance of the class.
 	 * The field _id is not set on creation.
 	 * All other fields are set on creation.
-	 * 
+	 * @param routId
+	 * 		id of the rout 
 	 * @param timestamp
 	 * 		time and date when the result is created in the format of nanoseconds passed since year 1970
 	 * @param time
@@ -83,8 +89,9 @@ public class Result {
 	 * @param calories
 	 * 		calories (kcal) used during route
 	 */
-	public Result(int timestamp, int time, int speed, int calories)
+	public Result(int routId, int timestamp, int time, int speed, int calories)
 	{
+		this.routId = routId;
 		this.timestamp = timestamp;
 		this.time = time;
 		this.speed = speed;
@@ -97,6 +104,14 @@ public class Result {
 
 	public void set_id(int _id) {
 		this._id = _id;
+	}
+	
+	public int getRoutId() {
+		return routId;
+	}
+
+	public void setRoutId(int routId) {
+		this.routId = routId;
 	}
 
 	/**
