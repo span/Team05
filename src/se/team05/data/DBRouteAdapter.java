@@ -86,4 +86,16 @@ public class DBRouteAdapter extends DBAdapter
 		return db.query(TABLE_ROUTES, new String[] {COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION, COLUMN_TYPE,
 				COLUMN_TIMECOACH, COLUMN_LENGTHCOACH}, null, null, null, null, null);
 	}
+	
+	/**
+	 * Deletes a route with the corresponding id from the database.
+	 * 
+	 * @param id
+	 *            the id of the route
+	 * @return the number of rows affected
+	 */
+	public int deleteRoute(long id)
+	{
+		return db.delete(TABLE_ROUTES, COLUMN_ID + "=" + id, null);
+	}
 }
