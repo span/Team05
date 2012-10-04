@@ -314,8 +314,8 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 	 */
 	private void timerTick()
 	{
-		int seconds = timePassed % 5;
-		int minutes = timePassed / 5;
+		int seconds = timePassed % 60;
+		int minutes = timePassed / 60;
 		
 		TextView timeView = (TextView) findViewById(R.id.show_time_textview);
 		String result = String.format(" %02d:%02d", minutes, seconds );
