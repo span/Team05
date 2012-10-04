@@ -27,6 +27,14 @@
         android:text="@string/distance_of_run"
         tools:context=".DisplayMessageActivity" />
 
+    <TextView
+        android:id="@+id/show_time_of_run"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/time_of_run"
+        tools:context=".DisplayMessageActivity" />
+
+
     <Button
         android:id="@+id/add_checkpoint"
         android:layout_width="match_parent"

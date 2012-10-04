@@ -12,7 +12,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
+    along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <resources>
 
@@ -37,6 +37,7 @@
     <string name="button_addcheckpoint">Add CP</string>
     <string name="select_media">Select media</string>
     <string name="speed_of_run">Your Speed: </string>
-	<string name="distance_of_run">Total Distance: </string>
-	    
+    <string name="distance_of_run">Total Distance: </string>
+    <string name="time_of_run">Time: 0:0</string>
+
 </resources>

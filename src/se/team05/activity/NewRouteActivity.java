@@ -39,8 +39,10 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
+import android.widget.HorizontalScrollView;
 import android.widget.TextView;
 
 import com.google.android.maps.GeoPoint;
@@ -77,14 +79,23 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 	private String userDistanceRun = TOTAL_DISTANCE + userDistance + lengthPresentation;
 	private CheckPointOverlay checkPointOverlay;
 	private EditCheckPointDialog checkPointDialog;
-
+	private Handler handler;
+	private Runnable runnable;
+	private int timePassed = 0;
+	
 	private static String DISTANCE_UNIT_MILES = "miles";
 	private static String DISTANCE_UNIT_YARDS = "yards";
 	private static String DISTANCE_UNIT_KILOMETRE = "Km";
 	private static String DISTANCE_UNIT_METRES = " metres";
 	private static float DISTANCE_THRESHOLD_EU = 1000;
 	private static String TOTAL_DISTANCE = "Total Distance: ";
-
+	private static String HOURS_STRING = "Hours: ";
+	private static String MINUTES_STRING = "Minutes: ";
+	private static String SECONDS_STRING = "Seconds: ";
+	private static String DISPLAY_STRING_TIME = "Time: ";
+	private static int MEN_ID_NUMBER = 0;
+	private static int WOMEN_ID_NUMBER = 1;
+	
 	/**
 	 * Will present a map to the user and will also display a dot representing
 	 * the user's location. Also contains three buttons of which one
@@ -191,18 +202,6 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 
 			userSpeed = "Your Speed: " + location.getSpeed() + DISTANCE_UNIT_KILOMETRE + "/h";
 
-			// if(lastPoint != null)
-			// {
-			// Location.distanceBetween(p.getLatitudeE6(), p.getLongitudeE6(),
-			// lastPoint.getLatitudeE6(), lastPoint.getLongitudeE6(),
-			// distanceResult);
-			//
-			// if(distanceResult[0] != 0)
-			// {
-			// totalDistance += distanceResult[0];
-			// userDistance = "Total Distance: " + totalDistance + "meter?";
-			// }
-			// }
 
 			if (lastLocation != null)
 			{
@@ -261,6 +260,49 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 	{
 		return route;
 	}
+	
+	/**
+	 * Method that gets called to update the UI with how much time that has passed and presents this to the user.
+	 * Will use field timePassed to determine time while not alteringthe timePassed variable if we want to pass that value
+	 * to the database.
+	 */
+	private void timerTick()
+	{
+		int seconds = timePassed % 5;
+		int minutes = timePassed / 5;
+		
+		TextView timeView = (TextView) findViewById(R.id.show_time_of_run);
+		
+		//String result = String.format("Time: %s: %d, %s: %d, %s: %d", HOURS_STRING, hours, MINUTES_STRING, minutes, SECONDS_STRING, timePassed );
+		//Depending on formatting, up for a vote. I like the one below better.
+		String result = String.format("Time: %d:%d", minutes, seconds );
+		timeView.setText(result);
+		timePassed++;
+		
+	}
+	
+	private int calorieFormula()
+	{
+
+		int sex = 1;
+		
+		switch (sex)
+		{
+//			case MEN_ID_NUMBER: //M [(Age x 0.2017) -- (Weight x 0.09036) + (Heart Rate x 0.6309) -- 55.0969] x Time / 4.184
+//									break;
+//			case WOMEN_ID_NUMBER:  //F [(Age x 0.074) -- (Weight x 0.05741) + (Heart Rate x 0.4472) -- 20.4022] x Time / 4.184.
+//									break;
+				default:
+					break;
+					
+				
+		}
+		 
+
+			return 1;
+	}
+	
+	
 
 	/**
 	 * Button listener for this activity. Will activate the desired outcome of
@@ -280,13 +322,30 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 				v2.setVisibility(View.GONE);
 				View v3 = findViewById(R.id.stop_and_save_button);
 				v3.setVisibility(View.VISIBLE);
+				
+				runnable = new Runnable() 
+				{
+					@Override
+					public void run() 
+					{
+						timerTick();
+						handler.postDelayed(this, 1000);
+					}
+				};
+
+				handler = new Handler();
+				handler.postDelayed(runnable, 0);
+				
 				break;
+				
 			case R.id.stop_and_save_button:
+				handler.removeCallbacks(runnable);
 				DatabaseHandler dataBaseHandler = new DatabaseHandler(this);
 				dataBaseHandler.saveRoute(new Route("name", "description", 0, -1, -1));
 				Intent intent = new Intent(this, MainActivity.class);
 				this.startActivity(intent);
 				break;
+				
 			case R.id.add_checkpoint:
 				if (myLocationOverlay.isMyLocationEnabled())
 				{
