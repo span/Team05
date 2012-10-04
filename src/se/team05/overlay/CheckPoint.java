@@ -38,6 +38,7 @@ public class CheckPoint extends OverlayItem
 	private long rid;
 	private String name;
 	private int radius;
+	private GeoPoint geoPoint;
 	private ArrayList<Track> tracks;
 
 	/**
@@ -46,8 +47,9 @@ public class CheckPoint extends OverlayItem
 	 * @param geoPoint
 	 */
 	public CheckPoint(GeoPoint geoPoint)
-	{
+	{		
 		this(geoPoint, "CheckPoint", 30, -1);
+		this.geoPoint = geoPoint;
 	}
 
 	private CheckPoint(GeoPoint geoPoint, String name, int radius, int rid)
@@ -55,6 +57,7 @@ public class CheckPoint extends OverlayItem
 		super(geoPoint, "", "");
 		this.setName(name);
 		this.setRadius(radius);
+		this.geoPoint = geoPoint;
 		tracks = new ArrayList<Track>();
 	}
 
@@ -125,6 +128,25 @@ public class CheckPoint extends OverlayItem
 	{
 		this.rid = rid;
 	}
+	
+	/**
+	 * 
+	 * @return latitude of checkpoint
+	 */
+	public int getLatuitude()
+	{
+		return geoPoint.getLatitudeE6();
+	}
+	
+	/**
+	 * 
+	 * @return longitude of checkpoint
+	 */
+	public int getLongitude()
+	{
+		return geoPoint.getLongitudeE6();
+	}
+	
 
 	/**
 	 * Adds all the tracks of the selected tracks to the checkpoint

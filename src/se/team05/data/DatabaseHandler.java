@@ -248,7 +248,7 @@ public class DatabaseHandler
 	}
 
 	/**
-	 * This method deletes a result from the database.
+	 * This method deletes a result by id from the database.
 	 * 
 	 * @param id
 	 *            id of result to be deleted.
@@ -260,21 +260,17 @@ public class DatabaseHandler
 		dbResultAdapter.close();
 	}
 
-	public void deleteAllResultsByRoutId(int routId)
+	/**
+	 * This method deletes a result by rout id (rid) from the database.
+	 * 
+	 * @param rid
+	 * 			the rout id
+	 */
+	public void deleteAllResultsByRoutId(int rid)
 	{
-		Result[] resultArray = getAllResultsByRoutId(routId);
-		if (resultArray != null)
-		{
-			List<Result> resultList = Arrays.asList(resultArray);
-			dbResultAdapter.open();
-
-			for (Result result : resultList)
-			{
-				dbResultAdapter.deleteResultById(result.get_id());
-			}
-
-			dbResultAdapter.close();
-		}
+		dbResultAdapter.open();
+		dbResultAdapter.deleteResultByRid(rid);
+		dbResultAdapter.close();		
 	}
 
 	/**
@@ -287,7 +283,11 @@ public class DatabaseHandler
 	public long saveCheckPoint(CheckPoint checkPoint)
 	{
 		dbCheckPointAdapter.open();
-		long id = dbCheckPointAdapter.insertCheckpoint(checkPoint.getRid(), checkPoint.getRadius(), checkPoint.getName());
+		long id = dbCheckPointAdapter.insertCheckpoint(checkPoint.getRid(), 
+														checkPoint.getRadius(), 
+														checkPoint.getName(),
+														checkPoint.getLatuitude(),
+														checkPoint.getLongitude());
 		dbCheckPointAdapter.close();
 		return id;
 	}
