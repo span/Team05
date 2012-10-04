@@ -18,6 +18,7 @@ package se.team05.dialog;
  */
 
 import se.team05.R;
+import se.team05.content.Result;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -27,6 +28,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.EditText;
+import android.widget.TextView;
 
 /**
  * This Dialog class is shown to the user when the user has recorded a new route
@@ -54,6 +56,7 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 
 	private Context context;
 	private Callbacks callbacks;
+	private Result result;
 
 	/**
 	 * The constructor of the dialog takes a Context and a Callbacks as a
@@ -65,12 +68,15 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 	 * @param callbacks
 	 *            an instance of the class that implements this class's
 	 *            Callbacks interface
+	 * @param result
+	 * 			  the results from the route including speed, distance, time
 	 */
-	public SaveRouteDialog(Context context, Callbacks callbacks)
+	public SaveRouteDialog(Context context, Callbacks callbacks, Result result)
 	{
 		super(context);
 		this.context = context;
 		this.callbacks = callbacks;
+		this.result = result;
 	}
 
 	/**
@@ -87,6 +93,24 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 
 		((Button) findViewById(R.id.discard_button)).setOnClickListener(this);
 		((Button) findViewById(R.id.save_button)).setOnClickListener(this);
+		
+		TextView timeTextView = (TextView) findViewById(R.id.time);
+		TextView distanceTextView = (TextView) findViewById(R.id.runneddistance);
+		TextView speedTextView = (TextView) findViewById(R.id.speed);
+		
+		
+		String distanceText = String.valueOf(result.getDistance());
+		distanceTextView.setText(distanceText + " km");
+		String speedText = String.valueOf(result.getSpeed());
+		speedTextView.setText(speedText + " km/h");
+		
+		int time = result.getTime();
+		String minutes = String.valueOf(time/60);
+		int min = time/60;
+		int sec = time%60;
+		
+		String resultat = String.format(" %02d:%02d", min, sec );
+		timeTextView.setText(resultat);
 	}
 
 	/**

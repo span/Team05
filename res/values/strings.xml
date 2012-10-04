@@ -38,13 +38,16 @@
     <string name="button_addcheckpoint">Add CP</string>
     <string name="select_media">Select media</string>
     <string name="speed_of_run">Your Speed: </string>
-	<string name="distance_of_run">Total Distance: </string>
-	<string name="time_of_run">Time: </string>
-	<string name="name">Name</string>
-	<string name="save_results">Save results</string>
-	<string name="results">Results</string>
-	<string name="save_route">Save route</string>
-	<string name="description">Description</string>
-	<string name="discard">Discard</string>
-	    
+    <string name="distance_of_run">Total Distance: </string>
+    <string name="time_of_run">Time: </string>
+    <string name="name">Name</string>
+    <string name="save_results">Save results</string>
+    <string name="results">Results</string>
+    <string name="save_route">Save route</string>
+    <string name="description">Description</string>
+    <string name="discard">Discard</string>
+    <string name="time_">Time:</string>
+    <string name="distance_">Distance:</string>
+    <string name="speed_">Speed:</string>
+
 </resources>

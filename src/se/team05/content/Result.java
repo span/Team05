@@ -34,6 +34,8 @@ public class Result {
 	private int time;
 	private int speed;
 	private int calories;
+	private int distance;
+	
 	
 	/**
 	 * Constructor with default settings only to be used by developers
@@ -46,6 +48,7 @@ public class Result {
 		this.time = 300;  				// 5 minutes
 		this.speed = 5;					// kilometers per hour
 		this.calories = 1337;			// kcal
+		this.distance = 1337;
 	}
 
 	/**
@@ -189,6 +192,22 @@ public class Result {
 	 */
 	public void setCalories(int calories) {
 		this.calories = calories;
+	}
+
+	/**
+	 * @return the distance
+	 */
+	public int getDistance()
+	{
+		return distance;
+	}
+
+	/**
+	 * @param distance the distance to set
+	 */
+	public void setDistance(int distance)
+	{
+		this.distance = distance;
 	}
 	
 }
