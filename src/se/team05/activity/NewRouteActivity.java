@@ -21,10 +21,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import se.team05.R;
+import se.team05.content.Route;
 import se.team05.content.Routes;
 import se.team05.content.Track;
 import se.team05.data.DatabaseHandler;
 import se.team05.dialog.EditCheckPointDialog;
+import se.team05.listener.MapLocationListener;
+import se.team05.listener.MapOnGestureListener;
 import se.team05.overlay.CheckPoint;
 import se.team05.overlay.CheckPointOverlay;
 import se.team05.overlay.RouteOverlay;
@@ -34,16 +37,13 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.view.GestureDetector.OnDoubleTapListener;
-import android.view.GestureDetector.OnGestureListener;
-import android.view.MotionEvent;
+import android.support.v4.app.NavUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -55,11 +55,11 @@ import com.google.android.maps.Overlay;
  * and will paint the route as the user moves. This is accomplished by using
  * Google's map API.
  * 
- * @author Markus
+ * @author Markus Schutzer, Patrik Thitusson, Daniel Kvist
  * 
  */
-public class NewRouteActivity extends MapActivity implements LocationListener, View.OnClickListener, EditCheckPointDialog.Callbacks,
-		CheckPointOverlay.Callbacks, OnGestureListener, OnDoubleTapListener
+public class NewRouteActivity extends MapActivity implements View.OnClickListener, EditCheckPointDialog.Callbacks,
+		CheckPointOverlay.Callbacks, MapOnGestureListener.Callbacks, MapLocationListener.Callbacks
 {
 
 	private ArrayList<GeoPoint> route;
@@ -118,9 +118,10 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 
 		mapView = (EditRouteMapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
+		mapView.setOnGestureListener(new MapOnGestureListener(this));
 
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, new MapLocationListener(this));
 
 		Criteria criteria = new Criteria();
 		criteria.setAccuracy(Criteria.ACCURACY_FINE);
@@ -181,7 +182,8 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 	 * @param location
 	 *            the new location of the user
 	 */
-	public void onLocationChanged(Location location)
+	@Override
+	public void updateLocation(Location location)
 	{
 
 		if (started)
@@ -212,8 +214,7 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 				{
 					lengthPresentation = DISTANCE_UNIT_KILOMETRE;
 					userDistance = new DecimalFormat("#.##").format(totalDistance / 1000);
-				}
-				else
+				} else
 				{
 					userDistance = "" + (int) totalDistance;
 				}
@@ -254,30 +255,6 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 	}
 
 	/**
-	 * Unused method as of now.
-	 */
-	public void onProviderDisabled(String provider)
-	{
-
-	}
-
-	/**
-	 * Unused method as of now.
-	 */
-	public void onProviderEnabled(String provider)
-	{
-
-	}
-
-	/**
-	 * Unused method as of now.
-	 */
-	public void onStatusChanged(String provider, int status, Bundle extras)
-	{
-
-	}
-
-	/**
 	 * Get method for returning the Routelist consisting of geopoints.
 	 * 
 	 * @return ArrayList representing Geo Points.
@@ -308,7 +285,7 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 				break;
 			case R.id.stop_and_save_button:
 				DatabaseHandler dataBaseHandler = new DatabaseHandler(this);
-				dataBaseHandler.saveRoute();
+				dataBaseHandler.saveRoute(new Route("name", "description", 0, -1, -1));
 				Intent intent = new Intent(this, MainActivity.class);
 				this.startActivity(intent);
 				break;
@@ -325,6 +302,10 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 		}
 	}
 
+	/**
+	 * Calls on the checkpoint overlay to delete its current selected checkpoint
+	 * and update the mapview
+	 */
 	@Override
 	public void onDelete()
 	{
@@ -332,87 +313,35 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 		mapView.postInvalidate();
 	}
 
+	/**
+	 * When a checkpoint is tapped this method calls the showCheckPointDialog
+	 * method with MODE_EDIT which marks it as a edit dialog
+	 */
 	@Override
 	public void onCheckPointTap(CheckPoint checkPoint)
 	{
 		showCheckPointDialog(checkPoint, EditCheckPointDialog.MODE_EDIT);
 	}
 
+	/**
+	 * Initiates a new checkpoint dialog
+	 * 
+	 * @param checkPoint
+	 * @param mode
+	 */
 	private void showCheckPointDialog(CheckPoint checkPoint, int mode)
 	{
 		checkPointDialog = new EditCheckPointDialog(this, checkPoint, mode);
 		checkPointDialog.show();
 	}
 
-	@Override
-	public boolean onDoubleTap(MotionEvent event)
-	{
-		mapView.getController().zoomInFixing((int) event.getX(), (int) event.getY());
-		return true;
-	}
-
-	@Override
-	public boolean onDoubleTapEvent(MotionEvent e)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean onSingleTapConfirmed(MotionEvent event)
-	{
-		if (checkPointDialog == null || !checkPointDialog.isShowing())
-		{
-			GeoPoint geoPoint = mapView.getProjection().fromPixels((int) event.getX(), (int) event.getY());
-
-			Toast.makeText(this.getBaseContext(), geoPoint.getLatitudeE6() / 1E6 + "," + geoPoint.getLongitudeE6() / 1E6,
-					Toast.LENGTH_SHORT).show();
-			createCheckPoint(geoPoint);
-		}
-		return true;
-	}
-
-	@Override
-	public boolean onDown(MotionEvent e)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void onLongPress(MotionEvent e)
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY)
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void onShowPress(MotionEvent e)
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean onSingleTapUp(MotionEvent event)
-	{
-		return false;
-	}
-
+	/**
+	 * Creates a checkpoint with the geopoint and adds it to the checkpoint
+	 * overlay, it also calls showCheckPointDialog with the MODE_ADD which marks
+	 * it as a add dialog
+	 * 
+	 * @param geoPoint
+	 */
 	private void createCheckPoint(GeoPoint geoPoint)
 	{
 		CheckPoint checkPoint = new CheckPoint(geoPoint);
@@ -420,21 +349,39 @@ public class NewRouteActivity extends MapActivity implements LocationListener, V
 		showCheckPointDialog(checkPoint, EditCheckPointDialog.MODE_ADD);
 	}
 
-	// @Override
-	// public boolean onCreateOptionsMenu(Menu menu) {
-	// getMenuInflater().inflate(R.menu.activity_while_running, menu);
-	// return true;
-	// }
-	//
-	//
-	// @Override
-	// public boolean onOptionsItemSelected(MenuItem item) {
-	// switch (item.getItemId()) {
-	// case android.R.id.home:
-	// NavUtils.navigateUpFromSameTask(this);
-	// return true;
-	// }
-	// return super.onOptionsItemSelected(item);
-	// }
+	/**
+	 * The onTap method zooms in on double tap and creates a geopoint on single
+	 * tap which it sends to createCheckPoint
+	 */
+	@Override
+	public void onTap(int x, int y, int eventType)
+	{
+		switch (eventType)
+		{
+			case MapOnGestureListener.EVENT_DOUBLE_TAP:
+				mapView.getController().zoomInFixing(x, y);
+				break;
+			case MapOnGestureListener.EVENT_SINGLE_TAP:
+				if (checkPointDialog == null || !checkPointDialog.isShowing())
+				{
+					GeoPoint geoPoint = mapView.getProjection().fromPixels(x, y);
+					createCheckPoint(geoPoint);
+				}
+				break;
+		}
+
+	}
+
+	 @Override
+	 public boolean onOptionsItemSelected(MenuItem item) 
+	 {
+		 switch (item.getItemId()) 
+		 {
+			 case android.R.id.home:
+				 NavUtils.navigateUpFromSameTask(this);
+				 return true;
+		 }
+		 return super.onOptionsItemSelected(item);
+	 }
 
 }

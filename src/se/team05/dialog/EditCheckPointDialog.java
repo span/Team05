@@ -17,11 +17,6 @@ package se.team05.dialog;
  along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-//import com.example.testmap.CheckPoint;
-//import com.example.testmap.CheckPointOverlay;
-//import com.example.testmap.R;
-//import com.example.testmap.R.id;
-//import com.example.testmap.R.layout;
 
 import java.io.IOException;
 
@@ -67,7 +62,13 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 	private Activity parentActivity;
 	private SoundManager soundManager;
 	private int mode;
-
+	
+	/**
+	 * The constructor
+	 * @param context
+	 * @param checkPoint
+	 * @param mode
+	 */
 	public EditCheckPointDialog(Context context, CheckPoint checkPoint, int mode)
 	{
 		super(context);
@@ -183,21 +184,28 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 	{
 		radiusTextField.setText("" + progress);
 	}
-
+	/**
+	 * Unused method
+	 */
 	@Override
 	public void onStartTrackingTouch(SeekBar seekBar)
 	{
-		// TODO Auto-generated method stub
-
+	
 	}
-
+	
+	/**
+	 * Unused method
+	 */
 	@Override
 	public void onStopTrackingTouch(SeekBar seekBar)
 	{
-		// TODO Auto-generated method stub
-
+	
 	}
 	
+	/**
+	 * Uses callback to delete the a checkpoint if it is created when the back button is pressed
+	 * if the dialog is in edit mode the back button is unchanged
+	 */
 	@Override
 	public void onBackPressed()
 	{
