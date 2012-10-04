@@ -55,6 +55,19 @@ public class DatabaseHandler
 		dbCheckPointAdapter = new DBCheckPointAdapter(context);
 		dbGeoPointAdapter = new DBGeoPointAdapter(context);
 	}
+	
+	/**
+	 * This deletes the route given from the database
+	 * 
+	 * @param route 
+	 * 			the route to delete
+	 */
+	public void deleteRoute(Route route)
+	{
+		dBRouteAdapter.open();
+		dBRouteAdapter.deleteRoute(route.getId());
+		dBRouteAdapter.close();
+	}
 
 	/**
 	 * This method saves the route in the database.
