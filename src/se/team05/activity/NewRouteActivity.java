@@ -53,7 +53,7 @@ import com.google.android.maps.Overlay;
 
 /**
  * This activity Presents at map to the user. It also tracks the users movement
- * and will paint the route as the user moves. This is accomplished by using
+ * and will paint the geoPointList as the user moves. This is accomplished by using
  * Google's map API.
  * 
  * @author Markus Schutzer, Patrik Thitusson, Daniel Kvist
@@ -63,7 +63,7 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 		SaveRouteDialog.Callbacks, CheckPointOverlay.Callbacks, MapOnGestureListener.Callbacks, MapLocationListener.Callbacks
 {
 
-	private ArrayList<GeoPoint> route;
+	private ArrayList<GeoPoint> geoPointList;
 	private LocationManager locationManager;
 	private String providerName;
 	private int routeIdTag;
@@ -109,7 +109,7 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 
 		routeIdTag = Routes.getInstance().getCount();
-		route = new ArrayList<GeoPoint>();
+		geoPointList = new ArrayList<GeoPoint>();
 
 		databaseHandler = new DatabaseHandler(this);
 
@@ -143,7 +143,7 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 		List<Overlay> overlays = mapView.getOverlays();
 		Drawable drawable = getResources().getDrawable(R.drawable.green_markerc);
 
-		RouteOverlay routeOverlay = new RouteOverlay(route, 78, true);
+		RouteOverlay routeOverlay = new RouteOverlay(geoPointList, 78, true);
 		myLocationOverlay = new MyLocationOverlay(this, mapView);
 		checkPointOverlay = new CheckPointOverlay(drawable, this);
 
@@ -183,7 +183,7 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 	/**
 	 * This will be called when user changes location. It will create a new
 	 * Geopoint consisting of longitude and latitude represented by integers and
-	 * put it in a list (route).
+	 * put it in a list (geoPointList).
 	 * 
 	 * @param location
 	 *            the new location of the user
@@ -194,7 +194,7 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 		if (started)
 		{
 			GeoPoint p = new GeoPoint((int) (location.getLatitude() * 1E6), (int) (location.getLongitude() * 1E6));
-			route.add(p);
+			geoPointList.add(p);
 
 			userSpeed = "Your Speed: " + location.getSpeed() + DISTANCE_UNIT_KILOMETRE + "/h";
 			if (lastLocation != null)
@@ -251,7 +251,7 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 	 */
 	public ArrayList<GeoPoint> getRoute()
 	{
-		return route;
+		return geoPointList;
 	}
 
 	/**
@@ -402,8 +402,8 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 	}
 
 	/**
-	 * This method is called from the save route dialog when the user has
-	 * pressed the "save" button. It creates a new route with the information
+	 * This method is called from the save geoPointList dialog when the user has
+	 * pressed the "save" button. It creates a new geoPointList with the information
 	 * given in the dialog and then saves it to the database. After that, the
 	 * user is taken back to the main activity.
 	 */
@@ -411,12 +411,13 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 	public void onSaveRoute(String name, String description, boolean saveResult)
 	{
 		Route route = new Route(name, description);
-		databaseHandler.saveRoute(route);
+		route.setId(databaseHandler.saveRoute(route));
+		databaseHandler.saveGeoPoints(route.getId(), geoPointList);
 		launchMainActivity();
 	}
 
 	/**
-	 * Called from the save route dialog when a route has been dismissed. This
+	 * Called from the save geoPointList dialog when a geoPointList has been dismissed. This
 	 * method just launches the main activity.
 	 */
 	@Override

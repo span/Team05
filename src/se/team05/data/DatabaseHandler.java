@@ -27,6 +27,8 @@ import se.team05.overlay.CheckPoint;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.google.android.maps.GeoPoint;
+
 /**
  * This class handles the communication between the database, its adapters and
  * the rest of the application. It keeps an instance of each table adapter that
@@ -43,6 +45,7 @@ public class DatabaseHandler
 	private DBTrackAdapter dbTrackAdapter;
 	private DBResultAdapter dbResultAdapter;
 	private DBCheckPointAdapter dbCheckPointAdapter;
+	private DBGeoPointAdapter dbGeoPointAdapter;
 
 	public DatabaseHandler(Context context)
 	{
@@ -50,6 +53,7 @@ public class DatabaseHandler
 		dbTrackAdapter = new DBTrackAdapter(context);
 		dbResultAdapter = new DBResultAdapter(context);
 		dbCheckPointAdapter = new DBCheckPointAdapter(context);
+		dbGeoPointAdapter = new DBGeoPointAdapter(context);
 	}
 
 	/**
@@ -58,11 +62,12 @@ public class DatabaseHandler
 	 * @param route
 	 *            the route to save
 	 */
-	public void saveRoute(Route route)
+	public long saveRoute(Route route)
 	{
 		dBRouteAdapter.open();
-		dBRouteAdapter.insertRoute(route.getName(), route.getDescription(), route.getType(), 0, 0);
+		long id = dBRouteAdapter.insertRoute(route.getName(), route.getDescription(), route.getType(), 0, 0);
 		dBRouteAdapter.close();
+		return id;
 	}
 
 	/**
@@ -318,6 +323,13 @@ public class DatabaseHandler
 		dbTrackAdapter.open();
 		dbTrackAdapter.deleteTrackByCid(cid);
 		dbTrackAdapter.close();
+	}
+
+	public void saveGeoPoints(long rid, ArrayList<GeoPoint> geoPointList)
+	{
+		dbGeoPointAdapter.open();
+		dbGeoPointAdapter.insertGeoPoints(rid, geoPointList);
+		dbGeoPointAdapter.close();
 	}
 
 }
