@@ -30,13 +30,13 @@ import android.os.Parcelable;
  */
 public class Track implements Parcelable
 {
-	private String id;
-	private String artist;
-	private String album;
-	private String title;
-	private String data;
-	private String displayName;
-	private String duration;
+	private String id = "";
+	private String artist = "";
+	private String album = "";
+	private String title = "";
+	private String data = "";
+	private String displayName = "";
+	private String duration = "";
 
 	/**
 	 * A constructor which takes all the necessary fields as Strings.

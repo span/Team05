@@ -42,12 +42,14 @@ public class DatabaseHandler
 	private DBRouteAdapter dBRouteAdapter;
 	private DBTrackAdapter dbTrackAdapter;
 	private DBResultAdapter dbResultAdapter;
+	private DBCheckPointAdapter dbCheckPointAdapter;
 
 	public DatabaseHandler(Context context)
 	{
 		dBRouteAdapter = new DBRouteAdapter(context);
 		dbTrackAdapter = new DBTrackAdapter(context);
 		dbResultAdapter = new DBResultAdapter(context);
+		dbCheckPointAdapter = new DBCheckPointAdapter(context);
 	}
 
 	/**
@@ -131,7 +133,7 @@ public class DatabaseHandler
 	 * @param track
 	 *            the track to save
 	 */
-	public void saveTrack(int cid, Track track)
+	public void saveTrack(long cid, Track track)
 	{
 		dbTrackAdapter.open();
 		dbTrackAdapter.insertTrack(cid, track.getArtist(), track.getAlbum(), track.getTitle(), track.getData(), track.getDisplayName(),
@@ -285,7 +287,10 @@ public class DatabaseHandler
 	 */
 	public long saveCheckPoint(CheckPoint checkPoint)
 	{
-		return 0;
+		dbCheckPointAdapter.open();
+		long id = dbCheckPointAdapter.insertCheckpoint(checkPoint.getRid(), checkPoint.getRadius(), checkPoint.getName());
+		dbCheckPointAdapter.close();
+		return id;
 	}
 
 }

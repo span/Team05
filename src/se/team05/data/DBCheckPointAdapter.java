@@ -64,7 +64,7 @@ public class DBCheckPointAdapter extends DBAdapter
 	 *            the name of the checkpoint
 	 * @return the new id for the checkpoint
 	 */
-	public long insertCheckpoint(int rid, int radius, int name)
+	public long insertCheckpoint(long rid, int radius, String name)
 	{
 		ContentValues values = new ContentValues();
 		values.put(COLUMN_RID, rid);

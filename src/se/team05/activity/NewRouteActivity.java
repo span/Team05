@@ -86,6 +86,7 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 	private static String DISTANCE_UNIT_METRES = " metres";
 	private static float DISTANCE_THRESHOLD_EU = 1000;
 	private static String TOTAL_DISTANCE = "Total Distance: ";
+	private ArrayList<Track> playList = new ArrayList<Track>();;
 
 	/**
 	 * Will present a map to the user and will also display a dot representing
@@ -159,8 +160,7 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == MediaSelectorActivity.REQUEST_MEDIA && resultCode == RESULT_OK)
 		{
-			ArrayList<Track> playList = data.getParcelableArrayListExtra(MediaSelectorActivity.EXTRA_SELECTED_ITEMS);
-			// TODO Save in database
+			playList = data.getParcelableArrayListExtra(MediaSelectorActivity.EXTRA_SELECTED_ITEMS);
 		}
 	}
 
@@ -214,7 +214,8 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 				{
 					lengthPresentation = DISTANCE_UNIT_KILOMETRE;
 					userDistance = new DecimalFormat("#.##").format(totalDistance / 1000);
-				} else
+				}
+				else
 				{
 					userDistance = "" + (int) totalDistance;
 				}
@@ -312,11 +313,22 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 		checkPointOverlay.deleteCheckPoint();
 		mapView.postInvalidate();
 	}
-	
+
+	/**
+	 * Callback from the checkpoint dialog that tells the activity that the user
+	 * has pressed the save button and thus the checkpoint with all its data
+	 * should now be saved. This method also saves the "tracks" that are related
+	 * to the checkpoint.
+	 */
 	@Override
 	public void onSaveCheckPoint(CheckPoint checkPoint)
 	{
-		
+		DatabaseHandler databaseHandler = new DatabaseHandler(this);
+		checkPoint.setId(databaseHandler.saveCheckPoint(checkPoint));
+		for (Track track : playList)
+		{
+			databaseHandler.saveTrack(checkPoint.getId(), track);
+		}
 	}
 
 	/**
@@ -378,18 +390,15 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 
 	}
 
-	 @Override
-	 public boolean onOptionsItemSelected(MenuItem item) 
-	 {
-		 switch (item.getItemId()) 
-		 {
-			 case android.R.id.home:
-				 NavUtils.navigateUpFromSameTask(this);
-				 return true;
-		 }
-		 return super.onOptionsItemSelected(item);
-	 }
-
-	
-
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		switch (item.getItemId())
+		{
+			case android.R.id.home:
+				NavUtils.navigateUpFromSameTask(this);
+				return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
 }

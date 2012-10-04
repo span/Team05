@@ -77,17 +77,17 @@ public class DBTrackAdapter extends DBAdapter
 	 *            the duration of the track
 	 * @return the id of the inserted of
 	 */
-	public long insertTrack(int cid, String artist, String album, String title, String data, String displayName,
+	public long insertTrack(long cid, String artist, String album, String title, String data, String displayName,
 			String duration)
 	{
 		ContentValues values = new ContentValues();
 		values.put(COLUMN_CID, cid);
-		values.put(COLUMN_ALBUM, artist);
+		values.put(COLUMN_ARTIST, artist);
 		values.put(COLUMN_ALBUM, album);
-		values.put(COLUMN_ALBUM, title);
-		values.put(COLUMN_ALBUM, data);
-		values.put(COLUMN_ALBUM, displayName);
-		values.put(COLUMN_ALBUM, duration);
+		values.put(COLUMN_TITLE, title);
+		values.put(COLUMN_DATA, data);
+		values.put(COLUMN_DISPLAY_NAME, displayName);
+		values.put(COLUMN_DURATION, duration);
 		return db.insert(TABLE_TRACKS, null, values);
 	}
 
