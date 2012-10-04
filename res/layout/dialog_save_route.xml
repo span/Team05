@@ -83,7 +83,7 @@
             android:background="?android:attr/dividerVertical" />
 
         <Button
-            android:id="@+id/cancel_button"
+            android:id="@+id/discard_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
@@ -91,7 +91,7 @@
             android:layout_alignParentTop="true"
             android:layout_toLeftOf="@+id/vertical_divider"
             android:background="?android:attr/selectableItemBackground"
-            android:text="@string/cancel" />
+            android:text="@string/discard" />
 
         <Button
             android:id="@+id/save_button"

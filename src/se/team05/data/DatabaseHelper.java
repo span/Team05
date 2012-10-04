@@ -59,6 +59,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 		database.execSQL(DBTrackAdapter.DATABASE_CREATE_TRACK_TABLE);
 		database.execSQL(DBResultAdapter.DATABASE_CREATE_RESULT_TABLE);
 		database.execSQL(DBCheckPointAdapter.DATABASE_CREATE_CHECKPOINT_TABLE);
+		database.execSQL(DBGeoPointAdapter.DATABASE_CREATE_GEOPOINT_TABLE);
 	}
 
 	/**
@@ -74,6 +75,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 		db.execSQL("DROP TABLE IF EXISTS " + DBTrackAdapter.TABLE_TRACKS);
 		db.execSQL("DROP TABLE IF EXISTS " + DBResultAdapter.TABLE_RESULT);
 		db.execSQL("DROP TABLE IF EXISTS " + DBCheckPointAdapter.TABLE_CHECKPOINTS);
+		db.execSQL("DROP TABLE IF EXISTS " + DBGeoPointAdapter.TABLE_GEOPOINTS);
 		onCreate(db);
 	}
 

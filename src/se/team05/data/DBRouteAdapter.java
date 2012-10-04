@@ -66,7 +66,7 @@ public class DBRouteAdapter extends DBAdapter
 	 * @param timeCoach the time coach interval (-1 if inactive)
 	 * @param lengthCoach the lenth coach interval (-1 if inactive)
 	 */
-	public void insertRoute(String name, String description, int type, int timeCoach, int lengthCoach)
+	public long insertRoute(String name, String description, int type, int timeCoach, int lengthCoach)
 	{
 		ContentValues values = new ContentValues();
 		values.put(COLUMN_NAME, name);
@@ -74,7 +74,7 @@ public class DBRouteAdapter extends DBAdapter
 		values.put(COLUMN_TYPE, type);
 		values.put(COLUMN_TIMECOACH, timeCoach);
 		values.put(COLUMN_LENGTHCOACH, lengthCoach);
-		db.insert(TABLE_ROUTES, null, values);
+		return db.insert(TABLE_ROUTES, null, values);
 	}
 	
 	/**

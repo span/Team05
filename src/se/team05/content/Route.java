@@ -27,14 +27,14 @@ package se.team05.content;
  */
 public class Route
 {
-	int _id;
+	long _id;
 	String name;
 	String description;
 	int type;
 	int timecoach;
 	int lengthcoach;
 	
-	public Route(int _id,String name, String description, int type, int timecoach, int lengthcoach)
+	public Route(long _id,String name, String description, int type, int timecoach, int lengthcoach)
 	{
 		this._id = _id;
 		this.name = name;
@@ -68,12 +68,12 @@ public class Route
 		return name;
 	}
 
-	public int get_id() {
+	public long getId() {
 		return _id;
 	}
 
-	public void set_id(int _id) {
-		this._id = _id;
+	public void setId(long l) {
+		this._id = l;
 	}
 
 	public String getName() {
