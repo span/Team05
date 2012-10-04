@@ -93,7 +93,7 @@ public class DBResultAdapter extends DBAdapter {
 	 */
 	public Cursor fetchResultById(int id)
 	{
-		return db.query(TABLE_RESULT, null, "where " + COLUMN_ID + "=" + id, null, null, null, null);
+		return db.query(TABLE_RESULT, null, COLUMN_ID + "=" + id, null, null, null, null);
 	}
 	
 	/**
@@ -105,7 +105,7 @@ public class DBResultAdapter extends DBAdapter {
 	 */
 	public Cursor fetchResultByRoutId(int rid)
 	{
-		return db.query(TABLE_RESULT, null, "where " + COLUMN_RID + "=" + rid, null, null, null, null);
+		return db.query(TABLE_RESULT, null, COLUMN_RID + "=" + rid, null, null, null, null);
 	}
 	
 	/**
@@ -117,7 +117,7 @@ public class DBResultAdapter extends DBAdapter {
 	 */
 	public int deleteResultById(int id)
 	{
-		return db.delete(TABLE_RESULT, "where " + COLUMN_ID + "=" + id, null);
+		return db.delete(TABLE_RESULT, COLUMN_ID + "=" + id, null);
 	}
 	
 	/**
@@ -129,7 +129,7 @@ public class DBResultAdapter extends DBAdapter {
 	 */
 	public int deleteResultsByRoutId(int rid)
 	{
-		return db.delete(TABLE_RESULT, "where " + COLUMN_RID + "=" + rid, null);
+		return db.delete(TABLE_RESULT, COLUMN_RID + "=" + rid, null);
 	}
 
 }

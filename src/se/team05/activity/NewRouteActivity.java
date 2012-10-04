@@ -55,7 +55,7 @@ import com.google.android.maps.Overlay;
  * and will paint the route as the user moves. This is accomplished by using
  * Google's map API.
  * 
- * @author Markus
+ * @author Markus Schutzer, Patrik Thitusson, Daniel Kvist
  * 
  */
 public class NewRouteActivity extends MapActivity implements View.OnClickListener, EditCheckPointDialog.Callbacks,
@@ -86,6 +86,9 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 	private static String DISTANCE_UNIT_METRES = " metres";
 	private static float DISTANCE_THRESHOLD_EU = 1000;
 	private static String TOTAL_DISTANCE = "Total Distance: ";
+	private ArrayList<Track> selectedTracks = new ArrayList<Track>();
+	private DatabaseHandler databaseHandler;
+	private CheckPoint currentCheckPoint;;
 
 	/**
 	 * Will present a map to the user and will also display a dot representing
@@ -106,6 +109,8 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 
 		routeIdTag = Routes.getInstance().getCount();
 		route = new ArrayList<GeoPoint>();
+
+		databaseHandler = new DatabaseHandler(this);
 
 		Button stopAndSaveButton = (Button) findViewById(R.id.stop_and_save_button);
 		stopAndSaveButton.setOnClickListener(this);
@@ -159,8 +164,8 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == MediaSelectorActivity.REQUEST_MEDIA && resultCode == RESULT_OK)
 		{
-			ArrayList<Track> playList = data.getParcelableArrayListExtra(MediaSelectorActivity.EXTRA_SELECTED_ITEMS);
-			// TODO Save in database
+			selectedTracks = data.getParcelableArrayListExtra(MediaSelectorActivity.EXTRA_SELECTED_ITEMS);
+			currentCheckPoint.addTracks(selectedTracks);
 		}
 	}
 
@@ -214,7 +219,8 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 				{
 					lengthPresentation = DISTANCE_UNIT_KILOMETRE;
 					userDistance = new DecimalFormat("#.##").format(totalDistance / 1000);
-				} else
+				}
+				else
 				{
 					userDistance = "" + (int) totalDistance;
 				}
@@ -303,23 +309,46 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 	}
 
 	/**
-	 * Calls on the checkpoint overlay to delete its current selected checkpoint
-	 * and update the mapview
+	 * This method deletes the checkpoint with all its tracks from the database.
+	 * It also calls on the checkpoint overlay to delete its current selected
+	 * checkpoint from the view. We then need to invalidate the map view for it
+	 * to update.
 	 */
 	@Override
-	public void onDelete()
+	public void onDeleteCheckPoint(long checkPointId)
 	{
+		databaseHandler.deleteCheckPoint(checkPointId);
+		databaseHandler.deleteTracksByCid(checkPointId);
 		checkPointOverlay.deleteCheckPoint();
 		mapView.postInvalidate();
 	}
 
 	/**
+	 * Callback from the checkpoint dialog that tells the activity that the user
+	 * has pressed the save button and thus the checkpoint with all its data
+	 * should now be saved. This method also saves the "tracks" that are related
+	 * to the checkpoint.
+	 */
+	@Override
+	public void onSaveCheckPoint(CheckPoint checkPoint)
+	{
+		checkPoint.setId(databaseHandler.saveCheckPoint(checkPoint));
+		for (Track track : selectedTracks)
+		{
+			databaseHandler.saveTrack(checkPoint.getId(), track);
+		}
+		selectedTracks.clear();
+	}
+
+	/**
 	 * When a checkpoint is tapped this method calls the showCheckPointDialog
-	 * method with MODE_EDIT which marks it as a edit dialog
+	 * method with MODE_EDIT which marks it as a edit dialog. This method also
+	 * sets the current checkpoint to the last tapped.
 	 */
 	@Override
 	public void onCheckPointTap(CheckPoint checkPoint)
 	{
+		currentCheckPoint = checkPoint;
 		showCheckPointDialog(checkPoint, EditCheckPointDialog.MODE_EDIT);
 	}
 
@@ -338,13 +367,15 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 	/**
 	 * Creates a checkpoint with the geopoint and adds it to the checkpoint
 	 * overlay, it also calls showCheckPointDialog with the MODE_ADD which marks
-	 * it as a add dialog
+	 * it as a add dialog. This method also saves the newly created checkpoint as
+	 * the current checkpoint for future reference.
 	 * 
 	 * @param geoPoint
 	 */
 	private void createCheckPoint(GeoPoint geoPoint)
 	{
 		CheckPoint checkPoint = new CheckPoint(geoPoint);
+		currentCheckPoint = checkPoint;
 		checkPointOverlay.addCheckPoint(checkPoint);
 		showCheckPointDialog(checkPoint, EditCheckPointDialog.MODE_ADD);
 	}
@@ -371,17 +402,21 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 		}
 
 	}
-	
-	 @Override
-	 public boolean onOptionsItemSelected(MenuItem item) 
-	 {
-		 switch (item.getItemId()) 
-		 {
-			 case android.R.id.home:
-				 NavUtils.navigateUpFromSameTask(this);
-				 return true;
-		 }
-		 return super.onOptionsItemSelected(item);
-	 }
 
+	/**
+	 * This method is called when an item in the action bar (options menu) has
+	 * been pressed. Currently this only takes the user to the parent activity
+	 * (main activity).
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		switch (item.getItemId())
+		{
+			case android.R.id.home:
+				NavUtils.navigateUpFromSameTask(this);
+				return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
 }

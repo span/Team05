@@ -30,13 +30,13 @@ import android.os.Parcelable;
  */
 public class Track implements Parcelable
 {
-	private String id;
-	private String artist;
-	private String album;
-	private String title;
-	private String data;
-	private String displayName;
-	private String duration;
+	private String id = "";
+	private String artist = "";
+	private String album = "";
+	private String title = "";
+	private String data = "";
+	private String displayName = "";
+	private String duration = "";
 
 	/**
 	 * A constructor which takes all the necessary fields as Strings.
@@ -141,6 +141,13 @@ public class Track implements Parcelable
 	public String getDuration()
 	{
 		return duration;
+	}
+	
+	// TODO Implement equals correctly
+	public boolean equals(Object other)
+	{
+		Track t = (Track) other;
+		return t.getData().equals(this.getData());
 	}
 
 	/**

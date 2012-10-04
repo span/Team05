@@ -42,12 +42,14 @@ public class DatabaseHandler
 	private DBRouteAdapter dBRouteAdapter;
 	private DBTrackAdapter dbTrackAdapter;
 	private DBResultAdapter dbResultAdapter;
+	private DBCheckPointAdapter dbCheckPointAdapter;
 
 	public DatabaseHandler(Context context)
 	{
 		dBRouteAdapter = new DBRouteAdapter(context);
 		dbTrackAdapter = new DBTrackAdapter(context);
 		dbResultAdapter = new DBResultAdapter(context);
+		dbCheckPointAdapter = new DBCheckPointAdapter(context);
 	}
 
 	/**
@@ -93,12 +95,13 @@ public class DatabaseHandler
 
 			while (!cursor.isAfterLast())
 			{
-				route = new Route(cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_ID)), cursor.getString(cursor
-						.getColumnIndex(DBRouteAdapter.COLUMN_NAME)), cursor.getString(cursor
-						.getColumnIndex(DBRouteAdapter.COLUMN_DESCRIPTION)), cursor.getInt(cursor
-						.getColumnIndex(DBRouteAdapter.COLUMN_TYPE)),
-						cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_TIMECOACH)), cursor.getInt(cursor
-								.getColumnIndex(DBRouteAdapter.COLUMN_LENGTHCOACH)));
+				route = new Route(cursor.getInt(
+						cursor.getColumnIndex(DBRouteAdapter.COLUMN_ID)), 
+						cursor.getString(cursor.getColumnIndex(DBRouteAdapter.COLUMN_NAME)), 
+						cursor.getString(cursor.getColumnIndex(DBRouteAdapter.COLUMN_DESCRIPTION)), 
+						cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_TYPE)),
+						cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_TIMECOACH)), 
+						cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_LENGTHCOACH)));
 
 				routeList.add(route);
 				cursor.moveToNext();
@@ -131,7 +134,7 @@ public class DatabaseHandler
 	 * @param track
 	 *            the track to save
 	 */
-	public void saveTrack(int cid, Track track)
+	public void saveTrack(long cid, Track track)
 	{
 		dbTrackAdapter.open();
 		dbTrackAdapter.insertTrack(cid, track.getArtist(), track.getAlbum(), track.getTitle(), track.getData(), track.getDisplayName(),
@@ -230,12 +233,10 @@ public class DatabaseHandler
 	private Result createResultFromCursor(Cursor cursor)
 	{
 		// Cursor cursor = dbResultAdapter.fetchResultById(id);
-		Result result = new Result(
-				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_ID)), 
-				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_TIMESTAMP)), 
-				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_TIME)),
-				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_SPEED)), 
-				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_CALORIES)));
+		Result result = new Result(cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_ID)), cursor.getInt(cursor
+				.getColumnIndex(DBResultAdapter.COLUMN_TIMESTAMP)), cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_TIME)),
+				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_SPEED)), cursor.getInt(cursor
+						.getColumnIndex(DBResultAdapter.COLUMN_CALORIES)));
 		return result;
 	}
 
@@ -285,7 +286,38 @@ public class DatabaseHandler
 	 */
 	public long saveCheckPoint(CheckPoint checkPoint)
 	{
-		return 0;
+		dbCheckPointAdapter.open();
+		long id = dbCheckPointAdapter.insertCheckpoint(checkPoint.getRid(), checkPoint.getRadius(), checkPoint.getName());
+		dbCheckPointAdapter.close();
+		return id;
+	}
+
+	/**
+	 * Deletes a checkpoint from the database with the corresponding checkpoint
+	 * id.
+	 * 
+	 * @param cid
+	 *            the checkpoint id that matches the row to delete
+	 */
+	public void deleteCheckPoint(long cid)
+	{
+		dbCheckPointAdapter.open();
+		dbCheckPointAdapter.deleteCheckPointById(cid);
+		dbCheckPointAdapter.close();
+	}
+
+	/**
+	 * Deletes all tracks from the database with the corresponding checkpoint
+	 * id.
+	 * 
+	 * @param cid
+	 *            the checkpoint id that matches the tracks to delete
+	 */
+	public void deleteTracksByCid(long cid)
+	{
+		dbTrackAdapter.open();
+		dbTrackAdapter.deleteTrackByCid(cid);
+		dbTrackAdapter.close();
 	}
 
 }
