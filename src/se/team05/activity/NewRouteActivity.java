@@ -307,10 +307,16 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 	 * and update the mapview
 	 */
 	@Override
-	public void onDelete()
+	public void onDeleteCheckPoint()
 	{
 		checkPointOverlay.deleteCheckPoint();
 		mapView.postInvalidate();
+	}
+	
+	@Override
+	public void onSaveCheckPoint(CheckPoint checkPoint)
+	{
+		
 	}
 
 	/**
@@ -383,5 +389,7 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 		 }
 		 return super.onOptionsItemSelected(item);
 	 }
+
+	
 
 }

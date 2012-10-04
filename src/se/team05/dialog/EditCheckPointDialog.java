@@ -48,7 +48,8 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 {
 	public interface Callbacks
 	{
-		public void onDelete();
+		public void onDeleteCheckPoint();
+		public void onSaveCheckPoint(CheckPoint checkPoint);
 	}
 
 	public static final int MODE_ADD = 0;
@@ -134,14 +135,14 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 				parentActivity.startActivityForResult(intent, MediaSelectorActivity.REQUEST_MEDIA);
 				break;
 			case R.id.delete_button:
-				callBack.onDelete();
+				callBack.onDeleteCheckPoint();
 				dismiss();
 				break;
 			case R.id.save_button:
+				int radius = Integer.parseInt(radiusTextField.getText().toString());
 				checkPoint.setName(nameTextField.getText().toString());
-				String radiusString = radiusTextField.getText().toString();
-				int radius = Integer.parseInt(radiusString);
 				checkPoint.setRadius(radius);
+				callBack.onSaveCheckPoint(checkPoint);
 				dismiss();
 				break;
 			default:
@@ -211,7 +212,7 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 	{
 		if(mode==MODE_ADD)
 		{
-			callBack.onDelete();
+			callBack.onDeleteCheckPoint();
 		}
 			
 		super.onBackPressed();
