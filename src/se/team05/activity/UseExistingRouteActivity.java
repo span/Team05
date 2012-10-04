@@ -17,13 +17,17 @@
 package se.team05.activity;
 
 import se.team05.R;
+import se.team05.data.DBRouteAdapter;
 import se.team05.data.DatabaseHandler;
 import se.team05.listener.UseExistingRouteListener;
 import android.app.Activity;
+import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
+import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
@@ -34,8 +38,10 @@ import android.widget.SimpleCursorAdapter;
  * @author Markus, Henrik Hugo
  *
  */
-public class UseExistingRouteActivity extends Activity
+public class UseExistingRouteActivity extends Activity implements LoaderCallbacks<Cursor>
 {
+	private static final int LOADER_ID_ROUTES = 42;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
@@ -50,16 +56,20 @@ public class UseExistingRouteActivity extends Activity
 		Cursor cursor = db.getAllRoutesCursor();
 		
 		// Setup adapter
-		RouteListCursorAdapter routeListCursorAdapter = new RouteListCursorAdapter(
+		SimpleCursorAdapter adapter = new SimpleCursorAdapter(
 				this,
 				android.R.layout.simple_list_item_1,
-				cursor,
-				new String[] {"name"}, new int[] {android.R.id.text1}
+				null,
+				new String[] {"name"},
+				new int[] {android.R.id.text1},
+				CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER
 		);
+		
+		getLoaderManager().initLoader(this.LOADER_ID_ROUTES, null, this);
 		
 		// Retrieve reference to listview and apply the adapter
 		ListView listView = (ListView) findViewById(R.id.mylist);
-		listView.setAdapter(routeListCursorAdapter);
+		listView.setAdapter(adapter);
 		
 		//setProgressBarIndeterminateVisibility(false);
 	}
@@ -85,6 +95,29 @@ public class UseExistingRouteActivity extends Activity
 		}
 
 
+	}
+
+	@Override
+	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+		
+		if(id == UseExistingRouteActivity.LOADER_ID_ROUTES) // Simple check as this is the only loader we have
+		{
+			String[] projection = {DBRouteAdapter.COLUMN_NAME};
+		}
+		
+		return null;
+	}
+
+	@Override
+	public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onLoaderReset(Loader<Cursor> cursorLoader) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
