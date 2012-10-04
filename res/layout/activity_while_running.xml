@@ -35,11 +35,17 @@
         tools:context=".DisplayMessageActivity" />
 
 
+    
+    
+    
+    
     <Button
         android:id="@+id/add_checkpoint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/button_addcheckpoint" />
+    
+    
 
     <Button
         android:id="@+id/start_run_button"
