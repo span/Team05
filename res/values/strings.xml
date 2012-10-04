@@ -45,5 +45,6 @@
 	<string name="save_route">Save route</string>
 	<string name="description">Description</string>
 	<string name="discard">Discard</string>
+	<string name="button_show_results">Show results</string>
 	    
 </resources>
