@@ -390,6 +390,11 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 
 	}
 
+	/**
+	 * This method is called when an item in the action bar (options menu) has
+	 * been pressed. Currently this only takes the user to the parent activity
+	 * (main activity).
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
