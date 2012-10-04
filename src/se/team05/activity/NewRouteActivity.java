@@ -21,11 +21,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import se.team05.R;
-import se.team05.content.Route;
 import se.team05.content.Routes;
 import se.team05.content.Track;
 import se.team05.data.DatabaseHandler;
 import se.team05.dialog.EditCheckPointDialog;
+import se.team05.dialog.SaveRouteDialog;
 import se.team05.listener.MapLocationListener;
 import se.team05.listener.MapOnGestureListener;
 import se.team05.overlay.CheckPoint;
@@ -290,9 +290,11 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 				v3.setVisibility(View.VISIBLE);
 				break;
 			case R.id.stop_and_save_button:
-				databaseHandler.saveRoute(new Route("name", "description", 0, -1, -1));
-				Intent intent = new Intent(this, MainActivity.class);
-				this.startActivity(intent);
+				SaveRouteDialog saveRouteDialog = new SaveRouteDialog(this);
+				saveRouteDialog.show();
+//				databaseHandler.saveRoute(new Route("name", "description", 0, -1, -1));
+//				Intent intent = new Intent(this, MainActivity.class);
+//				this.startActivity(intent);
 				break;
 			case R.id.add_checkpoint:
 				if (myLocationOverlay.isMyLocationEnabled())

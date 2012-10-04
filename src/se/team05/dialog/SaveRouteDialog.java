@@ -17,7 +17,7 @@ package se.team05.dialog;
  along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import se.team05.overlay.CheckPoint;
+import se.team05.R;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -29,15 +29,20 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 	{
 	}
 
-	public SaveRouteDialog(Context context, CheckPoint checkPoint, int mode)
+	private Context context;
+
+	public SaveRouteDialog(Context context)
 	{
 		super(context);
+		this.context = context;
 	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.dialog_save_route);
+		setTitle(context.getString(R.string.save_route));
 	}
 
 	@Override
