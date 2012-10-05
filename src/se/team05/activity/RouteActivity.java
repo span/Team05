@@ -60,7 +60,7 @@ import com.google.android.maps.Overlay;
  * @author Markus Schutzer, Patrik Thitusson, Daniel Kvist
  * 
  */
-public class NewRouteActivity extends MapActivity implements View.OnClickListener, EditCheckPointDialog.Callbacks,
+public class RouteActivity extends MapActivity implements View.OnClickListener, EditCheckPointDialog.Callbacks,
 		SaveRouteDialog.Callbacks, CheckPointOverlay.Callbacks, MapOnGestureListener.Callbacks,
 		MapLocationListener.Callbacks
 {
@@ -105,7 +105,7 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 	{
 
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_while_running);
+		setContentView(R.layout.activity_route);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 
 		geoPointList = new ArrayList<GeoPoint>();
