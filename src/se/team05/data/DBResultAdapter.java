@@ -73,7 +73,7 @@ public class DBResultAdapter extends DBAdapter {
 	 * 			calories used while carrying out the route
 	 * @return the id given to the result in the database
 	 */
-	public long instertResult (int rid, int date, int time, int distance, int calories)
+	public long instertResult (long rid, int date, int time, int distance, int calories)
 	{
 		ContentValues values = new ContentValues();
 		values.put(COLUMN_RID, rid);

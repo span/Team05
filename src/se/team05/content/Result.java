@@ -29,7 +29,7 @@ package se.team05.content;
 public class Result {
 	
 	private int _id;
-	private int routId;
+	private long routId;
 	private int timestamp;
 	private int time;
 	private int calories;
@@ -106,12 +106,12 @@ public class Result {
 		this._id = _id;
 	}
 	
-	public int getRoutId() {
+	public long getRoutId() {
 		return routId;
 	}
 
-	public void setRoutId(int routId) {
-		this.routId = routId;
+	public void setRouteId(long l) {
+		this.routId = l;
 	}
 
 	/**

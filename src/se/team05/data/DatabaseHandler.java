@@ -257,7 +257,7 @@ public class DatabaseHandler
 		return result;
 	}
 
-	public void setResult(Result result)
+	public void saveResult(Result result)
 	{
 		dbResultAdapter.open();
 		dbResultAdapter.instertResult(result.getRoutId(), result.getTimestamp(), result.getTime(), result.getDistance(), result.getCalories());

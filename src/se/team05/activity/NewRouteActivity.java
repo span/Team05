@@ -54,14 +54,15 @@ import com.google.android.maps.Overlay;
 
 /**
  * This activity Presents at map to the user. It also tracks the users movement
- * and will paint the geoPointList as the user moves. This is accomplished by using
- * Google's map API.
+ * and will paint the geoPointList as the user moves. This is accomplished by
+ * using Google's map API.
  * 
  * @author Markus Schutzer, Patrik Thitusson, Daniel Kvist
  * 
  */
 public class NewRouteActivity extends MapActivity implements View.OnClickListener, EditCheckPointDialog.Callbacks,
-		SaveRouteDialog.Callbacks, CheckPointOverlay.Callbacks, MapOnGestureListener.Callbacks, MapLocationListener.Callbacks
+		SaveRouteDialog.Callbacks, CheckPointOverlay.Callbacks, MapOnGestureListener.Callbacks,
+		MapLocationListener.Callbacks
 {
 
 	private ArrayList<GeoPoint> geoPointList;
@@ -81,7 +82,6 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 	private Handler handler;
 	private Runnable runnable;
 	int timePassed = 0;
-
 
 	private static String DISTANCE_UNIT_KILOMETRE = "Km";
 	private static String DISTANCE_UNIT_METRES = " metres";
@@ -195,7 +195,7 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 			GeoPoint p = new GeoPoint((int) (location.getLatitude() * 1E6), (int) (location.getLongitude() * 1E6));
 			geoPointList.add(p);
 
-			userSpeed =  (3.6*location.getSpeed()) + DISTANCE_UNIT_KILOMETRE + "/h";
+			userSpeed = (3.6 * location.getSpeed()) + DISTANCE_UNIT_KILOMETRE + "/h";
 			if (lastLocation != null)
 			{
 				totalDistance += lastLocation.distanceTo(location);
@@ -203,14 +203,13 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 				{
 					lengthPresentation = DISTANCE_UNIT_KILOMETRE;
 					userDistance = new DecimalFormat("#.##").format(totalDistance / 1000);
-				}
-				else
+				} else
 				{
 					userDistance = "" + (int) totalDistance;
 				}
 				userDistanceRun = userDistance + lengthPresentation;
 			}
-			
+
 			lastLocation = location;
 
 			TextView speedView = (TextView) findViewById(R.id.show_speed_textview);
@@ -254,14 +253,17 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 
 	/**
 	 * Button listener for this activity. Will activate the desired outcome of
-	 * any of the three buttons. In the case of Start Run the button will disappear and will be replaced by
-	 * a "Stop Run"-button, start run till also start the timer and the recording of the user's locations and
-	 * start drawing his or hers route on the map. If the user presses the Stop Run-button the recording will
-	 * stop and the user will be prompted to either save or discard this run. This will also stop the timer.
-	 * The add checkpoint will place a checkpoint at the users current location similar to the single tap
-	 * implementation.
+	 * any of the three buttons. In the case of Start Run the button will
+	 * disappear and will be replaced by a "Stop Run"-button, start run till
+	 * also start the timer and the recording of the user's locations and start
+	 * drawing his or hers route on the map. If the user presses the Stop
+	 * Run-button the recording will stop and the user will be prompted to
+	 * either save or discard this run. This will also stop the timer. The add
+	 * checkpoint will place a checkpoint at the users current location similar
+	 * to the single tap implementation.
 	 * 
-	 * @param v the button being pressed.      
+	 * @param v
+	 *            the button being pressed.
 	 */
 	@Override
 	public void onClick(View v)
@@ -274,11 +276,11 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 				v2.setVisibility(View.GONE);
 				View v3 = findViewById(R.id.stop_and_save_button);
 				v3.setVisibility(View.VISIBLE);
-				
-				runnable = new Runnable() 
+
+				runnable = new Runnable()
 				{
 					@Override
-					public void run() 
+					public void run()
 					{
 						timerTick();
 						handler.postDelayed(this, 1000);
@@ -288,14 +290,13 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 				handler = new Handler();
 				handler.postDelayed(runnable, 0);
 
-				
 				break;
 			case R.id.stop_and_save_button:
 				handler.removeCallbacks(runnable);
-				
-				int speed =  (int)((totalDistance / timePassed)*3.6F);
-				
-				routeResults = new Result(0, 0, timePassed, speed, (int)totalDistance );
+
+				int speed = (int) ((totalDistance / timePassed) * 3.6F);
+
+				routeResults = new Result(-1, -1, timePassed, (int) totalDistance, 0);
 				SaveRouteDialog saveRouteDialog = new SaveRouteDialog(this, this, routeResults);
 				saveRouteDialog.show();
 				break;
@@ -311,24 +312,24 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 				break;
 		}
 	}
-	
+
 	/**
-	 * Method that gets called to update the UI with how much time that has passed and presents this to the user.
-	 * Will use field timePassed to determine time while not alteringthe timePassed variable if we want to pass that value
-	 * to the database.
+	 * Method that gets called to update the UI with how much time that has
+	 * passed and presents this to the user. Will use field timePassed to
+	 * determine time while not alteringthe timePassed variable if we want to
+	 * pass that value to the database.
 	 */
 	private void timerTick()
 	{
 		int seconds = timePassed % 60;
 		int minutes = timePassed / 60;
-		
+
 		TextView timeView = (TextView) findViewById(R.id.show_time_textview);
-		String result = String.format(" %02d:%02d", minutes, seconds );
+		String result = String.format(" %02d:%02d", minutes, seconds);
 		timeView.setText(result);
 		timePassed++;
-		
-	}
 
+	}
 
 	/**
 	 * This method deletes the checkpoint with all its tracks from the database.
@@ -443,22 +444,28 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 
 	/**
 	 * This method is called from the save geoPointList dialog when the user has
-	 * pressed the "save" button. It creates a new geoPointList with the information
-	 * given in the dialog and then saves it to the database. After that, the
-	 * user is taken back to the main activity.
+	 * pressed the "save" button. It creates a new geoPointList with the
+	 * information given in the dialog and then saves it to the database. After
+	 * that, the user is taken back to the main activity.
 	 */
 	@Override
 	public void onSaveRoute(String name, String description, boolean saveResult)
 	{
 		Route route = new Route(name, description);
 		route.setId(databaseHandler.saveRoute(route));
+		if (saveResult)
+		{
+			routeResults.setRouteId(route.getId());
+			routeResults.setTimestamp((int) System.currentTimeMillis() / 1000);
+			databaseHandler.saveResult(routeResults);
+		}
 		databaseHandler.saveGeoPoints(route.getId(), geoPointList);
 		launchMainActivity();
 	}
 
 	/**
-	 * Called from the save geoPointList dialog when a geoPointList has been dismissed. This
-	 * method just launches the main activity.
+	 * Called from the save geoPointList dialog when a geoPointList has been
+	 * dismissed. This method just launches the main activity.
 	 */
 	@Override
 	public void onDismissRoute()
