@@ -46,6 +46,10 @@
             android:name=".activity.MediaSelectorActivity"
             android:label="@string/select_media" >
         </activity>
+        <activity
+            android:name=".activity.ShowExistingRouteActivity"
+            android:label="" >
+        </activity>
     </application>
 
 </manifest>

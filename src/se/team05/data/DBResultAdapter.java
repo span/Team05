@@ -103,7 +103,7 @@ public class DBResultAdapter extends DBAdapter {
 	 * 				database route id
 	 * @return Cursor to the result
 	 */
-	public Cursor fetchResultByRoutId(int rid)
+	public Cursor fetchResultByRid(int rid)
 	{
 		return db.query(TABLE_RESULT, null, COLUMN_RID + "=" + rid, null, null, null, null);
 	}
@@ -127,7 +127,7 @@ public class DBResultAdapter extends DBAdapter {
 	 *            the rout id whose results shall be deleted
 	 * @return the number of rows affected
 	 */
-	public int deleteResultsByRoutId(int rid)
+	public int deleteResultByRid(int rid)
 	{
 		return db.delete(TABLE_RESULT, COLUMN_RID + "=" + rid, null);
 	}

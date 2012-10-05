@@ -21,7 +21,7 @@ import android.content.Context;
 import android.database.Cursor;
 
 /**
- * This class is the checpoint adapter class used to communicate with the "checkpoints"
+ * This class is the checkpoint adapter class used to communicate with the "checkpoints"
  * table in the SQLite database. It contains information about the columns,
  * basic Create, Read, Delete operations and also the initial "create table"
  * statement.
@@ -36,10 +36,16 @@ public class DBCheckPointAdapter extends DBAdapter
 	public static final String COLUMN_RID = "rid";
 	public static final String COLUMN_RADIUS = "radius";
 	public static final String COLUMN_NAME = "name";
+	public static final String COLUMN_LATITUDE = "latitude";
+	public static final String COLUMN_LONGITUDE = "longitude";
 
-	public static final String DATABASE_CREATE_CHECKPOINT_TABLE = "create table " + TABLE_CHECKPOINTS + "(" + COLUMN_ID
-			+ " integer primary key autoincrement, " + COLUMN_RID + " integer not null," + COLUMN_RADIUS + " integer not null, "
-			+ COLUMN_NAME + " text not null);";
+	public static final String DATABASE_CREATE_CHECKPOINT_TABLE = "create table " + TABLE_CHECKPOINTS + "(" +
+														COLUMN_ID + " integer primary key autoincrement, " + 
+														COLUMN_RID + " integer not null," + 
+														COLUMN_RADIUS + " integer not null, " + 
+														COLUMN_NAME + " text not null, " +
+														COLUMN_LATITUDE + " integer not null, " +
+														COLUMN_LONGITUDE + " integer not null);";
 
 	/**
 	 * The constructor of the class which creates a new instance of the database
@@ -64,12 +70,14 @@ public class DBCheckPointAdapter extends DBAdapter
 	 *            the name of the checkpoint
 	 * @return the new id for the checkpoint
 	 */
-	public long insertCheckpoint(long rid, int radius, String name)
+	public long insertCheckpoint(long rid, int radius, String name, int latitude, int longitude)
 	{
 		ContentValues values = new ContentValues();
 		values.put(COLUMN_RID, rid);
 		values.put(COLUMN_RADIUS, radius);
 		values.put(COLUMN_NAME, name);
+		values.put(COLUMN_LATITUDE, latitude);
+		values.put(COLUMN_LONGITUDE, longitude);
 		return db.insert(TABLE_CHECKPOINTS, null, values);
 	}
 
