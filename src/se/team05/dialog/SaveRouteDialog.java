@@ -131,14 +131,14 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 			case R.id.discard_button:
 				AlertDialog alertDialog = new AlertDialog.Builder(context).setTitle("Discard route?")
 						.setMessage("Do you really want to discard your route?")
-						.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+						.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
 						{
 							public void onClick(DialogInterface dialog, int id)
 							{
 								callbacks.onDismissRoute();
 								dismiss();
 							}
-						}).setNegativeButton("No", new DialogInterface.OnClickListener()
+						}).setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
 						{
 							public void onClick(DialogInterface dialog, int id)
 							{

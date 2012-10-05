@@ -49,5 +49,7 @@
     <string name="time_">Time:</string>
     <string name="distance_">Distance:</string>
     <string name="speed_">Speed:</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
 </resources>
