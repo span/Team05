@@ -250,18 +250,17 @@ public class DatabaseHandler
 	 */
 	private Result createResultFromCursor(Cursor cursor)
 	{
-		// Cursor cursor = dbResultAdapter.fetchResultById(id);
 		Result result = new Result(cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_ID)), cursor.getInt(cursor
 				.getColumnIndex(DBResultAdapter.COLUMN_TIMESTAMP)), cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_TIME)),
-				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_SPEED)), cursor.getInt(cursor
+				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_DISTANCE)), cursor.getInt(cursor
 						.getColumnIndex(DBResultAdapter.COLUMN_CALORIES)));
 		return result;
 	}
 
-	public void setResult(Result result)
+	public void saveResult(Result result)
 	{
 		dbResultAdapter.open();
-		dbResultAdapter.instertResult(result.getRoutId(), result.getTimestamp(), result.getTime(), result.getSpeed(), result.getCalories());
+		dbResultAdapter.instertResult(result.getRoutId(), result.getTimestamp(), result.getTime(), result.getDistance(), result.getCalories());
 		dbResultAdapter.close();
 	}
 

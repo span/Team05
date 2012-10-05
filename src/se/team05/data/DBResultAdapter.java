@@ -36,7 +36,7 @@ public class DBResultAdapter extends DBAdapter {
 	public static final String COLUMN_RID = "rid";
 	public static final String COLUMN_TIMESTAMP = "timestamp";
 	public static final String COLUMN_TIME = "time";
-	public static final String COLUMN_SPEED = "speed";
+	public static final String COLUMN_DISTANCE = "distance";
 	public static final String COLUMN_CALORIES = "calories";
 	
 	public static final String DATABASE_CREATE_RESULT_TABLE = "create table " + TABLE_RESULT
@@ -44,7 +44,7 @@ public class DBResultAdapter extends DBAdapter {
 			+ COLUMN_RID + " integer not null, "
 			+ COLUMN_TIMESTAMP + " integer not null, "
 			+ COLUMN_TIME + " integer not null, "
-			+ COLUMN_SPEED + " integer not null, "
+			+ COLUMN_DISTANCE + " integer not null, "
 			+ COLUMN_CALORIES + " integer not null);";
 		
 	/**
@@ -67,19 +67,19 @@ public class DBResultAdapter extends DBAdapter {
 	 * 			the date when results are generated
 	 * @param time
 	 * 			the time used to complete the route
-	 * @param speed
-	 * 			the average speed (kilometers/hour) during the route
+	 * @param distance
+	 * 			the distance of the route
 	 * @param calories
 	 * 			calories used while carrying out the route
 	 * @return the id given to the result in the database
 	 */
-	public long instertResult (int rid, int date, int time, int speed, int calories)
+	public long instertResult (long rid, int date, int time, int distance, int calories)
 	{
 		ContentValues values = new ContentValues();
 		values.put(COLUMN_RID, rid);
 		values.put(COLUMN_TIMESTAMP, date);
 		values.put(COLUMN_TIME, time);
-		values.put(COLUMN_SPEED, speed);
+		values.put(COLUMN_DISTANCE, distance);
 		values.put(COLUMN_CALORIES, calories);
 		return db.insert(TABLE_RESULT, null, values);
 	}
