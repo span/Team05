@@ -18,7 +18,7 @@ package se.team05.listener;
 
 import se.team05.R;
 import se.team05.activity.NewRouteActivity;
-import se.team05.activity.UseExistingRouteActivity;
+import se.team05.activity.ListExistingRoutesActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
@@ -69,7 +69,7 @@ public class MainActivityButtonListener implements OnClickListener
 				intent = new Intent(context, NewRouteActivity.class);
 				break;
 			case R.id.use_existing_button:
-				intent = new Intent(context, UseExistingRouteActivity.class);
+				intent = new Intent(context, ListExistingRoutesActivity.class);
 				break;
 			default:
 				return;
