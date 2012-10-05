@@ -84,6 +84,14 @@ public class CheckPointOverlay extends ItemizedOverlay<CheckPoint>
 		selectedCheckpointIndex = checkPointList.size() - 1;
 		populate();
 	}
+	
+	public void setCheckPoints(ArrayList<CheckPoint> listOfCheckPoints)
+	{
+		for(CheckPoint checkPoint : listOfCheckPoints)
+		{
+			addCheckPoint(checkPoint);
+		}
+	}
 
 	/**
 	 * The onTap method that uses callback to send the checkpoint where the
@@ -117,5 +125,7 @@ public class CheckPointOverlay extends ItemizedOverlay<CheckPoint>
 		setLastFocusedIndex(-1);
 		populate();
 	}
+
+
 
 }

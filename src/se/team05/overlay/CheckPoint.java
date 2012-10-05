@@ -49,16 +49,21 @@ public class CheckPoint extends OverlayItem
 	public CheckPoint(GeoPoint geoPoint)
 	{		
 		this(geoPoint, "CheckPoint", 30, -1);
-		this.geoPoint = geoPoint;
 	}
 
-	private CheckPoint(GeoPoint geoPoint, String name, int radius, int rid)
+	private CheckPoint(GeoPoint geoPoint, String name, int radius, long rid)
 	{
 		super(geoPoint, "", "");
 		this.setName(name);
 		this.setRadius(radius);
-		this.geoPoint = geoPoint;
+		this.setGeoPoint(geoPoint);
+		this.setRid(rid);
 		tracks = new ArrayList<Track>();
+	}
+
+	private void setGeoPoint(GeoPoint geoPoint)
+	{
+		this.geoPoint = geoPoint;
 	}
 
 	/**

@@ -100,7 +100,7 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 		deleteButton.setOnClickListener(this);
 		findViewById(R.id.save_button).setOnClickListener(this);
 		
-		if(mode==MODE_ADD)
+		if(mode == MODE_ADD)
 		{
 			deleteButton.setText("Cancel");
 		}
