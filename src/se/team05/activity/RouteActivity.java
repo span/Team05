@@ -91,7 +91,12 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	private CheckPoint currentCheckPoint;
 	private Result routeResults;
 	private boolean newRoute;
-	private List<Overlay> overlays;;
+	private List<Overlay> overlays;
+	private Button stopAndSaveButton;
+	private Button startRunButton;
+	private Button startExistingRunButton;
+	private Button stopExistingRunButton;
+	private Route route;;
 
 	/**
 	 * Will present a map to the user and will also display a dot representing
@@ -153,7 +158,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 		if(!newRoute)
 		{
 			// TODO Use rid when routes are properly saved and selected
-			drawRoute(3);
+			drawRoute(rid);
 		}
 		setupButtons();
 		mapView.postInvalidate();
@@ -161,12 +166,13 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 
 	private void setupButtons()
 	{
-		Button stopAndSaveButton = (Button) findViewById(R.id.stop_and_save_button);
-		Button startRunButton = (Button) findViewById(R.id.start_run_button);
 		Button addCheckPointButton = (Button) findViewById(R.id.add_checkpoint);
-		Button startExistingRunButton = (Button) findViewById(R.id.start_existing_run_button);
-		Button stopExistingRunButton = (Button) findViewById(R.id.stop_existing_run_button);
 		Button showResultButton = (Button) findViewById(R.id.show_result_button);
+		
+		stopAndSaveButton = (Button) findViewById(R.id.stop_and_save_button);
+		startRunButton = (Button) findViewById(R.id.start_run_button);
+		startExistingRunButton = (Button) findViewById(R.id.start_existing_run_button);
+		stopExistingRunButton = (Button) findViewById(R.id.stop_existing_run_button);
 		
 		if(newRoute)
 		{
@@ -191,7 +197,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 
 	private void drawRoute(long id)
 	{
-		Route route = databaseHandler.getRoute(id);
+		route = databaseHandler.getRoute(id);
 		RouteOverlay routeOverlay = new RouteOverlay(databaseHandler.getGeoPoints(id), 23, true); 
     	overlays.add(routeOverlay);
 	}
@@ -315,24 +321,9 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 		{
 			case R.id.start_run_button:
 				started = true;
-				View v2 = findViewById(R.id.start_run_button);
-				v2.setVisibility(View.GONE);
-				View v3 = findViewById(R.id.stop_and_save_button);
-				v3.setVisibility(View.VISIBLE);
-
-				runnable = new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						timerTick();
-						handler.postDelayed(this, 1000);
-					}
-				};
-
-				handler = new Handler();
-				handler.postDelayed(runnable, 0);
-
+				startRunButton.setVisibility(View.GONE);
+				stopAndSaveButton.setVisibility(View.VISIBLE);
+				startTimer();
 				break;
 			case R.id.stop_and_save_button:
 				handler.removeCallbacks(runnable);
@@ -350,7 +341,39 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 					}
 				}
 				break;
+			case R.id.start_existing_run_button:
+				started = true;
+				startExistingRunButton.setVisibility(View.GONE);
+				stopExistingRunButton.setVisibility(View.VISIBLE);
+				startTimer();
+				break;
+			case R.id.show_result_button:
+				break;
+			case R.id.stop_existing_run_button:
+				handler.removeCallbacks(runnable);
+				routeResults = new Result(route.getId(), (int) System.currentTimeMillis() / 1000, timePassed, (int) totalDistance, 0);
+				databaseHandler.saveResult(routeResults);
+				break;
 		}
+	}
+
+	/**
+	 * 
+	 */
+	private void startTimer()
+	{
+		runnable = new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				timerTick();
+				handler.postDelayed(this, 1000);
+			}
+		};
+		
+		handler = new Handler();
+		handler.postDelayed(runnable, 0);
 	}
 
 	/**
