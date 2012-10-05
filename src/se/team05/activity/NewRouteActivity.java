@@ -22,7 +22,6 @@ import java.util.List;
 
 import se.team05.R;
 import se.team05.content.Route;
-import se.team05.content.Routes;
 import se.team05.content.Track;
 import se.team05.data.DatabaseHandler;
 import se.team05.dialog.EditCheckPointDialog;
@@ -40,6 +39,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 import android.view.View;
@@ -66,27 +66,25 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 	private ArrayList<GeoPoint> geoPointList;
 	private LocationManager locationManager;
 	private String providerName;
-	private int routeIdTag;
 	private EditRouteMapView mapView;
 	private boolean started = false;
 	private MyLocationOverlay myLocationOverlay;
 	private String userSpeed = "0";
 	private String userDistance = "0";
-	private GeoPoint lastPoint;
 	private Location lastLocation;
-	private float[] distanceResult = new float[3];
 	private float totalDistance = 0;
 	private String lengthPresentation = DISTANCE_UNIT_METRES;
-	private String userDistanceRun = TOTAL_DISTANCE + userDistance + lengthPresentation;
+	private String userDistanceRun = userDistance + lengthPresentation;
 	private CheckPointOverlay checkPointOverlay;
 	private EditCheckPointDialog checkPointDialog;
+	private Handler handler;
+	private Runnable runnable;
+	int timePassed = 0;
 
-	private static String DISTANCE_UNIT_MILES = "miles";
-	private static String DISTANCE_UNIT_YARDS = "yards";
+
 	private static String DISTANCE_UNIT_KILOMETRE = "Km";
 	private static String DISTANCE_UNIT_METRES = " metres";
 	private static float DISTANCE_THRESHOLD_EU = 1000;
-	private static String TOTAL_DISTANCE = "Total Distance: ";
 	private ArrayList<Track> selectedTracks = new ArrayList<Track>();
 	private DatabaseHandler databaseHandler;
 	private CheckPoint currentCheckPoint;;
@@ -108,7 +106,6 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 		setContentView(R.layout.activity_while_running);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 
-		routeIdTag = Routes.getInstance().getCount();
 		geoPointList = new ArrayList<GeoPoint>();
 
 		databaseHandler = new DatabaseHandler(this);
@@ -141,7 +138,7 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 		}
 
 		List<Overlay> overlays = mapView.getOverlays();
-		Drawable drawable = getResources().getDrawable(R.drawable.green_markerc);
+		Drawable drawable = getResources().getDrawable(R.drawable.ic_launcher);
 
 		RouteOverlay routeOverlay = new RouteOverlay(geoPointList, 78, true);
 		myLocationOverlay = new MyLocationOverlay(this, mapView);
@@ -196,7 +193,7 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 			GeoPoint p = new GeoPoint((int) (location.getLatitude() * 1E6), (int) (location.getLongitude() * 1E6));
 			geoPointList.add(p);
 
-			userSpeed = "Your Speed: " + location.getSpeed() + DISTANCE_UNIT_KILOMETRE + "/h";
+			userSpeed =  (3.6*location.getSpeed()) + DISTANCE_UNIT_KILOMETRE + "/h";
 			if (lastLocation != null)
 			{
 				totalDistance += lastLocation.distanceTo(location);
@@ -209,10 +206,9 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 				{
 					userDistance = "" + (int) totalDistance;
 				}
-				userDistanceRun = TOTAL_DISTANCE + userDistance + lengthPresentation;
+				userDistanceRun = userDistance + lengthPresentation;
 			}
 			
-			lastPoint = p;
 			lastLocation = location;
 
 			TextView speedView = (TextView) findViewById(R.id.show_speed_textview);
@@ -256,10 +252,14 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 
 	/**
 	 * Button listener for this activity. Will activate the desired outcome of
-	 * any of the three buttons.
+	 * any of the three buttons. In the case of Start Run the button will disappear and will be replaced by
+	 * a "Stop Run"-button, start run till also start the timer and the recording of the user's locations and
+	 * start drawing his or hers route on the map. If the user presses the Stop Run-button the recording will
+	 * stop and the user will be prompted to either save or discard this run. This will also stop the timer.
+	 * The add checkpoint will place a checkpoint at the users current location similar to the single tap
+	 * implementation.
 	 * 
-	 * @param v
-	 *            the button being pressed.
+	 * @param v the button being pressed.      
 	 */
 	@Override
 	public void onClick(View v)
@@ -272,8 +272,24 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 				v2.setVisibility(View.GONE);
 				View v3 = findViewById(R.id.stop_and_save_button);
 				v3.setVisibility(View.VISIBLE);
+				
+				runnable = new Runnable() 
+				{
+					@Override
+					public void run() 
+					{
+						timerTick();
+						handler.postDelayed(this, 1000);
+					}
+				};
+
+				handler = new Handler();
+				handler.postDelayed(runnable, 0);
+
+				
 				break;
 			case R.id.stop_and_save_button:
+				handler.removeCallbacks(runnable);
 				SaveRouteDialog saveRouteDialog = new SaveRouteDialog(this, this);
 				saveRouteDialog.show();
 				break;
@@ -289,6 +305,24 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 				break;
 		}
 	}
+	
+	/**
+	 * Method that gets called to update the UI with how much time that has passed and presents this to the user.
+	 * Will use field timePassed to determine time while not alteringthe timePassed variable if we want to pass that value
+	 * to the database.
+	 */
+	private void timerTick()
+	{
+		int seconds = timePassed % 60;
+		int minutes = timePassed / 60;
+		
+		TextView timeView = (TextView) findViewById(R.id.show_time_textview);
+		String result = String.format(" %02d:%02d", minutes, seconds );
+		timeView.setText(result);
+		timePassed++;
+		
+	}
+
 
 	/**
 	 * This method deletes the checkpoint with all its tracks from the database.
