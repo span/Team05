@@ -43,9 +43,9 @@ public class DBCheckPointAdapter extends DBAdapter
 														COLUMN_ID + " integer primary key autoincrement, " + 
 														COLUMN_RID + " integer not null," + 
 														COLUMN_RADIUS + " integer not null, " + 
-														COLUMN_NAME + " text not null " +
-														COLUMN_LATITUDE + "integer not null" +
-														COLUMN_LONGITUDE + "integer not null);";
+														COLUMN_NAME + " text not null, " +
+														COLUMN_LATITUDE + " integer not null, " +
+														COLUMN_LONGITUDE + " integer not null);";
 
 	/**
 	 * The constructor of the class which creates a new instance of the database
