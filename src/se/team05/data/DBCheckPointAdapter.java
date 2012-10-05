@@ -130,4 +130,11 @@ public class DBCheckPointAdapter extends DBAdapter
 	{
 		return db.delete(TABLE_CHECKPOINTS, COLUMN_RID + "=" + rid, null);
 	}
+
+	public void updateCheckPointRid(long rid)
+	{
+		ContentValues values = new ContentValues();
+		values.put(COLUMN_RID, rid);
+		db.update(TABLE_CHECKPOINTS, values, COLUMN_RID + "=" + -1, null);
+	}
 }

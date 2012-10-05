@@ -157,9 +157,16 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 		if(!newRoute)
 		{
 			drawRoute(rid);
+			addSavedCheckPoints(rid);
 		}
 		setupButtons();
 		mapView.postInvalidate();
+	}
+
+	private void addSavedCheckPoints(long rid)
+	{
+		ArrayList<CheckPoint> listOfCheckPoints = databaseHandler.getCheckPoints(rid);
+		checkPointOverlay.setCheckPoints(listOfCheckPoints);
 	}
 
 	private void setupButtons()
@@ -522,6 +529,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 			databaseHandler.saveResult(routeResults);
 		}
 		databaseHandler.saveGeoPoints(route.getId(), geoPointList);
+		databaseHandler.updateCheckPointRid(route.getId());
 		launchMainActivity();
 	}
 

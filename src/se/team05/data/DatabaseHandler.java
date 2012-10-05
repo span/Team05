@@ -386,5 +386,45 @@ public class DatabaseHandler
 		
 		return geoPointList;
 	}
+	
+	public ArrayList<CheckPoint> getCheckPoints(long id)
+	{
+		dbCheckPointAdapter.open();
+		Cursor cursor = dbCheckPointAdapter.fetchCheckPointByRid(id);
+		ArrayList<CheckPoint> checkPointList = null;
+		
+		if (cursor != null)
+		{
+			checkPointList = new ArrayList<CheckPoint>();
+			cursor.moveToFirst();
+
+			while (!cursor.isAfterLast())
+			{
+				GeoPoint geoPoint = new GeoPoint(
+						cursor.getInt(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_LATITUDE)),
+						cursor.getInt(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_LONGITUDE)));
+				
+				CheckPoint checkPoint = new CheckPoint(geoPoint);
+				checkPoint.setRadius(cursor.getInt(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_RADIUS)));
+				checkPoint.setName(cursor.getString(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_NAME)));
+				checkPoint.setRid(cursor.getLong(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_RID)));
+				checkPoint.setId(cursor.getLong(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_ID)));
+				
+				checkPointList.add(checkPoint);
+				cursor.moveToNext();
+			}
+			cursor.close();
+		}
+		dbCheckPointAdapter.close();
+		
+		return checkPointList;
+	}
+
+	public void updateCheckPointRid(long rid)
+	{
+		dbCheckPointAdapter.open();
+		dbCheckPointAdapter.updateCheckPointRid(rid);
+		dbCheckPointAdapter.close();
+	}
 
 }
