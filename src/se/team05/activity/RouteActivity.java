@@ -110,29 +110,15 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 		setContentView(R.layout.activity_route);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		
-		newRoute = false;
+		newRoute = true;
+		long rid = getIntent().getLongExtra(Route.EXTRA_ID, -1); 
+		if(rid != -1)
+		{
+			newRoute = false;
+		}
 		
 		geoPointList = new ArrayList<GeoPoint>();
-
 		databaseHandler = new DatabaseHandler(this);
-
-		Button stopAndSaveButton = (Button) findViewById(R.id.stop_and_save_button);
-		stopAndSaveButton.setOnClickListener(this);
-
-		Button startRunButton = (Button) findViewById(R.id.start_run_button);
-		startRunButton.setOnClickListener(this);
-
-		Button addCheckPointButton = (Button) findViewById(R.id.add_checkpoint);
-		addCheckPointButton.setOnClickListener(this);
-		
-		Button startExistingRunButton = (Button) findViewById(R.id.start_existing_run_button);
-		startExistingRunButton.setOnClickListener(this);
-
-		Button stopExistingRunButton = (Button) findViewById(R.id.stop_existing_run_button);
-		stopExistingRunButton.setOnClickListener(this);
-		
-		Button showResultButton = (Button) findViewById(R.id.show_result_button);
-		showResultButton.setOnClickListener(this);
 		
 		mapView = (EditRouteMapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
@@ -166,10 +152,41 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 
 		if(!newRoute)
 		{
+			// TODO Use rid when routes are properly saved and selected
 			drawRoute(3);
 		}
-
+		setupButtons();
 		mapView.postInvalidate();
+	}
+
+	private void setupButtons()
+	{
+		Button stopAndSaveButton = (Button) findViewById(R.id.stop_and_save_button);
+		Button startRunButton = (Button) findViewById(R.id.start_run_button);
+		Button addCheckPointButton = (Button) findViewById(R.id.add_checkpoint);
+		Button startExistingRunButton = (Button) findViewById(R.id.start_existing_run_button);
+		Button stopExistingRunButton = (Button) findViewById(R.id.stop_existing_run_button);
+		Button showResultButton = (Button) findViewById(R.id.show_result_button);
+		
+		if(newRoute)
+		{
+			stopAndSaveButton.setOnClickListener(this);
+			startRunButton.setOnClickListener(this);
+			addCheckPointButton.setOnClickListener(this);
+		}
+		else
+		{
+			startExistingRunButton.setOnClickListener(this);
+			startExistingRunButton.setVisibility(View.VISIBLE);
+			stopExistingRunButton.setOnClickListener(this);
+			
+			showResultButton.setOnClickListener(this);
+			showResultButton.setVisibility(View.VISIBLE);
+			
+			stopAndSaveButton.setVisibility(View.GONE);
+			startRunButton.setVisibility(View.GONE);
+			addCheckPointButton.setVisibility(View.GONE);
+		}
 	}
 
 	private void drawRoute(long id)
