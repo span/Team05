@@ -6,7 +6,7 @@
     android:orientation="vertical" >
 
     <se.team05.view.EditRouteMapView
-        android:id="@+id/mapview"
+        android:id="@+id/mapview2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -19,9 +19,9 @@
         android:orientation="horizontal" >
 
         <TextView
+            android:text="@string/speed_of_run"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/speed_of_run" />
+            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/show_speed_textview"
@@ -30,48 +30,12 @@
             tools:context=".DisplayMessageActivity" />
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/show_distance_textview"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/distance_of_run" />
-
-        <TextView
-            android:id="@+id/show_distance_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:context=".DisplayMessageActivity" />
-
-    </LinearLayout>
-    
-    
-        <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/time_of_run" />
-
-        <TextView
-            android:id="@+id/show_time_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:context=".DisplayMessageActivity" />
-
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/add_checkpoint"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/button_addcheckpoint" />
+        android:text="@string/distance_of_run"
+        tools:context=".DisplayMessageActivity" />
 
     <Button
         android:id="@+id/start_run_button"
@@ -85,5 +49,11 @@
         android:layout_height="wrap_content"
         android:text="@string/button_stop_and_save"
         android:visibility="gone" />
+    
+    <Button
+        android:id="@+id/show_results"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/button_show_results" />
 
 </LinearLayout>
