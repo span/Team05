@@ -65,7 +65,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 		MapLocationListener.Callbacks
 {
 
-	private ArrayList<GeoPoint> geoPointList;
+	private ArrayList<GeoPoint> geoPointList = new ArrayList<GeoPoint>();
 	private LocationManager locationManager;
 	private String providerName;
 	private EditRouteMapView mapView;
@@ -114,17 +114,28 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_route);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-		
+		databaseHandler = new DatabaseHandler(this);
+
+		setupMapAndLocation();
+		setupButtons();
+
 		newRoute = true;
-		long rid = getIntent().getLongExtra(Route.EXTRA_ID, -1); 
-		if(rid != -1)
+		long rid = getIntent().getLongExtra(Route.EXTRA_ID, -1);
+		if (rid != -1)
 		{
 			newRoute = false;
+			drawRoute(rid);
+			addSavedCheckPoints(rid);
 		}
-		
-		geoPointList = new ArrayList<GeoPoint>();
-		databaseHandler = new DatabaseHandler(this);
-		
+
+		mapView.postInvalidate();
+	}
+
+	/**
+	 * Sets up the map view and the location
+	 */
+	private void setupMapAndLocation()
+	{
 		mapView = (EditRouteMapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
 		mapView.setOnGestureListener(new MapOnGestureListener(this));
@@ -153,33 +164,34 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 		overlays.add(routeOverlay);
 		overlays.add(myLocationOverlay);
 		overlays.add(checkPointOverlay);
-
-		if(!newRoute)
-		{
-			drawRoute(rid);
-			addSavedCheckPoints(rid);
-		}
-		setupButtons();
-		mapView.postInvalidate();
 	}
 
+	/**
+	 * Adds saved checkpoints to the route that has been drawn if the user is
+	 * using an previously saved map.
+	 * 
+	 * @param rid
+	 */
 	private void addSavedCheckPoints(long rid)
 	{
 		ArrayList<CheckPoint> listOfCheckPoints = databaseHandler.getCheckPoints(rid);
 		checkPointOverlay.setCheckPoints(listOfCheckPoints);
 	}
 
+	/**
+	 * Sets up the buttons in the view.
+	 */
 	private void setupButtons()
 	{
 		Button addCheckPointButton = (Button) findViewById(R.id.add_checkpoint);
 		Button showResultButton = (Button) findViewById(R.id.show_result_button);
-		
+
 		stopAndSaveButton = (Button) findViewById(R.id.stop_and_save_button);
 		startRunButton = (Button) findViewById(R.id.start_run_button);
 		startExistingRunButton = (Button) findViewById(R.id.start_existing_run_button);
 		stopExistingRunButton = (Button) findViewById(R.id.stop_existing_run_button);
-		
-		if(newRoute)
+
+		if (newRoute)
 		{
 			stopAndSaveButton.setOnClickListener(this);
 			startRunButton.setOnClickListener(this);
@@ -190,21 +202,27 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 			startExistingRunButton.setOnClickListener(this);
 			startExistingRunButton.setVisibility(View.VISIBLE);
 			stopExistingRunButton.setOnClickListener(this);
-			
+
 			showResultButton.setOnClickListener(this);
 			showResultButton.setVisibility(View.VISIBLE);
-			
+
 			stopAndSaveButton.setVisibility(View.GONE);
 			startRunButton.setVisibility(View.GONE);
 			addCheckPointButton.setVisibility(View.GONE);
 		}
 	}
 
+	/**
+	 * Gets route information from the database and draws an overlay on the map
+	 * view if the user is using a previously saved map.
+	 * 
+	 * @param id
+	 */
 	private void drawRoute(long id)
 	{
 		route = databaseHandler.getRoute(id);
-		RouteOverlay routeOverlay = new RouteOverlay(databaseHandler.getGeoPoints(id), 23, true); 
-    	overlays.add(routeOverlay);
+		RouteOverlay routeOverlay = new RouteOverlay(databaseHandler.getGeoPoints(id), 23, true);
+		overlays.add(routeOverlay);
 	}
 
 	/**
@@ -257,7 +275,8 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 				{
 					lengthPresentation = DISTANCE_UNIT_KILOMETRE;
 					userDistance = new DecimalFormat("#.##").format(totalDistance / 1000);
-				} else
+				}
+				else
 				{
 					userDistance = "" + (int) totalDistance;
 				}
@@ -357,7 +376,8 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 				break;
 			case R.id.stop_existing_run_button:
 				handler.removeCallbacks(runnable);
-				routeResults = new Result(route.getId(), (int) System.currentTimeMillis() / 1000, timePassed, (int) totalDistance, 0);
+				routeResults = new Result(route.getId(), (int) System.currentTimeMillis() / 1000, timePassed,
+						(int) totalDistance, 0);
 				databaseHandler.saveResult(routeResults);
 				stopExistingRunButton.setVisibility(View.GONE);
 				startExistingRunButton.setVisibility(View.VISIBLE);
@@ -366,7 +386,8 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	}
 
 	/**
-	 * 
+	 * Starts the timer that is used to let the user know for how long they have
+	 * been using the route.
 	 */
 	private void startTimer()
 	{
@@ -379,7 +400,6 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 				handler.postDelayed(this, 1000);
 			}
 		};
-		
 		handler = new Handler();
 		handler.postDelayed(runnable, 0);
 	}
