@@ -30,7 +30,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.NewRouteActivity"
+            android:name=".activity.RouteActivity"
             android:label="@string/new_route"
             android:parentActivityName=".activity.MainActivity" >
         </activity>
