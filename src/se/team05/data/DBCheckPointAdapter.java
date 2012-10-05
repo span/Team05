@@ -21,10 +21,10 @@ import android.content.Context;
 import android.database.Cursor;
 
 /**
- * This class is the checkpoint adapter class used to communicate with the "checkpoints"
- * table in the SQLite database. It contains information about the columns,
- * basic Create, Read, Delete operations and also the initial "create table"
- * statement.
+ * This class is the checkpoint adapter class used to communicate with the
+ * "checkpoints" table in the SQLite database. It contains information about the
+ * columns, basic Create, Read, Delete operations and also the initial
+ * "create table" statement.
  * 
  * @author Daniel Kvist
  * 
@@ -39,13 +39,10 @@ public class DBCheckPointAdapter extends DBAdapter
 	public static final String COLUMN_LATITUDE = "latitude";
 	public static final String COLUMN_LONGITUDE = "longitude";
 
-	public static final String DATABASE_CREATE_CHECKPOINT_TABLE = "create table " + TABLE_CHECKPOINTS + "(" +
-														COLUMN_ID + " integer primary key autoincrement, " + 
-														COLUMN_RID + " integer not null," + 
-														COLUMN_RADIUS + " integer not null, " + 
-														COLUMN_NAME + " text not null, " +
-														COLUMN_LATITUDE + " integer not null, " +
-														COLUMN_LONGITUDE + " integer not null);";
+	public static final String DATABASE_CREATE_CHECKPOINT_TABLE = "create table " + TABLE_CHECKPOINTS + "(" + COLUMN_ID
+			+ " integer primary key autoincrement, " + COLUMN_RID + " integer not null," + COLUMN_RADIUS
+			+ " integer not null, " + COLUMN_NAME + " text not null, " + COLUMN_LATITUDE + " integer not null, "
+			+ COLUMN_LONGITUDE + " integer not null);";
 
 	/**
 	 * The constructor of the class which creates a new instance of the database
@@ -131,6 +128,12 @@ public class DBCheckPointAdapter extends DBAdapter
 		return db.delete(TABLE_CHECKPOINTS, COLUMN_RID + "=" + rid, null);
 	}
 
+	/**
+	 * Updates all the checkpoints with -1 to a 'real' route id in the database
+	 * when a route has been saved.
+	 * 
+	 * @param rid
+	 */
 	public void updateCheckPointRid(long rid)
 	{
 		ContentValues values = new ContentValues();
