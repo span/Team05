@@ -18,6 +18,7 @@ package se.team05.dialog;
  */
 
 import se.team05.R;
+import se.team05.content.Result;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -27,6 +28,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.EditText;
+import android.widget.TextView;
 
 /**
  * This Dialog class is shown to the user when the user has recorded a new route
@@ -54,6 +56,7 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 
 	private Context context;
 	private Callbacks callbacks;
+	private Result result;
 
 	/**
 	 * The constructor of the dialog takes a Context and a Callbacks as a
@@ -65,17 +68,21 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 	 * @param callbacks
 	 *            an instance of the class that implements this class's
 	 *            Callbacks interface
+	 * @param result
+	 *            the results from the route including speed, distance, time
 	 */
-	public SaveRouteDialog(Context context, Callbacks callbacks)
+	public SaveRouteDialog(Context context, Callbacks callbacks, Result result)
 	{
 		super(context);
 		this.context = context;
 		this.callbacks = callbacks;
+		this.result = result;
 	}
 
 	/**
 	 * This method is called by the system and sets the content view that should
-	 * be connected with this class and also the title of the dialog. It also
+	 * be connected with this class and also the title of the dialog.It also
+	 * sets the result attributes, speed, distance and time of the route, and
 	 * adds click listeners to the buttons.
 	 */
 	@Override
@@ -87,6 +94,26 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 
 		((Button) findViewById(R.id.discard_button)).setOnClickListener(this);
 		((Button) findViewById(R.id.save_button)).setOnClickListener(this);
+
+		TextView timeTextView = (TextView) findViewById(R.id.time);
+		TextView distanceTextView = (TextView) findViewById(R.id.runneddistance);
+		TextView speedTextView = (TextView) findViewById(R.id.speed);
+
+		int routeDistance = result.getDistance();
+		String distanceText = String.valueOf(routeDistance);
+		distanceTextView.setText(distanceText + " km");
+
+		int time = result.getTime();
+		int min = time / 60;
+		int sec = time % 60;
+
+		String resultat = String.format(" %02d:%02d", min, sec);
+		timeTextView.setText(resultat);
+
+		double speed = (routeDistance / time) * 3.6;
+		String speedText = String.valueOf(speed);
+		speedTextView.setText(speedText + " km/h");
+
 	}
 
 	/**
@@ -104,14 +131,14 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 			case R.id.discard_button:
 				AlertDialog alertDialog = new AlertDialog.Builder(context).setTitle("Discard route?")
 						.setMessage("Do you really want to discard your route?")
-						.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+						.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
 						{
 							public void onClick(DialogInterface dialog, int id)
 							{
 								callbacks.onDismissRoute();
 								dismiss();
 							}
-						}).setNegativeButton("No", new DialogInterface.OnClickListener()
+						}).setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
 						{
 							public void onClick(DialogInterface dialog, int id)
 							{
