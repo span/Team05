@@ -20,8 +20,6 @@ import se.team05.R;
 import se.team05.content.Route;
 import se.team05.data.DBRouteAdapter;
 import se.team05.data.DatabaseHandler;
-import se.team05.listener.UseExistingRouteListener;
-import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -29,7 +27,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 

@@ -93,7 +93,7 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.edit_checkpoint_dialog);
+		setContentView(R.layout.dialog_edit_checkpoint);
 		setTitle("Edit CheckPoint");
 
 		Button deleteButton = (Button) findViewById(R.id.delete_button);
