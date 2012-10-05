@@ -69,7 +69,7 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 	 *            an instance of the class that implements this class's
 	 *            Callbacks interface
 	 * @param result
-	 * 			  the results from the route including speed, distance, time
+	 *            the results from the route including speed, distance, time
 	 */
 	public SaveRouteDialog(Context context, Callbacks callbacks, Result result)
 	{
@@ -81,7 +81,8 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 
 	/**
 	 * This method is called by the system and sets the content view that should
-	 * be connected with this class and also the title of the dialog. It also
+	 * be connected with this class and also the title of the dialog.It also
+	 * sets the result attributes, speed, distance and time of the route, and
 	 * adds click listeners to the buttons.
 	 */
 	@Override
@@ -93,24 +94,26 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 
 		((Button) findViewById(R.id.discard_button)).setOnClickListener(this);
 		((Button) findViewById(R.id.save_button)).setOnClickListener(this);
-		
+
 		TextView timeTextView = (TextView) findViewById(R.id.time);
 		TextView distanceTextView = (TextView) findViewById(R.id.runneddistance);
 		TextView speedTextView = (TextView) findViewById(R.id.speed);
-		
-		
-		String distanceText = String.valueOf(result.getDistance());
+
+		int routeDistance = result.getDistance();
+		String distanceText = String.valueOf(routeDistance);
 		distanceTextView.setText(distanceText + " km");
-		String speedText = String.valueOf(result.getSpeed());
-		speedTextView.setText(speedText + " km/h");
-		
+
 		int time = result.getTime();
-		String minutes = String.valueOf(time/60);
-		int min = time/60;
-		int sec = time%60;
-		
-		String resultat = String.format(" %02d:%02d", min, sec );
+		int min = time / 60;
+		int sec = time % 60;
+
+		String resultat = String.format(" %02d:%02d", min, sec);
 		timeTextView.setText(resultat);
+
+		double speed = (routeDistance / time) * 3.6;
+		String speedText = String.valueOf(speed);
+		speedTextView.setText(speedText + " km/h");
+
 	}
 
 	/**

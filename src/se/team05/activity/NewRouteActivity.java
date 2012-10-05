@@ -88,7 +88,8 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 	private static float DISTANCE_THRESHOLD_EU = 1000;
 	private ArrayList<Track> selectedTracks = new ArrayList<Track>();
 	private DatabaseHandler databaseHandler;
-	private CheckPoint currentCheckPoint;;
+	private CheckPoint currentCheckPoint;
+	private Result routeResults;;
 
 	/**
 	 * Will present a map to the user and will also display a dot representing
@@ -291,7 +292,11 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 				break;
 			case R.id.stop_and_save_button:
 				handler.removeCallbacks(runnable);
-				SaveRouteDialog saveRouteDialog = new SaveRouteDialog(this, this, new Result());
+				
+				int speed =  (int)((totalDistance / timePassed)*3.6F);
+				
+				routeResults = new Result(0, 0, timePassed, speed, (int)totalDistance );
+				SaveRouteDialog saveRouteDialog = new SaveRouteDialog(this, this, routeResults);
 				saveRouteDialog.show();
 				break;
 			case R.id.add_checkpoint:

@@ -32,7 +32,6 @@ public class Result {
 	private int routId;
 	private int timestamp;
 	private int time;
-	private int speed;
 	private int calories;
 	private int distance;
 	
@@ -46,7 +45,6 @@ public class Result {
 		this.routId = 1;
 		this.timestamp = 1349286608;	// Date: October 3 2012, Time: 18:50
 		this.time = 300;  				// 5 minutes
-		this.speed = 5;					// kilometers per hour
 		this.calories = 1337;			// kcal
 		this.distance = 1337;
 	}
@@ -62,18 +60,17 @@ public class Result {
 	 * 		time and date when the result is created in the format of nanoseconds passed since year 1970
 	 * @param time
 	 * 		time (seconds) it took to end the route corresponding with this result
-	 * @param speed
-	 * 		average speed (kilometers/hour) during route
+	 * @param distance
+	 * 		distance of the route
 	 * @param calories
 	 * 		calories (kcal) used during route
 	 */
-	public Result(int _id, int routId, int timestamp, int time, int speed, int calories)
+	public Result(int _id, int routId, int timestamp, int time, int distance, int calories)
 	{
 		this._id = _id;
 		this.routId = routId;
 		this.timestamp = timestamp;
 		this.time = time;
-		this.speed = speed;
 		this.calories = calories;
 	}
 	
@@ -87,18 +84,18 @@ public class Result {
 	 * 		time and date when the result is created in the format of nanoseconds passed since year 1970
 	 * @param time
 	 * 		time (seconds) it took to end the route corresponding with this result
-	 * @param speed
-	 * 		average speed (kilometers/hour) during route
+	 * @param distance
+	 * 		distance of the route
 	 * @param calories
 	 * 		calories (kcal) used during route
 	 */
-	public Result(int routId, int timestamp, int time, int speed, int calories)
+	public Result(int routId, int timestamp, int time, int distance, int calories)
 	{
 		this.routId = routId;
 		this.timestamp = timestamp;
 		this.time = time;
-		this.speed = speed;
 		this.calories = calories;
+		this.distance = distance;
 	}
 
 	public int get_id() {
@@ -156,25 +153,6 @@ public class Result {
 		this.time = time;
 	}
 
-	/**
-	 * Get the average speed accomplished during round.
-	 * 
-	 * @return the average speed (kilometers/hour) performed during route.
-	 */
-	public int getSpeed() {
-		return speed;
-	}
-
-	/**
-	 * Set the average speed accomplished during round.
-	 * 
-	 * @param speed
-	 * 		the average speed (kilometers/hour) performed during route.
-	 */
-	public void setSpeed(int speed) {
-		this.speed = speed;
-	}
-	
 	/**
 	 * Get calories consumed during route.
 	 * 
