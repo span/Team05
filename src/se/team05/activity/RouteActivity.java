@@ -120,7 +120,16 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 
 		Button addCheckPointButton = (Button) findViewById(R.id.add_checkpoint);
 		addCheckPointButton.setOnClickListener(this);
+		
+		Button startExistingRunButton = (Button) findViewById(R.id.start_existing_run_button);
+		startExistingRunButton.setOnClickListener(this);
 
+		Button stopExistingRunButton = (Button) findViewById(R.id.stop_existing_run_button);
+		stopExistingRunButton.setOnClickListener(this);
+		
+		Button showResultButton = (Button) findViewById(R.id.show_result_button);
+		showResultButton.setOnClickListener(this);
+		
 		mapView = (EditRouteMapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
 		mapView.setOnGestureListener(new MapOnGestureListener(this));
