@@ -89,7 +89,9 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	private ArrayList<Track> selectedTracks = new ArrayList<Track>();
 	private DatabaseHandler databaseHandler;
 	private CheckPoint currentCheckPoint;
-	private Result routeResults;;
+	private Result routeResults;
+	private boolean newRoute;
+	private List<Overlay> overlays;;
 
 	/**
 	 * Will present a map to the user and will also display a dot representing
@@ -107,7 +109,9 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_route);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-
+		
+		newRoute = false;
+		
 		geoPointList = new ArrayList<GeoPoint>();
 
 		databaseHandler = new DatabaseHandler(this);
@@ -148,7 +152,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 			System.out.println("NO PROVIDER:" + providerName);
 		}
 
-		List<Overlay> overlays = mapView.getOverlays();
+		overlays = mapView.getOverlays();
 		Drawable drawable = getResources().getDrawable(R.drawable.ic_launcher);
 
 		RouteOverlay routeOverlay = new RouteOverlay(geoPointList, 78, true);
@@ -158,8 +162,21 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 		overlays.add(routeOverlay);
 		overlays.add(myLocationOverlay);
 		overlays.add(checkPointOverlay);
+		
+
+		if(!newRoute)
+		{
+			drawRoute(3);
+		}
 
 		mapView.postInvalidate();
+	}
+
+	private void drawRoute(long id)
+	{
+		Route route = databaseHandler.getRoute(id);
+		RouteOverlay routeOverlay = new RouteOverlay(databaseHandler.getGeoPoints(id), 23, true); 
+    	overlays.add(routeOverlay);
 	}
 
 	/**
