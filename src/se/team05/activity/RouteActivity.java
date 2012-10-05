@@ -153,11 +153,9 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 		overlays.add(routeOverlay);
 		overlays.add(myLocationOverlay);
 		overlays.add(checkPointOverlay);
-		
 
 		if(!newRoute)
 		{
-			// TODO Use rid when routes are properly saved and selected
 			drawRoute(rid);
 		}
 		setupButtons();
@@ -345,6 +343,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 				started = true;
 				startExistingRunButton.setVisibility(View.GONE);
 				stopExistingRunButton.setVisibility(View.VISIBLE);
+				timePassed = 0;
 				startTimer();
 				break;
 			case R.id.show_result_button:
@@ -353,6 +352,8 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 				handler.removeCallbacks(runnable);
 				routeResults = new Result(route.getId(), (int) System.currentTimeMillis() / 1000, timePassed, (int) totalDistance, 0);
 				databaseHandler.saveResult(routeResults);
+				stopExistingRunButton.setVisibility(View.GONE);
+				startExistingRunButton.setVisibility(View.VISIBLE);
 				break;
 		}
 	}
