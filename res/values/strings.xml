@@ -52,4 +52,6 @@
 	<string name="description">Description</string>
 	<string name="discard">Discard</string>
 	<string name="button_show_results">Show results</string>
+	<string name="stop">Stop</string>
+	<string name="show_result">Show result</string>
 </resources>

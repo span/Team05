@@ -17,7 +17,6 @@
 package se.team05.data;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import se.team05.content.Result;
@@ -89,10 +88,28 @@ public class DatabaseHandler
 	 * @param id
 	 * @return a Route if id is found, null otherwise
 	 */
-	public Route getRoute(int id)
+	public Route getRoute(long id)
 	{
-		// TODO Write this
-		return null;
+		dBRouteAdapter.open();
+		Cursor cursor = dBRouteAdapter.fetchRoute(id);
+		Route route = null;
+		
+		if(cursor != null)
+		{
+			cursor.moveToFirst();
+			route = new Route(cursor.getInt(
+					cursor.getColumnIndex(DBRouteAdapter.COLUMN_ID)), 
+					cursor.getString(cursor.getColumnIndex(DBRouteAdapter.COLUMN_NAME)), 
+					cursor.getString(cursor.getColumnIndex(DBRouteAdapter.COLUMN_DESCRIPTION)), 
+					cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_TYPE)),
+					cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_TIMECOACH)), 
+					cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_LENGTHCOACH)));
+			
+			cursor.close();
+		}
+		
+		dBRouteAdapter.close();
+		return route;
 	}
 
 	/**
@@ -342,6 +359,72 @@ public class DatabaseHandler
 		dbGeoPointAdapter.open();
 		dbGeoPointAdapter.insertGeoPoints(rid, geoPointList);
 		dbGeoPointAdapter.close();
+	}
+
+	public ArrayList<GeoPoint> getGeoPoints(long id)
+	{
+		dbGeoPointAdapter.open();
+		Cursor cursor = dbGeoPointAdapter.fetchGeoPointByRid(id);
+		ArrayList<GeoPoint> geoPointList = null;
+		
+		if (cursor != null)
+		{
+			geoPointList = new ArrayList<GeoPoint>();
+			cursor.moveToFirst();
+
+			while (!cursor.isAfterLast())
+			{
+				GeoPoint geoPoint = new GeoPoint(
+						cursor.getInt(cursor.getColumnIndex(DBGeoPointAdapter.COLUMN_LATITUDE)),
+						cursor.getInt(cursor.getColumnIndex(DBGeoPointAdapter.COLUMN_LONGITUDE)));
+				geoPointList.add(geoPoint);
+				cursor.moveToNext();
+			}
+			cursor.close();
+		}
+		dbGeoPointAdapter.close();
+		
+		return geoPointList;
+	}
+	
+	public ArrayList<CheckPoint> getCheckPoints(long id)
+	{
+		dbCheckPointAdapter.open();
+		Cursor cursor = dbCheckPointAdapter.fetchCheckPointByRid(id);
+		ArrayList<CheckPoint> checkPointList = null;
+		
+		if (cursor != null)
+		{
+			checkPointList = new ArrayList<CheckPoint>();
+			cursor.moveToFirst();
+
+			while (!cursor.isAfterLast())
+			{
+				GeoPoint geoPoint = new GeoPoint(
+						cursor.getInt(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_LATITUDE)),
+						cursor.getInt(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_LONGITUDE)));
+				
+				CheckPoint checkPoint = new CheckPoint(geoPoint);
+				checkPoint.setRadius(cursor.getInt(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_RADIUS)));
+				checkPoint.setName(cursor.getString(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_NAME)));
+				checkPoint.setRid(cursor.getLong(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_RID)));
+				checkPoint.setId(cursor.getLong(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_ID)));
+				
+				checkPointList.add(checkPoint);
+				cursor.moveToNext();
+			}
+			cursor.close();
+		}
+		dbCheckPointAdapter.close();
+		
+		return checkPointList;
+	}
+
+	public void updateCheckPointRid(long rid)
+	{
+		dbCheckPointAdapter.open();
+		dbCheckPointAdapter.updateCheckPointRid(rid);
+		dbCheckPointAdapter.close();
 	}
 
 }

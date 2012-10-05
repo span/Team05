@@ -98,4 +98,9 @@ public class DBRouteAdapter extends DBAdapter
 	{
 		return db.delete(TABLE_ROUTES, COLUMN_ID + "=" + id, null);
 	}
+
+	public Cursor fetchRoute(long id)
+	{
+		return db.query(TABLE_ROUTES, null, COLUMN_ID + "=" + id, null, null, null, null);
+	}
 }
