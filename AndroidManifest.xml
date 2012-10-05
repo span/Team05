@@ -35,7 +35,7 @@
             android:parentActivityName=".activity.MainActivity" >
         </activity>
         <activity
-            android:name=".activity.UseExistingRouteActivity"
+            android:name=".activity.ListExistingRoutesActivity"
             android:label="@string/use_route" >
         </activity>
         <activity
