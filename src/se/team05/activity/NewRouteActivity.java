@@ -293,9 +293,6 @@ public class NewRouteActivity extends MapActivity implements View.OnClickListene
 				break;
 			case R.id.stop_and_save_button:
 				handler.removeCallbacks(runnable);
-
-				int speed = (int) ((totalDistance / timePassed) * 3.6F);
-
 				routeResults = new Result(-1, -1, timePassed, (int) totalDistance, 0);
 				SaveRouteDialog saveRouteDialog = new SaveRouteDialog(this, this, routeResults);
 				saveRouteDialog.show();
