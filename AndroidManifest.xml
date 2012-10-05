@@ -31,7 +31,8 @@
         </activity>
         <activity
             android:name=".activity.NewRouteActivity"
-            android:label="@string/new_route" >
+            android:label="@string/new_route"
+            android:parentActivityName=".activity.MainActivity" >
         </activity>
         <activity
             android:name=".activity.UseExistingRouteActivity"
@@ -44,6 +45,10 @@
         <activity
             android:name=".activity.MediaSelectorActivity"
             android:label="@string/select_media" >
+        </activity>
+        <activity
+            android:name=".activity.ShowExistingRouteActivity"
+            android:label="" >
         </activity>
     </application>
 

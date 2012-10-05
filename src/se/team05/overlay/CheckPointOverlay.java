@@ -13,91 +13,109 @@
 
     You should have received a copy of the GNU General Public License
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package se.team05.overlay;
 
 import java.util.ArrayList;
 
-import se.team05.dialog.EditCheckPointDialog;
-
-import android.content.Context;
 import android.graphics.drawable.Drawable;
+
 import com.google.android.maps.ItemizedOverlay;
 
+/**
+ * The CheckPointOverLay class contains a list of checkpoints and a default
+ * marker that will show up on map.
+ * 
+ * @author Patrik Thituson
+ * @version 1.0
+ */
 public class CheckPointOverlay extends ItemizedOverlay<CheckPoint>
-		implements EditCheckPointDialog.Callbacks
 {
-
-	private ArrayList<CheckPoint> checkPointList = new ArrayList<CheckPoint>();
-	private Context context;
-	private int selectedCheckpointIndex;
-	public CheckPointOverlay(Drawable defaultMarker)
+	public interface Callbacks
 	{
-		super(boundCenterBottom(defaultMarker));
+		public void onCheckPointTap(CheckPoint cp);
 	}
 
-	public CheckPointOverlay(Drawable defaultMarker, Context context)
+	private ArrayList<CheckPoint> checkPointList = new ArrayList<CheckPoint>();
+	private int selectedCheckpointIndex;
+	private Callbacks callback;
+
+	/**
+	 * The Constructor
+	 * 
+	 * @param defaultMarker
+	 * @param context
+	 */
+	public CheckPointOverlay(Drawable defaultMarker, Callbacks context)
 	{
 		super(boundCenterBottom(defaultMarker));
-		this.context =  context;
+		this.callback = context;
 		populate();
 	}
 
+	/**
+	 * Unused Method
+	 */
 	@Override
 	protected CheckPoint createItem(int i)
 	{
 		return checkPointList.get(i);
 	}
 
+	/**
+	 * @return the size of the list
+	 */
 	@Override
 	public int size()
 	{
-		// TODO Auto-generated method stub
 		return checkPointList.size();
 	}
+
 	/**
-	 * Adds a checkpoint to the checkpointlist
+	 * Adds a checkpoint to the checkpointlist and marks is as the selected
+	 * checkpoint
+	 * 
 	 * @param checkPoint
 	 */
 	public void addCheckPoint(CheckPoint checkPoint)
 	{
 		checkPointList.add(checkPoint);
 		setLastFocusedIndex(-1);
+		selectedCheckpointIndex = checkPointList.size() - 1;
 		populate();
 	}
+
 	/**
-	 * The onTap method that initiates the dialog
+	 * The onTap method that uses callback to send the checkpoint where the
+	 * dialog initiates, it also marks the checkpoint as the selected checkpoint
+	 * wich is used for deleting a checkpoint
 	 */
 	@Override
 	protected boolean onTap(int index)
 	{
 		selectedCheckpointIndex = index;
 		CheckPoint checkPoint = checkPointList.get(index);
-
-		EditCheckPointDialog temp = new EditCheckPointDialog(context,this,checkPoint);
-		temp.show();
+		callback.onCheckPointTap(checkPoint);
 		return true;
 	}
+
 	/**
 	 * 
-	 * @return checkPointList a list with the checkpoints 
+	 * @return checkPointList a list with the checkpoints
 	 */
 	public ArrayList<CheckPoint> getOverlays()
 	{
 		return checkPointList;
 	}
+
 	/**
-	 * Deletes the checkpoint from the checkpointlist, a callback from the dialog
+	 * Deletes the selected checkpoint from the checkpointlist
 	 */
-	@Override
-	public void onDelete()
+	public void deleteCheckPoint()
 	{
 		checkPointList.remove(selectedCheckpointIndex);
 		setLastFocusedIndex(-1);
 		populate();
-		//Temporarily fix to call postInvalidate to update map
-		//TODO ((MainActivity) context).getMapView().postInvalidate();
 	}
-
 
 }
