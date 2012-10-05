@@ -17,6 +17,8 @@
 package se.team05.activity;
 
 import se.team05.R;
+import se.team05.content.Route;
+import se.team05.data.DBRouteAdapter;
 import se.team05.data.DatabaseHandler;
 import se.team05.listener.UseExistingRouteListener;
 import android.app.Activity;
@@ -38,14 +40,14 @@ import android.widget.SimpleCursorAdapter;
  * @author Markus, Henrik Hugo
  *
  */
-public class UseExistingRouteActivity extends ListActivity
+public class ListExistingRoutesActivity extends ListActivity
 {
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		//requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-		setContentView(R.layout.activity_use_existing_route);
+		setContentView(R.layout.activity_list_existing_routes);
 		
 		//setProgressBarIndeterminateVisibility(true);
 		
@@ -58,12 +60,10 @@ public class UseExistingRouteActivity extends ListActivity
 				this,
 				android.R.layout.simple_list_item_1,
 				cursor,
-				new String[] {"name"}, new int[] {android.R.id.text1}
+				new String[] {DBRouteAdapter.COLUMN_NAME},
+				new int[] {android.R.id.text1}
 		);
 		
-		// Retrieve reference to listview and apply the adapter
-		//ListView listView = (ListView) findViewById(R.id.list);
-		//listView.setAdapter(routeListCursorAdapter);
 		this.setListAdapter(routeListCursorAdapter);
 		
 		//setProgressBarIndeterminateVisibility(false);
@@ -77,8 +77,8 @@ public class UseExistingRouteActivity extends ListActivity
 		
 		bundle.putLong("id", id);
 		
-		intent = new Intent(this.getApplicationContext(), ShowExistingRouteActivity.class);
-		intent.putExtra("id", id);
+		intent = new Intent(this.getApplicationContext(), RouteActivity.class);
+		intent.putExtra(Route.EXTRA_ID, id);
 		
 		Log.d("Id", String.valueOf(id));
 		Log.d("Position", String.valueOf(position));

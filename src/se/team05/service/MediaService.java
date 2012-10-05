@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import se.team05.R;
-import se.team05.activity.UseExistingRouteActivity;
+import se.team05.activity.ListExistingRoutesActivity;
 import se.team05.listener.MediaServicePhoneStateListener;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -133,7 +133,7 @@ public class MediaService extends Service implements OnCompletionListener, OnPre
 	private void initNotification()
 	{
 		Context context = getApplicationContext();
-		Intent notificationIntent = new Intent(context, UseExistingRouteActivity.class);
+		Intent notificationIntent = new Intent(context, ListExistingRoutesActivity.class);
 		PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
 		NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
