@@ -32,8 +32,7 @@
             android:layout_height="wrap_content"
             android:text="@string/button_choose_saved" />
         -->"
-		<ListView
-		    android:id="@+id/mylist"
+		<ListView android:id="@android:id/list"
 		    android:layout_width="match_parent"
 		    android:layout_height="wrap_content" >
 		</ListView>
