@@ -27,6 +27,8 @@ package se.team05.content;
  */
 public class Route
 {
+	public static String EXTRA_ID = "rid";
+	
 	long _id;
 	String name;
 	String description;
