@@ -116,13 +116,15 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		databaseHandler = new DatabaseHandler(this);
 
+		newRoute = true;
 		setupMapAndLocation();
 		setupButtons();
 
-		newRoute = true;
+
 		long rid = getIntent().getLongExtra(Route.EXTRA_ID, -1);
 		if (rid != -1)
 		{
+			System.out.println("asdas");
 			newRoute = false;
 			drawRoute(rid);
 			addSavedCheckPoints(rid);
@@ -350,6 +352,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 				startTimer();
 				break;
 			case R.id.stop_and_save_button:
+				System.out.println("STOPPPPPPPPPPPP");
 				handler.removeCallbacks(runnable);
 				routeResults = new Result(-1, -1, timePassed, (int) totalDistance, 0);
 				SaveRouteDialog saveRouteDialog = new SaveRouteDialog(this, this, routeResults);
@@ -375,6 +378,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 			case R.id.show_result_button:
 				break;
 			case R.id.stop_existing_run_button:
+
 				handler.removeCallbacks(runnable);
 				routeResults = new Result(route.getId(), (int) System.currentTimeMillis() / 1000, timePassed,
 						(int) totalDistance, 0);
