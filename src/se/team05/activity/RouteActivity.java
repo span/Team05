@@ -118,17 +118,16 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 
 		newRoute = true;
 		setupMapAndLocation();
-		setupButtons();
-
 
 		long rid = getIntent().getLongExtra(Route.EXTRA_ID, -1);
+
 		if (rid != -1)
 		{
 			newRoute = false;
 			drawRoute(rid);
 			addSavedCheckPoints(rid);
 		}
-
+		setupButtons();
 		mapView.postInvalidate();
 	}
 
