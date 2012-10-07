@@ -30,7 +30,7 @@ import android.database.sqlite.SQLiteDatabase;
  */
 public abstract class DBAdapter
 {
-	protected DatabaseHelper databaseHelper;
+	protected Database database;
 	protected SQLiteDatabase db;
 
 	/**
@@ -42,7 +42,7 @@ public abstract class DBAdapter
 	 */
 	public DBAdapter(Context context)
 	{
-		databaseHelper = new DatabaseHelper(context);
+		database = new Database(context);
 	}
 
 	/**
@@ -52,7 +52,7 @@ public abstract class DBAdapter
 	 */
 	public void open()
 	{
-		db = databaseHelper.getWritableDatabase();
+		db = database.getWritableDatabase();
 	}
 
 	/**
@@ -61,6 +61,6 @@ public abstract class DBAdapter
 	 */
 	public void close()
 	{
-		databaseHelper.close();
+		database.close();
 	}
 }

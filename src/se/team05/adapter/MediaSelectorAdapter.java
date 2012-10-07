@@ -94,7 +94,7 @@ public class MediaSelectorAdapter extends SimpleCursorAdapter
 		if (convertView == null)
 		{
 			LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			convertView = inflater.inflate(R.layout.media_selector_item_layout, null);
+			convertView = inflater.inflate(R.layout.row_media_selector, null);
 		}
 		final CheckBox checkBox = (CheckBox) convertView.findViewById(R.id.checkbox);
 		checkBox.setOnClickListener(new OnClickListener()
