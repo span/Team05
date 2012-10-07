@@ -116,10 +116,11 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		databaseHandler = new DatabaseHandler(this);
 
+		newRoute = true;
 		setupMapAndLocation();
 		setupButtons();
 
-		newRoute = true;
+
 		long rid = getIntent().getLongExtra(Route.EXTRA_ID, -1);
 		if (rid != -1)
 		{
@@ -375,6 +376,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 			case R.id.show_result_button:
 				break;
 			case R.id.stop_existing_run_button:
+
 				handler.removeCallbacks(runnable);
 				routeResults = new Result(route.getId(), (int) System.currentTimeMillis() / 1000, timePassed,
 						(int) totalDistance, 0);
