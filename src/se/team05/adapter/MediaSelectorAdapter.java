@@ -46,8 +46,7 @@ import android.widget.SimpleCursorAdapter;
 public class MediaSelectorAdapter extends SimpleCursorAdapter
 {
 	private Context context;
-	private ArrayList<Boolean> itemChecked = new ArrayList<Boolean>();
-	private ArrayList<Track> listItems = new ArrayList<Track>();;
+	private ArrayList<Track> selectedItems;
 
 	/**
 	 * The constructor takes the same parameters as an ordinary simple cursor
@@ -68,52 +67,13 @@ public class MediaSelectorAdapter extends SimpleCursorAdapter
 	 * @param flags
 	 *            any special flags that can be used to determine the behaviour
 	 *            of the super class adapter
+	 * @param selectedItems2 
 	 */
-	public MediaSelectorAdapter(Context context, int layout, Cursor cursor, String[] from, int[] to, int flags)
+	public MediaSelectorAdapter(Context context, int layout, Cursor cursor, String[] from, int[] to, int flags, ArrayList<Track> selectedItems)
 	{
 		super(context, layout, cursor, from, to, flags);
 		this.context = context;
-
-		int i = 0;
-		while (cursor.moveToNext())
-		{
-			Track track = new Track(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getString(3),
-					cursor.getString(4), cursor.getString(5), cursor.getString(6));
-			listItems.add(track);
-			itemChecked.add(i, false);
-			i++;
-		}
-	}
-
-	/**
-	 * Returns an arraylist of the items and if they have been checked or not
-	 * 
-	 * @return a list with true/false checked items
-	 */
-	public ArrayList<Boolean> getChecked()
-	{
-		return itemChecked;
-	}
-
-	/**
-	 * Overridden method that getView uses to keep track of how many items the
-	 * adapter has.
-	 */
-	@Override
-	public int getCount()
-	{
-		return listItems.size();
-	}
-	
-	@Override
-	public Track getItem(int position) {
-	    return listItems.get(position);
-	}
-
-
-	@Override
-	public long getItemId(int position) {
-	    return position;
+		this.selectedItems = selectedItems;
 	}
 
 	/**
@@ -126,10 +86,15 @@ public class MediaSelectorAdapter extends SimpleCursorAdapter
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent)
 	{
+		Cursor c = getCursor();
+		c.moveToPosition(position);
+		final Track track = new Track(c.getString(0), c.getString(1), c.getString(2), c.getString(3),
+				c.getString(4), c.getString(5), c.getString(6));
+		
 		if (convertView == null)
 		{
 			LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			convertView = inflater.inflate(R.layout.media_selector_item_layout, null);
+			convertView = inflater.inflate(R.layout.row_media_selector, null);
 		}
 		final CheckBox checkBox = (CheckBox) convertView.findViewById(R.id.checkbox);
 		checkBox.setOnClickListener(new OnClickListener()
@@ -139,16 +104,16 @@ public class MediaSelectorAdapter extends SimpleCursorAdapter
 				CheckBox cb = (CheckBox) v.findViewById(R.id.checkbox);
 				if (cb.isChecked())
 				{
-					itemChecked.set(position, true);
+					selectedItems.add(track);
 				}
 				else if (!cb.isChecked())
 				{
-					itemChecked.set(position, false);
+					selectedItems.remove(track);
 				}
 			}
 		});
-		checkBox.setChecked(itemChecked.get(position));
-
+		// If the selected items contains the current item, set the checkbox to be checked
+		checkBox.setChecked(selectedItems.contains(track));
 		return super.getView(position, convertView, parent);
 	}
 
@@ -159,16 +124,6 @@ public class MediaSelectorAdapter extends SimpleCursorAdapter
 	 */
 	public ArrayList<Track> getSelectedItems()
 	{
-		ArrayList<Track> selectedItems = new ArrayList<Track>();
-		int i = 0;
-		for (Boolean checked : itemChecked)
-		{
-			if (checked)
-			{
-				selectedItems.add(listItems.get(i));
-			}
-			i++;
-		}
 		return selectedItems;
 	}
 }
