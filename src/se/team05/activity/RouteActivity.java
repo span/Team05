@@ -124,7 +124,6 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 		long rid = getIntent().getLongExtra(Route.EXTRA_ID, -1);
 		if (rid != -1)
 		{
-			System.out.println("asdas");
 			newRoute = false;
 			drawRoute(rid);
 			addSavedCheckPoints(rid);
@@ -352,7 +351,6 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 				startTimer();
 				break;
 			case R.id.stop_and_save_button:
-				System.out.println("STOPPPPPPPPPPPP");
 				handler.removeCallbacks(runnable);
 				routeResults = new Result(-1, -1, timePassed, (int) totalDistance, 0);
 				SaveRouteDialog saveRouteDialog = new SaveRouteDialog(this, this, routeResults);
