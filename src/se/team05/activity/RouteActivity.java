@@ -123,6 +123,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 
 		if (rid != -1)
 		{
+			setTitle("Saved Route");
 			newRoute = false;
 			drawRoute(rid);
 			addSavedCheckPoints(rid);
