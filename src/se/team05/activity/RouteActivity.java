@@ -81,7 +81,8 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	private EditCheckPointDialog checkPointDialog;
 	private Handler handler;
 	private Runnable runnable;
-	int timePassed = 0;
+	private int timePassed = 0;
+	private String nameOfExistingRoute;
 
 	private static String DISTANCE_UNIT_KILOMETRE = "Km";
 	private static String DISTANCE_UNIT_METRES = " metres";
@@ -123,9 +124,9 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 
 		if (rid != -1)
 		{
-			setTitle("Saved Route");
 			newRoute = false;
 			drawRoute(rid);
+			setTitle("Saved Route: " + nameOfExistingRoute);
 			addSavedCheckPoints(rid);
 		}
 		setupButtons();
@@ -224,6 +225,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 		route = databaseHandler.getRoute(id);
 		RouteOverlay routeOverlay = new RouteOverlay(databaseHandler.getGeoPoints(id), 23, true);
 		overlays.add(routeOverlay);
+		nameOfExistingRoute = route.getName();
 	}
 
 	/**
