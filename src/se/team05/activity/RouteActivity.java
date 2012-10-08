@@ -41,7 +41,10 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.support.v4.app.NavUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -60,11 +63,11 @@ import com.google.android.maps.Overlay;
  * @author Markus Schutzer, Patrik Thitusson, Daniel Kvist
  * 
  */
-public class RouteActivity extends MapActivity implements View.OnClickListener, EditCheckPointDialog.Callbacks,
-		SaveRouteDialog.Callbacks, CheckPointOverlay.Callbacks, MapOnGestureListener.Callbacks,
-		MapLocationListener.Callbacks
+public class RouteActivity extends MapActivity implements View.OnClickListener, EditCheckPointDialog.Callbacks, SaveRouteDialog.Callbacks,
+		CheckPointOverlay.Callbacks, MapOnGestureListener.Callbacks, MapLocationListener.Callbacks
 {
 
+	private static final String TAG = "Personal trainer";
 	private ArrayList<GeoPoint> geoPointList = new ArrayList<GeoPoint>();
 	private LocationManager locationManager;
 	private String providerName;
@@ -97,7 +100,8 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	private Button startRunButton;
 	private Button startExistingRunButton;
 	private Button stopExistingRunButton;
-	private Route route;;
+	private Route route;
+	private WakeLock wakeLock;;
 
 	/**
 	 * Will present a map to the user and will also display a dot representing
@@ -347,6 +351,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 		switch (v.getId())
 		{
 			case R.id.start_run_button:
+				acquireWakeLock();
 				started = true;
 				startRunButton.setVisibility(View.GONE);
 				stopAndSaveButton.setVisibility(View.VISIBLE);
@@ -357,6 +362,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 				routeResults = new Result(-1, -1, timePassed, (int) totalDistance, 0);
 				SaveRouteDialog saveRouteDialog = new SaveRouteDialog(this, this, routeResults);
 				saveRouteDialog.show();
+				releaseWakeLock();
 				break;
 			case R.id.add_checkpoint:
 				if (myLocationOverlay.isMyLocationEnabled())
@@ -369,6 +375,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 				}
 				break;
 			case R.id.start_existing_run_button:
+				acquireWakeLock();
 				started = true;
 				startExistingRunButton.setVisibility(View.GONE);
 				stopExistingRunButton.setVisibility(View.VISIBLE);
@@ -378,13 +385,12 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 			case R.id.show_result_button:
 				break;
 			case R.id.stop_existing_run_button:
-
 				handler.removeCallbacks(runnable);
-				routeResults = new Result(route.getId(), (int) System.currentTimeMillis() / 1000, timePassed,
-						(int) totalDistance, 0);
+				routeResults = new Result(route.getId(), (int) System.currentTimeMillis() / 1000, timePassed, (int) totalDistance, 0);
 				databaseHandler.saveResult(routeResults);
 				stopExistingRunButton.setVisibility(View.GONE);
 				startExistingRunButton.setVisibility(View.VISIBLE);
+				releaseWakeLock();
 				break;
 		}
 	}
@@ -574,5 +580,40 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	{
 		Intent intent = new Intent(this, MainActivity.class);
 		this.startActivity(intent);
+	}
+
+	/**
+	 * Acquires the wake lock from the system
+	 */
+	private void acquireWakeLock()
+	{
+		try
+		{
+			PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+			if (wakeLock == null)
+			{
+				wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
+			}
+			if (!wakeLock.isHeld())
+			{
+				wakeLock.acquire();
+			}
+		}
+		catch (RuntimeException e)
+		{
+			Log.e(TAG, "Could not acquire wakelock: ", e);
+		}
+	}
+
+	/**
+	 * Releases the wake lock if held
+	 */
+	private void releaseWakeLock()
+	{
+		if (wakeLock != null && wakeLock.isHeld())
+		{
+			wakeLock.release();
+			wakeLock = null;
+		}
 	}
 }
