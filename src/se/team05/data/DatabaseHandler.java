@@ -189,7 +189,7 @@ public class DatabaseHandler
 	 *            the checkpoint id that the tracks are related to
 	 * @return an ArrayList of Track's
 	 */
-	public ArrayList<Track> getTracks(int cid)
+	public ArrayList<Track> getTracks(long cid)
 	{
 		ArrayList<Track> tracks = new ArrayList<Track>();
 		dbTrackAdapter.open();

@@ -176,8 +176,14 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	 */
 	private void addSavedCheckPoints(long rid)
 	{
-		ArrayList<CheckPoint> listOfCheckPoints = databaseHandler.getCheckPoints(rid);
-		checkPointOverlay.setCheckPoints(listOfCheckPoints);
+		ArrayList<CheckPoint> checkPointList = databaseHandler.getCheckPoints(rid);
+		ArrayList<Track> trackList;
+		for(CheckPoint checkPoint : checkPointList)
+		{
+			trackList = databaseHandler.getTracks(checkPoint.getId());
+			checkPoint.addTracks(trackList);
+		}
+		checkPointOverlay.setCheckPoints(checkPointList);
 	}
 
 	/**
@@ -378,7 +384,6 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 			case R.id.show_result_button:
 				break;
 			case R.id.stop_existing_run_button:
-
 				handler.removeCallbacks(runnable);
 				routeResults = new Result(route.getId(), (int) System.currentTimeMillis() / 1000, timePassed,
 						(int) totalDistance, 0);
