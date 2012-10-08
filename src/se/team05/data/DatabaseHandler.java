@@ -329,8 +329,9 @@ public class DatabaseHandler
 	public long saveCheckPoint(CheckPoint checkPoint)
 	{
 		dbCheckPointAdapter.open();
+		
 		long id = dbCheckPointAdapter.insertCheckpoint(checkPoint.getRid(), checkPoint.getRadius(),
-				checkPoint.getName(), checkPoint.getLatuitude(), checkPoint.getLongitude());
+					checkPoint.getName(), checkPoint.getLatuitude(), checkPoint.getLongitude());
 		dbCheckPointAdapter.close();
 		return id;
 	}
@@ -450,6 +451,19 @@ public class DatabaseHandler
 
 		return checkPointList;
 	}
+	
+	/**
+	 * Updates a checkpoint information in the database.
+	 * 
+	 * @param checkPoint 
+	 * 				the new checkpoint
+	 */
+	public void updateCheckPoint(CheckPoint checkPoint)
+	{
+		dbCheckPointAdapter.open();
+		dbCheckPointAdapter.updateCheckPoint(checkPoint.getId(), checkPoint.getName(), checkPoint.getRadius());
+		dbCheckPointAdapter.close();
+	}
 
 	/**
 	 * Updates the checkpoints table in the database where the current route id
@@ -464,5 +478,4 @@ public class DatabaseHandler
 		dbCheckPointAdapter.updateCheckPointRid(rid);
 		dbCheckPointAdapter.close();
 	}
-
 }

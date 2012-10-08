@@ -448,10 +448,20 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	@Override
 	public void onSaveCheckPoint(CheckPoint checkPoint)
 	{
-		checkPoint.setId(databaseHandler.saveCheckPoint(checkPoint));
+		long cid = checkPoint.getId();
+		if(cid > 0)
+		{
+			databaseHandler.updateCheckPoint(checkPoint);
+			databaseHandler.deleteTracksByCid(cid);
+		}
+		else
+		{
+			cid = databaseHandler.saveCheckPoint(checkPoint);
+			checkPoint.setId(cid);
+		}
 		for (Track track : selectedTracks)
 		{
-			databaseHandler.saveTrack(checkPoint.getId(), track);
+			databaseHandler.saveTrack(cid, track);
 		}
 		selectedTracks.clear();
 	}
