@@ -32,6 +32,7 @@ import se.team05.listener.MapOnGestureListener;
 import se.team05.overlay.CheckPoint;
 import se.team05.overlay.CheckPointOverlay;
 import se.team05.overlay.RouteOverlay;
+import se.team05.service.MediaService;
 import se.team05.view.EditRouteMapView;
 import android.content.Context;
 import android.content.Intent;
@@ -101,7 +102,10 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	private Button startExistingRunButton;
 	private Button stopExistingRunButton;
 	private Route route;
-	private WakeLock wakeLock;;
+	private WakeLock wakeLock;
+	private TextView speedView;
+	private TextView distanceView;
+	private Intent serviceIntent;;
 
 	/**
 	 * Will present a map to the user and will also display a dot representing
@@ -115,21 +119,19 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
-
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_route);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		databaseHandler = new DatabaseHandler(this);
-
+		route = new Route("New route", "This is a new route");
 		newRoute = true;
 		setupMapAndLocation();
 
 		long rid = getIntent().getLongExtra(Route.EXTRA_ID, -1);
-
 		if (rid != -1)
 		{
 			newRoute = false;
-			drawRoute(rid);
+			initRoute(rid);
 			setTitle("Saved Route: " + nameOfExistingRoute);
 			addSavedCheckPoints(rid);
 		}
@@ -142,6 +144,8 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	 */
 	private void setupMapAndLocation()
 	{
+		distanceView = (TextView) findViewById(R.id.show_distance_textview);
+		speedView = (TextView) findViewById(R.id.show_speed_textview);
 		mapView = (EditRouteMapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
 		mapView.setOnGestureListener(new MapOnGestureListener(this));
@@ -180,8 +184,8 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	 */
 	private void addSavedCheckPoints(long rid)
 	{
-		ArrayList<CheckPoint> checkPointList = databaseHandler.getCheckPoints(rid);
 		ArrayList<Track> trackList;
+		ArrayList<CheckPoint> checkPointList = databaseHandler.getCheckPoints(rid);
 		for(CheckPoint checkPoint : checkPointList)
 		{
 			trackList = databaseHandler.getTracks(checkPoint.getId());
@@ -228,12 +232,23 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	 * Gets route information from the database and draws an overlay on the map
 	 * view if the user is using a previously saved map.
 	 * 
-	 * @param id
+	 * @param id the route id
 	 */
-	private void drawRoute(long id)
+	private void initRoute(long id)
 	{
+		ArrayList<GeoPoint> geoPoints = databaseHandler.getGeoPoints(id);
 		route = databaseHandler.getRoute(id);
-		RouteOverlay routeOverlay = new RouteOverlay(databaseHandler.getGeoPoints(id), 23, true);
+		route.setGeoPoints(geoPoints);
+		
+		ArrayList<CheckPoint> checkPoints = databaseHandler.getCheckPoints(id);
+		route.setCheckPoints(checkPoints);
+		
+		for(CheckPoint checkPoint : checkPoints)
+		{
+			checkPoint.addTracks(databaseHandler.getTracks(checkPoint.getId()));
+		}
+		
+		RouteOverlay routeOverlay = new RouteOverlay(geoPoints, 23, true);
 		overlays.add(routeOverlay);
 		nameOfExistingRoute = route.getName();
 	}
@@ -275,12 +290,14 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	@Override
 	public void updateLocation(Location location)
 	{
+		GeoPoint geoPoint;
+		GeoPoint currentGeoPoint;
 		if (started)
 		{
-			GeoPoint p = new GeoPoint((int) (location.getLatitude() * 1E6), (int) (location.getLongitude() * 1E6));
-			geoPointList.add(p);
-
+			currentGeoPoint = new GeoPoint((int) (location.getLatitude() * 1E6), (int) (location.getLongitude() * 1E6));
+			geoPointList.add(currentGeoPoint);
 			userSpeed = (3.6 * location.getSpeed()) + DISTANCE_UNIT_KILOMETRE + "/h";
+			
 			if (lastLocation != null)
 			{
 				totalDistance += lastLocation.distanceTo(location);
@@ -295,15 +312,33 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 				}
 				userDistanceRun = userDistance + lengthPresentation;
 			}
-
+			
+			if(!newRoute)
+			{
+				for(CheckPoint checkPoint : route.getCheckPoints())
+				{
+					geoPoint = checkPoint.getPoint();
+					if(getDistance(currentGeoPoint, geoPoint) <= checkPoint.getRadius())
+					{
+						serviceIntent = new Intent(this, MediaService.class);
+						serviceIntent.putExtra(MediaService.DATA_PLAYLIST, checkPoint.getTracks());
+						serviceIntent.setAction(MediaService.ACTION_PLAY);
+						try
+						{
+							startService(serviceIntent);
+						}
+						catch (Exception e)
+						{
+							e.printStackTrace();
+						}
+						break;
+					}
+				}
+			}
+			
 			lastLocation = location;
-
-			TextView speedView = (TextView) findViewById(R.id.show_speed_textview);
-			speedView.setText(userSpeed);
-
-			TextView distanceView = (TextView) findViewById(R.id.show_distance_textview);
+			speedView.setText(userSpeed);	
 			distanceView.setText(userDistanceRun);
-
 			mapView.postInvalidate();
 		}
 	}
@@ -325,16 +360,6 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	{
 		super.onPause();
 		myLocationOverlay.disableMyLocation();
-	}
-
-	/**
-	 * Get method for returning the Routelist consisting of geopoints.
-	 * 
-	 * @return ArrayList representing Geo Points.
-	 */
-	public ArrayList<GeoPoint> getRoute()
-	{
-		return geoPointList;
 	}
 
 	/**
@@ -391,6 +416,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 			case R.id.show_result_button:
 				break;
 			case R.id.stop_existing_run_button:
+				stopService(serviceIntent);
 				handler.removeCallbacks(runnable);
 				routeResults = new Result(route.getId(), (int) System.currentTimeMillis() / 1000, timePassed, (int) totalDistance, 0);
 				databaseHandler.saveResult(routeResults);
@@ -603,6 +629,17 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	{
 		Intent intent = new Intent(this, MainActivity.class);
 		this.startActivity(intent);
+	}
+	
+	private float getDistance(GeoPoint geoPointA, GeoPoint geoPointB) 
+	{
+	    double latitudeA = ((double) geoPointA.getLatitudeE6()) / 1E6;
+	    double longitudeA = ((double) geoPointA.getLongitudeE6()) / 1E6;
+	    double latitudeB = ((double) geoPointB.getLatitudeE6()) / 1E6;
+	    double longitudeB = ((double) geoPointB.getLongitudeE6()) / 1E6;
+	    float [] distance = new float[1];
+	    Location.distanceBetween(latitudeA, longitudeA, latitudeB, longitudeB, distance);
+	    return distance[0];
 	}
 
 	/**
