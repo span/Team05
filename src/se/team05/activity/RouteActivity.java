@@ -74,12 +74,8 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	private EditRouteMapView mapView;
 	private boolean started = false;
 	private MyLocationOverlay myLocationOverlay;
-	private String userSpeed = "0";
-	private String userDistance = "0";
 	private Location lastLocation;
 	private float totalDistance = 0;
-	private String lengthPresentation = DISTANCE_UNIT_METRES;
-	private String userDistanceRun = userDistance + lengthPresentation;
 	private CheckPointOverlay checkPointOverlay;
 	private EditCheckPointDialog checkPointDialog;
 	private Handler handler;
@@ -87,9 +83,6 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	private int timePassed = 0;
 	private String nameOfExistingRoute;
 
-	private static String DISTANCE_UNIT_KILOMETRE = "Km";
-	private static String DISTANCE_UNIT_METRES = " metres";
-	private static float DISTANCE_THRESHOLD_EU = 1000;
 	private ArrayList<Track> selectedTracks = new ArrayList<Track>();
 	private DatabaseHandler databaseHandler;
 	private CheckPoint currentCheckPoint;
@@ -130,7 +123,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 		{
 			newRoute = false;
 			drawRoute(rid);
-			setTitle("Saved Route: " + nameOfExistingRoute);
+			setTitle(getString(R.string.saved_route_) + nameOfExistingRoute);
 			addSavedCheckPoints(rid);
 		}
 		setupButtons();
@@ -157,7 +150,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 
 		if (providerName != null)
 		{
-			System.out.println("NO PROVIDER:" + providerName);
+			System.out.println(getString(R.string.provider_) + providerName);
 		}
 
 		overlays = mapView.getOverlays();
@@ -280,30 +273,22 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 			GeoPoint p = new GeoPoint((int) (location.getLatitude() * 1E6), (int) (location.getLongitude() * 1E6));
 			geoPointList.add(p);
 
-			userSpeed = (3.6 * location.getSpeed()) + DISTANCE_UNIT_KILOMETRE + "/h";
+			String userSpeed = (3.6 * location.getSpeed()) + getString(R.string.km) + "/" + getString(R.string.h);
+			
+			TextView speedView = (TextView) findViewById(R.id.show_speed_textview);
+			speedView.setText(userSpeed);
+			
 			if (lastLocation != null)
 			{
 				totalDistance += lastLocation.distanceTo(location);
-				if (totalDistance >= DISTANCE_THRESHOLD_EU)
-				{
-					lengthPresentation = DISTANCE_UNIT_KILOMETRE;
-					userDistance = new DecimalFormat("#.##").format(totalDistance / 1000);
-				}
-				else
-				{
-					userDistance = "" + (int) totalDistance;
-				}
-				userDistanceRun = userDistance + lengthPresentation;
+				String userDistance = new DecimalFormat("#.##").format(totalDistance / 1000);
+				String userDistanceRun = userDistance + getString(R.string.km);
+				
+				TextView distanceView = (TextView) findViewById(R.id.show_distance_textview);
+				distanceView.setText(userDistanceRun);
 			}
 
 			lastLocation = location;
-
-			TextView speedView = (TextView) findViewById(R.id.show_speed_textview);
-			speedView.setText(userSpeed);
-
-			TextView distanceView = (TextView) findViewById(R.id.show_distance_textview);
-			distanceView.setText(userDistanceRun);
-
 			mapView.postInvalidate();
 		}
 	}
