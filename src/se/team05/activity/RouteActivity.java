@@ -572,6 +572,13 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	{
 		launchMainActivity();
 	}
+	
+	@Override
+	public void onDestroy()
+	{
+		releaseWakeLock();
+		super.onDestroy();
+	}
 
 	/**
 	 * Private helper method to launch the main activity.
