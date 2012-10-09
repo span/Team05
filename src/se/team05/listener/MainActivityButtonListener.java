@@ -76,5 +76,4 @@ public class MainActivityButtonListener implements OnClickListener
 		}
 		context.startActivity(intent);
 	}
-
 }
