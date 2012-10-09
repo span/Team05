@@ -103,7 +103,7 @@ public class DBResultAdapter extends DBAdapter {
 	 * 				database route id
 	 * @return Cursor to the result
 	 */
-	public Cursor fetchResultByRid(int rid)
+	public Cursor fetchResultByRid(long rid)
 	{
 		return db.query(TABLE_RESULT, null, COLUMN_RID + "=" + rid, null, null, null, null);
 	}

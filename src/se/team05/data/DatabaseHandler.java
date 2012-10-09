@@ -232,18 +232,19 @@ public class DatabaseHandler
 	 * This method returns an array of results (instances of class Result)
 	 * retrieved from database via a database adapter.
 	 * 
-	 * @param routId
+	 * @param rid
 	 *            id tells which row to get from database.
 	 * @return result
 	 */
-	public Result[] getAllResultsByRoutId(int routId)
+	public Cursor getAllResultsCursorByRid(long rid)
 	{
-		List<Result> resultList = null;
+		//List<Result> resultList = null;
 
 		dbResultAdapter.open();
-		Cursor cursor = dbResultAdapter.fetchResultById(routId);
+		Cursor cursor = dbResultAdapter.fetchResultByRid(rid);
 		dbResultAdapter.close();
 
+		/*
 		if (cursor != null)
 		{
 			resultList = new ArrayList<Result>();
@@ -258,6 +259,8 @@ public class DatabaseHandler
 			}
 		}
 		return (Result[]) resultList.toArray();
+		*/
+		return cursor;
 	}
 
 	/**
