@@ -30,7 +30,7 @@ import android.util.Log;
  *         Thitusson
  * 
  */
-public class DatabaseHelper extends SQLiteOpenHelper
+public class Database extends SQLiteOpenHelper
 {
 	private static final String DATABASE_NAME = "data.db";
 	private static final int DATABASE_VERSION = 1;
@@ -42,7 +42,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 	 * @param context
 	 *            the context to operate in
 	 */
-	public DatabaseHelper(Context context)
+	public Database(Context context)
 	{
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 	}
@@ -59,6 +59,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 		database.execSQL(DBTrackAdapter.DATABASE_CREATE_TRACK_TABLE);
 		database.execSQL(DBResultAdapter.DATABASE_CREATE_RESULT_TABLE);
 		database.execSQL(DBCheckPointAdapter.DATABASE_CREATE_CHECKPOINT_TABLE);
+		database.execSQL(DBGeoPointAdapter.DATABASE_CREATE_GEOPOINT_TABLE);
 	}
 
 	/**
@@ -68,12 +69,13 @@ public class DatabaseHelper extends SQLiteOpenHelper
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
 	{
-		Log.w(DatabaseHelper.class.getName(), "Upgrading database from version " + oldVersion + " to " + newVersion
+		Log.w(Database.class.getName(), "Upgrading database from version " + oldVersion + " to " + newVersion
 				+ ", which will destroy all old data");
 		db.execSQL("DROP TABLE IF EXISTS " + DBRouteAdapter.TABLE_ROUTES);
 		db.execSQL("DROP TABLE IF EXISTS " + DBTrackAdapter.TABLE_TRACKS);
 		db.execSQL("DROP TABLE IF EXISTS " + DBResultAdapter.TABLE_RESULT);
 		db.execSQL("DROP TABLE IF EXISTS " + DBCheckPointAdapter.TABLE_CHECKPOINTS);
+		db.execSQL("DROP TABLE IF EXISTS " + DBGeoPointAdapter.TABLE_GEOPOINTS);
 		onCreate(db);
 	}
 

@@ -21,10 +21,10 @@ import android.content.Context;
 import android.database.Cursor;
 
 /**
- * This class is the checpoint adapter class used to communicate with the "checkpoints"
- * table in the SQLite database. It contains information about the columns,
- * basic Create, Read, Delete operations and also the initial "create table"
- * statement.
+ * This class is the checkpoint adapter class used to communicate with the
+ * "checkpoints" table in the SQLite database. It contains information about the
+ * columns, basic Create, Read, Delete operations and also the initial
+ * "create table" statement.
  * 
  * @author Daniel Kvist
  * 
@@ -36,10 +36,12 @@ public class DBCheckPointAdapter extends DBAdapter
 	public static final String COLUMN_RID = "rid";
 	public static final String COLUMN_RADIUS = "radius";
 	public static final String COLUMN_NAME = "name";
+	public static final String COLUMN_LATITUDE = "latitude";
+	public static final String COLUMN_LONGITUDE = "longitude";
 
 	public static final String DATABASE_CREATE_CHECKPOINT_TABLE = "create table " + TABLE_CHECKPOINTS + "(" + COLUMN_ID
 			+ " integer primary key autoincrement, " + COLUMN_RID + " integer not null," + COLUMN_RADIUS + " integer not null, "
-			+ COLUMN_NAME + " text not null);";
+			+ COLUMN_NAME + " text not null, " + COLUMN_LATITUDE + " integer not null, " + COLUMN_LONGITUDE + " integer not null);";
 
 	/**
 	 * The constructor of the class which creates a new instance of the database
@@ -64,12 +66,14 @@ public class DBCheckPointAdapter extends DBAdapter
 	 *            the name of the checkpoint
 	 * @return the new id for the checkpoint
 	 */
-	public long insertCheckpoint(long rid, int radius, String name)
+	public long insertCheckpoint(long rid, int radius, String name, int latitude, int longitude)
 	{
 		ContentValues values = new ContentValues();
 		values.put(COLUMN_RID, rid);
 		values.put(COLUMN_RADIUS, radius);
 		values.put(COLUMN_NAME, name);
+		values.put(COLUMN_LATITUDE, latitude);
+		values.put(COLUMN_LONGITUDE, longitude);
 		return db.insert(TABLE_CHECKPOINTS, null, values);
 	}
 
@@ -121,5 +125,37 @@ public class DBCheckPointAdapter extends DBAdapter
 	public int deleteCheckPointByRid(long rid)
 	{
 		return db.delete(TABLE_CHECKPOINTS, COLUMN_RID + "=" + rid, null);
+	}
+
+	/**
+	 * Updates a specific checkpoint with a new name and radius. To update the
+	 * tracks, remember to also update the tracks table.
+	 * 
+	 * @param id
+	 *            the id of the checkpoint you want to update
+	 * @param name
+	 *            the new name of the checkpoint
+	 * @param radius
+	 *            the new radius of the checkpoint
+	 */
+	public void updateCheckPoint(long id, String name, int radius)
+	{
+		ContentValues values = new ContentValues();
+		values.put(COLUMN_NAME, name);
+		values.put(COLUMN_RADIUS, radius);
+		db.update(TABLE_CHECKPOINTS, values, COLUMN_ID + "=" + id, null);
+	}
+
+	/**
+	 * Updates all the checkpoints with -1 to a 'real' route id in the database
+	 * when a route has been saved.
+	 * 
+	 * @param rid
+	 */
+	public void updateCheckPointRid(long rid)
+	{
+		ContentValues values = new ContentValues();
+		values.put(COLUMN_RID, rid);
+		db.update(TABLE_CHECKPOINTS, values, COLUMN_RID + "=" + -1, null);
 	}
 }

@@ -24,6 +24,7 @@
     <string name="save">Save</string>
     <string name="delete">Delete</string>
     <string name="select">Select</string>
+    <string name="cancel">Cancel</string>
     <string name="record">Record</string>
     <string name="title_activity_new_route">NewRouteActivity</string>
     <string name="button_run">RUN!!</string>
@@ -37,6 +38,22 @@
     <string name="button_addcheckpoint">Add CP</string>
     <string name="select_media">Select media</string>
     <string name="speed_of_run">Your Speed: </string>
+    <string name="time_">Time:</string>
+    <string name="distance_">Distance:</string>
+    <string name="speed_">Speed:</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 	<string name="distance_of_run">Total Distance: </string>
-	    
+	<string name="time_of_run">Time: </string>
+	<string name="name">Name</string>
+	<string name="save_results">Save results</string>
+	<string name="results">Results</string>
+	<string name="save_route">Save route</string>
+	<string name="description">Description</string>
+	<string name="discard">Discard</string>
+	<string name="button_show_results">Show results</string>
+	<string name="stop">Stop</string>
+	<string name="show_result">Show result</string>
+	<string name="please_add_a_route">Please add a route</string>
+	<string name="click_to_add_a_route">Click to add a route</string>
 </resources>
