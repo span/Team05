@@ -104,7 +104,10 @@ public class MediaService extends Service implements OnCompletionListener, OnPre
 		{
 			if (!mediaPlayer.isPlaying())
 			{
-				playTrack(currentTrack);
+				mediaPlayer.setOnCompletionListener(this);
+				mediaPlayer.setOnErrorListener(this);
+				mediaPlayer.setOnPreparedListener(this);
+				initTrack(currentTrack);
 			}
 		}
 		return START_STICKY;
@@ -234,7 +237,7 @@ public class MediaService extends Service implements OnCompletionListener, OnPre
 		stopMedia();
 		if (currentTrackIndex < playList.size())
 		{
-			playTrack(playList.get(currentTrackIndex));
+			initTrack(playList.get(currentTrackIndex));
 		}
 	}
 
@@ -277,14 +280,12 @@ public class MediaService extends Service implements OnCompletionListener, OnPre
 	 * @param track
 	 *            the track to play
 	 */
-	private void playTrack(Track track)
+	private void initTrack(Track track)
 	{
 		try
 		{
-			mediaPlayer.setDataSource(getApplicationContext(), Uri.parse(currentTrack.getData()));
-			mediaPlayer.setOnCompletionListener(this);
-			mediaPlayer.setOnErrorListener(this);
-			mediaPlayer.setOnPreparedListener(this);
+			mediaPlayer.reset();
+			mediaPlayer.setDataSource(getApplicationContext(), Uri.parse(track.getData()));
 			mediaPlayer.prepareAsync();
 		}
 		catch (IllegalArgumentException e)

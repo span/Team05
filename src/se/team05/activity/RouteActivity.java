@@ -123,6 +123,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 		setContentView(R.layout.activity_route);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		databaseHandler = new DatabaseHandler(this);
+		serviceIntent = new Intent(this, MediaService.class);
 		route = new Route("New route", "This is a new route");
 		newRoute = true;
 		setupMapAndLocation();
@@ -320,17 +321,22 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 					geoPoint = checkPoint.getPoint();
 					if(getDistance(currentGeoPoint, geoPoint) <= checkPoint.getRadius())
 					{
-						serviceIntent = new Intent(this, MediaService.class);
-						serviceIntent.putExtra(MediaService.DATA_PLAYLIST, checkPoint.getTracks());
-						serviceIntent.setAction(MediaService.ACTION_PLAY);
-						try
+						if(checkPoint != currentCheckPoint)
 						{
-							startService(serviceIntent);
+							stopService(serviceIntent);
+							serviceIntent.putExtra(MediaService.DATA_PLAYLIST, checkPoint.getTracks());
+							serviceIntent.setAction(MediaService.ACTION_PLAY);
+							try
+							{
+								startService(serviceIntent);
+							}
+							catch (Exception e)
+							{
+								Log.e(TAG, "Could not start media service: " + e.getMessage());
+							}
+							currentCheckPoint = checkPoint;
 						}
-						catch (Exception e)
-						{
-							e.printStackTrace();
-						}
+						
 						break;
 					}
 				}
@@ -416,12 +422,12 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 			case R.id.show_result_button:
 				break;
 			case R.id.stop_existing_run_button:
-				stopService(serviceIntent);
 				handler.removeCallbacks(runnable);
 				routeResults = new Result(route.getId(), (int) System.currentTimeMillis() / 1000, timePassed, (int) totalDistance, 0);
 				databaseHandler.saveResult(routeResults);
 				stopExistingRunButton.setVisibility(View.GONE);
 				startExistingRunButton.setVisibility(View.VISIBLE);
+				stopService(serviceIntent);
 				releaseWakeLock();
 				break;
 		}
