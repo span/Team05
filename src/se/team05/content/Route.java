@@ -16,6 +16,12 @@
  */
 package se.team05.content;
 
+import java.util.ArrayList;
+
+import se.team05.overlay.CheckPoint;
+
+import com.google.android.maps.GeoPoint;
+
 /**
  * An activity that will present the user with the option to choose and old
  * route. As of now it is just a button but a future release will include a
@@ -36,6 +42,9 @@ public class Route
 	int timecoach;
 	int lengthcoach;
 
+	private ArrayList<GeoPoint> geoPoints;
+	private ArrayList<CheckPoint> checkPoints;
+
 	/**
 	 * Constructor for a route
 	 * 
@@ -44,12 +53,7 @@ public class Route
 	 */
 	public Route(String name, String description)
 	{
-		this.name = name;
-		this.description = description;
-		this.type = 0;
-		// TODO Global variables for default values of timecoach and lengthcoach
-		this.timecoach = -1;
-		this.lengthcoach = -1;
+		this(name, description, 0, -1, -1);
 	}
 
 	/**
@@ -63,11 +67,7 @@ public class Route
 	 */
 	public Route(String name, String description, int type, int timecoach, int lengthcoach)
 	{
-		this.name = name;
-		this.description = description;
-		this.type = type;
-		this.timecoach = timecoach;
-		this.lengthcoach = lengthcoach;
+		this(-1, name, description, type, timecoach, lengthcoach);
 	}
 
 	/**
@@ -88,6 +88,8 @@ public class Route
 		this.type = type;
 		this.timecoach = timecoach;
 		this.lengthcoach = lengthcoach;
+		this.geoPoints = new ArrayList<GeoPoint>();
+		this.checkPoints = new ArrayList<CheckPoint>();
 	}
 
 	public String toString()
@@ -100,9 +102,9 @@ public class Route
 		return _id;
 	}
 
-	public void setId(long l)
+	public void setId(long id)
 	{
-		this._id = l;
+		this._id = id;
 	}
 
 	public String getName()
@@ -155,4 +157,33 @@ public class Route
 		this.lengthcoach = lengthcoach;
 	}
 
+	/**
+	 * Sets the geo points that are related to this route.
+	 * 
+	 * @param geoPoints
+	 */
+	public void setGeoPoints(ArrayList<GeoPoint> geoPoints)
+	{
+		this.geoPoints = geoPoints;
+	}
+
+	/**
+	 * Gets the geo points related to this route.
+	 * 
+	 * @return a list of geo points
+	 */
+	public ArrayList<GeoPoint> getGeoPoints()
+	{
+		return geoPoints;
+	}
+
+	public void setCheckPoints(ArrayList<CheckPoint> checkPoints)
+	{
+		this.checkPoints = checkPoints;
+	}
+
+	public ArrayList<CheckPoint> getCheckPoints()
+	{
+		return checkPoints;
+	}
 }
