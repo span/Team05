@@ -27,6 +27,7 @@ import se.team05.content.Track;
 import se.team05.data.DatabaseHandler;
 import se.team05.dialog.EditCheckPointDialog;
 import se.team05.dialog.SaveRouteDialog;
+import se.team05.listener.MainActivityButtonListener;
 import se.team05.listener.MapLocationListener;
 import se.team05.listener.MapOnGestureListener;
 import se.team05.overlay.CheckPoint;
@@ -389,6 +390,10 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 				startTimer();
 				break;
 			case R.id.show_result_button:
+				Context context = this;
+				Intent intent;
+				intent = new Intent(context, ListExistingRoutesActivity.class);
+				context.startActivity(intent);
 				break;
 			case R.id.stop_existing_run_button:
 				handler.removeCallbacks(runnable);
