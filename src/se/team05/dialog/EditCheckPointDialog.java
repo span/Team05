@@ -168,8 +168,9 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 		{
 			try
 			{
+				//TODO IS THIS RIGHT?!
 				soundManager.startRecording();
-				recordButton.setText("Stop recording");
+				recordButton.setText(R.string.stop_recording);
 			}
 			catch (IOException e)
 			{

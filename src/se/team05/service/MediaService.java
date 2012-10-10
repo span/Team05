@@ -117,7 +117,7 @@ public class MediaService extends Service implements OnCompletionListener, OnPre
 	 * Initiates a notification with the application launcher icon as a graphic
 	 * and custom messages for the ticker, title and text.
 	 * 
-	 * NOTE: USE TRACK INFORMATION HERE!
+	 * NOTE: USE TRACK INFORMATION HERE! TODO Need to change these strings?
 	 */
 	private void initNotification()
 	{
