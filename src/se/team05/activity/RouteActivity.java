@@ -551,6 +551,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 		currentCheckPoint = checkPoint;
 		checkPointOverlay.addCheckPoint(checkPoint);
 		showCheckPointDialog(checkPoint, EditCheckPointDialog.MODE_ADD);
+		mapView.postInvalidate();
 	}
 
 	/**

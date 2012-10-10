@@ -3,8 +3,7 @@
     android:id="@+id/layout_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="8dp" >
+    android:orientation="vertical" >
 
     <TextView
         style="?android:attr/listSeparatorTextViewStyle"
