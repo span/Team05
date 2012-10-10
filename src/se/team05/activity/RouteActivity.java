@@ -80,8 +80,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	private String userDistance = "0";
 	private Location lastLocation;
 	private float totalDistance = 0;
-	private String lengthPresentation = DISTANCE_UNIT_METRES;
-	private String userDistanceRun = userDistance + lengthPresentation;
+
 	private CheckPointOverlay checkPointOverlay;
 	private EditCheckPointDialog checkPointDialog;
 	private Handler handler;
@@ -104,9 +103,6 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	private TextView speedView;
 	private TextView distanceView;
 	private Intent serviceIntent;;
-	private static String DISTANCE_UNIT_KILOMETRE = "Km";
-	private static String DISTANCE_UNIT_METRES = " metres";
-	private static float DISTANCE_THRESHOLD_EU = 1000;
 
 
 	/**
@@ -125,7 +121,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		databaseHandler = new DatabaseHandler(this);
 		serviceIntent = new Intent(this, MediaService.class);
-		route = new Route("New route", "This is a new route");
+		route = new Route(getString(R.string.new_route), getString(R.string.this_is_a_new_route));
 		newRoute = true;
 		setupMapAndLocation();
 
@@ -133,7 +129,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 		if (rid != -1) {
 			newRoute = false;
 			initRoute(rid);
-			setTitle("Saved Route: " + nameOfExistingRoute);
+			setTitle(R.string.saved_route_ + nameOfExistingRoute);
 			addSavedCheckPoints(rid);
 		}
 		setupButtons();
@@ -161,7 +157,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 		providerName = locationManager.getBestProvider(criteria, true);
 
 		if (providerName != null) {
-			Log.d(TAG, "No provider: " + providerName);
+			Log.d(TAG, getString(R.string.provider_) + providerName);
 		}
 
 		overlays = mapView.getOverlays();
@@ -290,21 +286,15 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 
 			currentGeoPoint = new GeoPoint((int) (location.getLatitude() * 1E6), (int) (location.getLongitude() * 1E6));
 			geoPointList.add(currentGeoPoint);
-			userSpeed = (3.6 * location.getSpeed()) + DISTANCE_UNIT_KILOMETRE + "/h";
+			userSpeed = (3.6 * location.getSpeed()) + getString(R.string.km) + "/" + getString(R.string.h);
 
 			if (lastLocation != null)
 			{
 				totalDistance += lastLocation.distanceTo(location);
-			if (totalDistance >= DISTANCE_THRESHOLD_EU)
-			{
-				lengthPresentation = DISTANCE_UNIT_KILOMETRE;
+
+
 				userDistance = new DecimalFormat("#.##").format(totalDistance / 1000);
-			}
-			else
-			{
-				userDistance = "" + (int) totalDistance;
-			}
-				userDistanceRun = userDistance + lengthPresentation;
+
 			}
 
 			lastLocation = location;
@@ -327,7 +317,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 							}
 							catch (Exception e)
 							{
-								Log.e(TAG, "Could not start media service: " + e.getMessage());
+								Log.e(TAG, getString(R.string.could_not_start_media_service_) + e.getMessage());
 							}
 							currentCheckPoint = checkPoint;
 						}
@@ -339,7 +329,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 
 			lastLocation = location;
 			speedView.setText(userSpeed);
-			distanceView.setText(userDistanceRun);
+			distanceView.setText(userDistance + getString(R.string.km));
 			mapView.postInvalidate();
 		}
 	}
@@ -627,7 +617,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 				wakeLock.acquire();
 			}
 		} catch (RuntimeException e) {
-			Log.e(TAG, "Could not acquire wakelock: ", e);
+			Log.e(TAG, getString(R.string.could_not_acquire_wakelock_), e);
 		}
 	}
 

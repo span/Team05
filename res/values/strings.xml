@@ -56,10 +56,13 @@
 	<string name="show_result">Show result</string>
 	<string name="please_add_a_route">Please add a route</string>
 	<string name="click_to_add_a_route">Click to add a route</string>
-	<string name="km">" Km"</string>
+	<string name="km">Km</string>
 	<string name="_metres">" metres"</string>
 	<string name="_0_00">0.00</string>
 	<string name="h">h</string>
 	<string name="saved_route_">"Saved Route: "</string>
-	<string name="provider_">PROVIDER:</string>
+	<string name="provider_">"Provider: "</string>
+	<string name="could_not_start_media_service_">"Could not start media service: "</string>
+	<string name="this_is_a_new_route">This is a new route</string>
+	<string name="could_not_acquire_wakelock_">"Could not acquire wakelock: "</string>
 </resources>
