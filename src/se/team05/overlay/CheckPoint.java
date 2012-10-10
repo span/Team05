@@ -48,7 +48,6 @@ public class CheckPoint extends OverlayItem
 	 */
 	public CheckPoint(GeoPoint geoPoint)
 	{
-		//TODO NEED TO CHANGE?
 		this(geoPoint, "CheckPoint", 30, -1);
 	}
 
