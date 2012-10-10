@@ -1,0 +1,70 @@
+<class-diagram version="1.0.10" icons="true" automaticImage="PNG" always-add-relationships="true" generalizations="true" 
+  realizations="true" associations="true" dependencies="true" nesting-relationships="true">  
+  <class id="1" corner="BOTTOM_RIGHT" language="java" name="se.team05.activity.MainActivity" 
+    project="se.team05.MainActivity" file="/se.team05.MainActivity/src/se/team05/activity/MainActivity.java" 
+    binary="false">    
+    <position height="-1" width="-1" x="135" y="69"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="false" private="false"/>      
+      <operations public="true" package="true" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class id="2" corner="BOTTOM_RIGHT" language="java" name="se.team05.activity.UseExistingRouteActivity" 
+    project="se.team05.MainActivity" file="/se.team05.MainActivity/src/se/team05/activity/UseExistingRouteActivity.java" 
+    binary="false">    
+    <position height="-1" width="-1" x="381" y="68"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="false" private="false"/>      
+      <operations public="true" package="true" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class id="3" corner="BOTTOM_RIGHT" language="java" name="se.team05.activity.ActivityWhileRunningOld" 
+    project="se.team05.MainActivity" file="/se.team05.MainActivity/src/se/team05/activity/ActivityWhileRunningOld.java" 
+    binary="false">    
+    <position height="-1" width="-1" x="657" y="71"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="false" private="false"/>      
+      <operations public="true" package="true" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class id="4" corner="BOTTOM_RIGHT" language="java" name="se.team05.listener.MainActivityButtonListener" 
+    project="se.team05.MainActivity" 
+    file="/se.team05.MainActivity/src/se/team05/listener/MainActivityButtonListener.java" binary="false">    
+    <position height="-1" width="-1" x="236" y="192"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="false" private="false"/>      
+      <operations public="true" package="true" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class id="5" corner="BOTTOM_RIGHT" language="java" name="se.team05.listener.UseExistingRouteListener" 
+    project="se.team05.MainActivity" file="/se.team05.MainActivity/src/se/team05/listener/UseExistingRouteListener.java" 
+    binary="false">    
+    <position height="-1" width="-1" x="519" y="203"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="false" private="false"/>      
+      <operations public="true" package="true" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <dependency id="6">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="4"/>  
+  </dependency>  
+  <dependency id="7">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="3"/>  
+  </dependency>  
+  <dependency id="8">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="2"/>  
+  </dependency>  
+  <dependency id="9">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="5"/>  
+  </dependency>  
+  <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+    visibility="true">    
+    <attributes public="true" package="true" protected="false" private="false"/>    
+    <operations public="true" package="true" protected="false" private="false"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>
