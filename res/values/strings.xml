@@ -79,5 +79,5 @@
 	<string name="stop_recording">Stop recording</string>
 	<string name="save_result_">Save result?</string>
 	<string name="do_you_want_to_save_this_result_">Do you want to save this result?</string>
-	<string name="result_saved">Result saved</string>
+	<string name="result_saved">Result saved: </string>
 </resources>

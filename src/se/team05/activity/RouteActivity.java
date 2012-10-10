@@ -454,7 +454,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 						public void onClick(DialogInterface dialog, int id)
 						{
 							databaseHandler.saveResult(routeResults);
-							informResultSaveToast();
+							informResultSaveToast(route.getName());
 
 						}
 					}).setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
@@ -476,12 +476,12 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 		}
 	}
 	
-	private void informResultSaveToast()
+	private void informResultSaveToast(String name)
 	{
 		CharSequence text = getString(R.string.result_saved);
 		int duration = Toast.LENGTH_SHORT;
 
-		Toast toast = Toast.makeText(this, text, duration);
+		Toast toast = Toast.makeText(this, text + " " + name, duration);
 		toast.show();
 	}
 
