@@ -28,6 +28,8 @@ package se.team05.content;
  */
 public class Result {
 	
+	public static String RESULT_ID = "id";
+	
 	private int _id;
 	private long routId;
 	private int timestamp;

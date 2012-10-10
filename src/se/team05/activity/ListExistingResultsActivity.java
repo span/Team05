@@ -19,8 +19,10 @@ package se.team05.activity;
 import se.team05.R;
 import se.team05.content.Result;
 import se.team05.content.Route;
+import se.team05.data.DBAdapter;
 import se.team05.data.DBResultAdapter;
 import se.team05.data.DBRouteAdapter;
+import se.team05.data.Database;
 import se.team05.data.DatabaseHandler;
 import android.app.ListActivity;
 import android.content.Context;
@@ -36,7 +38,7 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 /**
- * An activity that will present the user with the option to view results of old routes.
+ * An activity that will present the user with the option to view results of an old route.
  * Gets results from database and presents them in a listview.
  * 
  * @author Gustaf
@@ -70,41 +72,22 @@ public class ListExistingResultsActivity extends ListActivity
 
 	}
 	
-//	public void onListItemClick(ListView l, View v, int position, long id)
-//	{
+	public void onListItemClick(ListView l, View v, int position, long id)
+	{
+		Context context = this;
+		Intent intent;
+		
+//		intent = new Intent(context, RouteActivity.class);
 
-//		
-//		intent = new Intent(this.getApplicationContext(), RouteActivity.class);
-//		intent.putExtra(Route.EXTRA_ID, id);
-//		
+		intent = new Intent(context, ShowResultsActivity.class);
+//		intent.putExtra(Result.RESULT_ID, id);
+		intent.putExtra(Result.RESULT_ID, 1);
+		
 //		Log.d("Id", String.valueOf(id));
 //		Log.d("Position", String.valueOf(position));
-//		
-//		this.startActivity(intent);
-//	}
-//	
-	/**
-	 * Simple class for automatically formating the content, from a cursor returned
-	 * by the database, to a listview.
-	 * @author Henrik Hugo
-	 *
-	 */
-//	private class ResultListCursorAdapter extends SimpleCursorAdapter {
-//
-//		@SuppressWarnings("deprecation")
-//		public ResultListCursorAdapter(Context context, int layout, Cursor c,
-//										String[] from, int[] to)
-//		{
-//			super(context, layout, c, from, to);
-//		}
-//		
-//		@SuppressWarnings("deprecation")
-//		public ResultListCursorAdapter(Context context, int layout, Cursor c)
-//		{
-//			super(context, layout, c, null, null);
-//		}
-//
-//
-//	}
+		
+		context.startActivity(intent);
+	}
+
 
 }

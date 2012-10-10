@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    This file is part of Personal Trainer.
+
+    Personal Trainer is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    Personal Trainer is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+<!--     Show time -->
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/time_of_run" />
+
+        <TextView
+            android:id="@+id/show_time_result_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:context=".DisplayMessageActivity" />
+    </LinearLayout>
+    
+<!--     Show distance -->
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/distance_of_run_result" />
+
+        <TextView
+            android:id="@+id/show_distance_result_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:context=".DisplayMessageActivity" />
+    </LinearLayout>
+    
+<!--     Show speed -->
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/speed_of_run" />
+
+        <TextView
+            android:id="@+id/show_speed_result_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:context=".DisplayMessageActivity" />
+    </LinearLayout>
+    
+<!-- 	Show date -->
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/date" />
+
+        <TextView
+            android:id="@+id/show_date_result_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:context=".DisplayMessageActivity" />
+    </LinearLayout>
+    
+
+
+
+    <Button
+        android:id="@+id/delete_results"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/delete_results" />
+
+    
+  	 <!-- TODO up button -->
+    
+
+</LinearLayout>
