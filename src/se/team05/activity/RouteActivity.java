@@ -35,7 +35,9 @@ import se.team05.overlay.CheckPointOverlay;
 import se.team05.overlay.RouteOverlay;
 import se.team05.service.MediaService;
 import se.team05.view.EditRouteMapView;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.location.Criteria;
@@ -104,7 +106,8 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	private WakeLock wakeLock;
 	private TextView speedView;
 	private TextView distanceView;
-	private Intent serviceIntent;;
+	private Intent serviceIntent;
+	private String formattedTimeString;;
 
 
 	/**
@@ -420,7 +423,30 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 			routeResults = new Result(route.getId(),
 					(int) System.currentTimeMillis() / 1000, timePassed,
 					(int) totalDistance, 0);
-			databaseHandler.saveResult(routeResults);
+			
+
+			String giveUserDistanceString = "Total distance: " + userDistance + getString(R.string.km) + "\n";
+			String giveUserTimeString = getString(R.string.time_) + formattedTimeString + "\n\n";
+			String giveUserResultData = giveUserDistanceString + giveUserTimeString; 
+			
+			System.out.println((int)totalDistance);
+			AlertDialog alertDialog = new AlertDialog.Builder(this).setTitle(R.string.save_result_)
+					.setMessage( giveUserResultData +  getString(R.string.do_you_want_to_save_this_result_))
+					.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
+					{
+						public void onClick(DialogInterface dialog, int id)
+						{
+							databaseHandler.saveResult(routeResults);
+						}
+					}).setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
+					{
+						public void onClick(DialogInterface dialog, int id)
+						{
+						}
+					}).create();
+			alertDialog.show();
+			
+			
 			stopExistingRunButton.setVisibility(View.GONE);
 			startExistingRunButton.setVisibility(View.VISIBLE);
 			stopService(serviceIntent);
@@ -456,8 +482,8 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 		int seconds = timePassed % 60;
 		int minutes = timePassed / 60;
 		TextView timeView = (TextView) findViewById(R.id.show_time_textview);
-		String result = String.format(" %02d:%02d", minutes, seconds);
-		timeView.setText(result);
+		formattedTimeString = String.format(" %02d:%02d", minutes, seconds);
+		timeView.setText(formattedTimeString);
 		timePassed++;
 	}
 
