@@ -433,7 +433,7 @@ public class DatabaseHandler
 		Cursor cursor = dbCheckPointAdapter.fetchCheckPointByRid(rid);
 		ArrayList<CheckPoint> checkPointList = null;
 
-		if (cursor != null && cursor.getCount() != 0)
+		if (cursor != null)
 		{
 			checkPointList = new ArrayList<CheckPoint>();
 			cursor.moveToFirst();
