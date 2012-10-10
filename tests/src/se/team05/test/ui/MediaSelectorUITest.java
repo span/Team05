@@ -2,6 +2,7 @@ package se.team05.test.ui;
 
 import java.util.ArrayList;
 
+import se.team05.R;
 import se.team05.activity.MediaSelectorActivity;
 import se.team05.adapter.MediaSelectorAdapter;
 import se.team05.content.Track;
@@ -45,7 +46,7 @@ public class MediaSelectorUITest extends ActivityInstrumentationTestCase2<MediaS
 		intent.putExtra(MediaSelectorActivity.EXTRA_SELECTED_ITEMS, new ArrayList<Track>());
 		setActivityIntent(intent);
 		activity = getActivity();
-		listView = solo.getCurrentListViews().get(0);
+		listView = (ListView) activity.findViewById(R.id.list);
 		solo.waitForView(listView);
 		adapter = (MediaSelectorAdapter) listView.getAdapter();
 	}
@@ -108,6 +109,8 @@ public class MediaSelectorUITest extends ActivityInstrumentationTestCase2<MediaS
 		testData = testCursor.getString(testCursor.getColumnIndex(MediaStore.Audio.Media.DATA));
 		data = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
 		assertEquals(testData, data);
+		
+		solo.clickOnActionBarItem(R.id.done);
 	}
 
 	/**

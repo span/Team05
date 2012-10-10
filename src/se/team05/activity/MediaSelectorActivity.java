@@ -128,9 +128,8 @@ public class MediaSelectorActivity extends Activity implements LoaderCallbacks<C
 			case R.id.track:
 				loaderManager.initLoader(LOADER_ID_TITLE, null, this);
 				return true;
-			default:
-				return super.onOptionsItemSelected(item);
 		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	/**
