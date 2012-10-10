@@ -106,6 +106,7 @@ public class MediaSelectorActivity extends Activity implements LoaderCallbacks<C
 	 * user selection either the selected tracks are passed back to the calling
 	 * activity or a new query is made to the media store to sort on either
 	 * artist, album or title.
+	 * TODO How format XML-string
 	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
