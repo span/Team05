@@ -90,13 +90,13 @@ public class ListExistingRoutesActivity extends ListActivity
 		Intent intent;
 		Bundle bundle = new Bundle();
 		
-		bundle.putLong("id", id);
+		bundle.putLong(getString(R.string.id), id);
 		
 		intent = new Intent(this.getApplicationContext(), RouteActivity.class);
 		intent.putExtra(Route.EXTRA_ID, id);
 		
-		Log.d("Id", String.valueOf(id));
-		Log.d("Position", String.valueOf(position));
+		Log.d(getString(R.string.id), String.valueOf(id));
+		Log.d(getString(R.string.position), String.valueOf(position));
 		
 		this.startActivity(intent);
 	}

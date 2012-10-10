@@ -101,15 +101,16 @@ public class DatabaseHandler
 		Cursor cursor = dBRouteAdapter.fetchRoute(id);
 		Route route = null;
 
-		if (cursor != null)
+		if (cursor != null && cursor.getCount() != 0)
 		{
 			cursor.moveToFirst();
-			route = new Route(cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_ID)), cursor.getString(cursor
-					.getColumnIndex(DBRouteAdapter.COLUMN_NAME)), cursor.getString(cursor
-					.getColumnIndex(DBRouteAdapter.COLUMN_DESCRIPTION)), cursor.getInt(cursor
-					.getColumnIndex(DBRouteAdapter.COLUMN_TYPE)), cursor.getInt(cursor
-					.getColumnIndex(DBRouteAdapter.COLUMN_TIMECOACH)), cursor.getInt(cursor
-					.getColumnIndex(DBRouteAdapter.COLUMN_LENGTHCOACH)));
+			route = new Route(
+					cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_ID)),
+					cursor.getString(cursor.getColumnIndex(DBRouteAdapter.COLUMN_NAME)),
+					cursor.getString(cursor.getColumnIndex(DBRouteAdapter.COLUMN_DESCRIPTION)),
+					cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_TYPE)),
+					cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_TIMECOACH)),
+					cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_LENGTHCOACH)));
 
 			cursor.close();
 		}
@@ -128,7 +129,7 @@ public class DatabaseHandler
 		dBRouteAdapter.open();
 		Cursor cursor = dBRouteAdapter.getAllRoutes();
 		List<Route> routeList = null;
-		if (cursor != null)
+		if (cursor != null && cursor.getCount() != 0)
 		{
 			Route route;
 			cursor.moveToFirst();
@@ -136,12 +137,14 @@ public class DatabaseHandler
 
 			while (!cursor.isAfterLast())
 			{
-				route = new Route(cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_ID)),
-						cursor.getString(cursor.getColumnIndex(DBRouteAdapter.COLUMN_NAME)), cursor.getString(cursor
-								.getColumnIndex(DBRouteAdapter.COLUMN_DESCRIPTION)), cursor.getInt(cursor
-								.getColumnIndex(DBRouteAdapter.COLUMN_TYPE)), cursor.getInt(cursor
-								.getColumnIndex(DBRouteAdapter.COLUMN_TIMECOACH)), cursor.getInt(cursor
-								.getColumnIndex(DBRouteAdapter.COLUMN_LENGTHCOACH)));
+				route = new Route(cursor.getInt(
+						cursor.getColumnIndex(DBRouteAdapter.COLUMN_ID)),
+						cursor.getString(cursor.getColumnIndex(DBRouteAdapter.COLUMN_NAME)),
+						cursor.getString(cursor.getColumnIndex(DBRouteAdapter.COLUMN_DESCRIPTION)),
+						cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_TYPE)),
+						cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_TIMECOACH)),
+						cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_LENGTHCOACH))
+				);
 
 				routeList.add(route);
 				cursor.moveToNext();
@@ -196,13 +199,14 @@ public class DatabaseHandler
 		Cursor cursor = dbTrackAdapter.fetchTrackByCid(cid);
 		while (cursor.moveToNext())
 		{
-			tracks.add(new Track(cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_ID)), cursor
-					.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_ARTIST)), cursor.getString(cursor
-					.getColumnIndex(DBTrackAdapter.COLUMN_ALBUM)), cursor.getString(cursor
-					.getColumnIndex(DBTrackAdapter.COLUMN_TITLE)), cursor.getString(cursor
-					.getColumnIndex(DBTrackAdapter.COLUMN_DATA)), cursor.getString(cursor
-					.getColumnIndex(DBTrackAdapter.COLUMN_DISPLAY_NAME)), cursor.getString(cursor
-					.getColumnIndex(DBTrackAdapter.COLUMN_DURATION))));
+			tracks.add(new Track(
+					cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_ID)),
+					cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_ARTIST)),
+					cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_ALBUM)),
+					cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_TITLE)),
+					cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_DATA)),
+					cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_DISPLAY_NAME)),
+					cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_DURATION))));
 		}
 		dbTrackAdapter.close();
 		return tracks;
@@ -253,7 +257,7 @@ public class DatabaseHandler
 		Cursor cursor = dbResultAdapter.fetchResultByRid(rid);
 		dbResultAdapter.close();
 
-		if (cursor != null)
+		if (cursor != null && cursor.getCount() != 0)
 		{
 			resultList = new ArrayList<Result>();
 			Result result;
@@ -282,11 +286,13 @@ public class DatabaseHandler
 	 */
 	private Result createResultFromCursor(Cursor cursor)
 	{
-		Result result = new Result(cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_ID)),
-				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_TIMESTAMP)), cursor.getInt(cursor
-						.getColumnIndex(DBResultAdapter.COLUMN_TIME)), cursor.getInt(cursor
-						.getColumnIndex(DBResultAdapter.COLUMN_DISTANCE)), cursor.getInt(cursor
-						.getColumnIndex(DBResultAdapter.COLUMN_CALORIES)));
+		Result result = new Result(
+				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_ID)),
+				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_TIMESTAMP)),
+				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_TIME)),
+				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_DISTANCE)),
+				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_CALORIES))
+		);
 		return result;
 	}
 
@@ -403,7 +409,7 @@ public class DatabaseHandler
 		Cursor cursor = dbGeoPointAdapter.fetchGeoPointByRid(rid);
 		ArrayList<GeoPoint> geoPointList = null;
 
-		if (cursor != null)
+		if (cursor != null && cursor.getCount() != 0)
 		{
 			geoPointList = new ArrayList<GeoPoint>();
 			cursor.moveToFirst();
@@ -411,8 +417,10 @@ public class DatabaseHandler
 			while (!cursor.isAfterLast())
 			{
 				GeoPoint geoPoint = new GeoPoint(
-						cursor.getInt(cursor.getColumnIndex(DBGeoPointAdapter.COLUMN_LATITUDE)), cursor.getInt(cursor
-								.getColumnIndex(DBGeoPointAdapter.COLUMN_LONGITUDE)));
+						cursor.getInt(
+								cursor.getColumnIndex(DBGeoPointAdapter.COLUMN_LATITUDE)),
+								cursor.getInt(cursor.getColumnIndex(DBGeoPointAdapter.COLUMN_LONGITUDE))
+						);
 				geoPointList.add(geoPoint);
 				cursor.moveToNext();
 			}
@@ -443,9 +451,10 @@ public class DatabaseHandler
 
 			while (!cursor.isAfterLast())
 			{
-				GeoPoint geoPoint = new GeoPoint(cursor.getInt(cursor
-						.getColumnIndex(DBCheckPointAdapter.COLUMN_LATITUDE)), cursor.getInt(cursor
-						.getColumnIndex(DBCheckPointAdapter.COLUMN_LONGITUDE)));
+				GeoPoint geoPoint = new GeoPoint(
+						cursor.getInt(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_LATITUDE)),
+						cursor.getInt(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_LONGITUDE))
+				);
 
 				CheckPoint checkPoint = new CheckPoint(geoPoint);
 				checkPoint.setRadius(cursor.getInt(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_RADIUS)));

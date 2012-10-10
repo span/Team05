@@ -33,6 +33,7 @@ import se.team05.listener.MapOnGestureListener;
 import se.team05.overlay.CheckPoint;
 import se.team05.overlay.CheckPointOverlay;
 import se.team05.overlay.RouteOverlay;
+import se.team05.service.MediaService;
 import se.team05.view.EditRouteMapView;
 import android.content.Context;
 import android.content.Intent;
@@ -64,9 +65,10 @@ import com.google.android.maps.Overlay;
  * @author Markus Schutzer, Patrik Thitusson, Daniel Kvist
  * 
  */
-public class RouteActivity extends MapActivity implements View.OnClickListener, EditCheckPointDialog.Callbacks, SaveRouteDialog.Callbacks,
-		CheckPointOverlay.Callbacks, MapOnGestureListener.Callbacks, MapLocationListener.Callbacks
-{
+public class RouteActivity extends MapActivity implements View.OnClickListener,
+		EditCheckPointDialog.Callbacks, SaveRouteDialog.Callbacks,
+		CheckPointOverlay.Callbacks, MapOnGestureListener.Callbacks,
+		MapLocationListener.Callbacks {
 
 	private static final String TAG = "Personal trainer";
 	private ArrayList<GeoPoint> geoPointList = new ArrayList<GeoPoint>();
@@ -79,8 +81,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	private String userDistance = "0";
 	private Location lastLocation;
 	private float totalDistance = 0;
-	private String lengthPresentation = DISTANCE_UNIT_METRES;
-	private String userDistanceRun = userDistance + lengthPresentation;
+
 	private CheckPointOverlay checkPointOverlay;
 	private EditCheckPointDialog checkPointDialog;
 	private Handler handler;
@@ -89,9 +90,6 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	private String nameOfExistingRoute;
 	private long rid;
 
-	private static String DISTANCE_UNIT_KILOMETRE = "Km";
-	private static String DISTANCE_UNIT_METRES = " metres";
-	private static float DISTANCE_THRESHOLD_EU = 1000;
 	private ArrayList<Track> selectedTracks = new ArrayList<Track>();
 	private DatabaseHandler databaseHandler;
 	private CheckPoint currentCheckPoint;
@@ -103,7 +101,11 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	private Button startExistingRunButton;
 	private Button stopExistingRunButton;
 	private Route route;
-	private WakeLock wakeLock;;
+	private WakeLock wakeLock;
+	private TextView speedView;
+	private TextView distanceView;
+	private Intent serviceIntent;;
+
 
 	/**
 	 * Will present a map to the user and will also display a dot representing
@@ -115,14 +117,13 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	 * will place a checkpoint at the user's current location.
 	 */
 	@Override
-	public void onCreate(Bundle savedInstanceState)
-	{
-
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_route);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		databaseHandler = new DatabaseHandler(this);
-
+		serviceIntent = new Intent(this, MediaService.class);
+		route = new Route(getString(R.string.new_route), getString(R.string.this_is_a_new_route));
 		newRoute = true;
 		setupMapAndLocation();
 
@@ -131,8 +132,8 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 		if (rid != -1)
 		{
 			newRoute = false;
-			drawRoute(rid);
-			setTitle("Saved Route: " + nameOfExistingRoute);
+			initRoute(rid);
+			setTitle(getString(R.string.saved_route_) + nameOfExistingRoute);
 			addSavedCheckPoints(rid);
 		}
 		setupButtons();
@@ -142,14 +143,16 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	/**
 	 * Sets up the map view and the location
 	 */
-	private void setupMapAndLocation()
-	{
+	private void setupMapAndLocation() {
+		distanceView = (TextView) findViewById(R.id.show_distance_textview);
+		speedView = (TextView) findViewById(R.id.show_speed_textview);
 		mapView = (EditRouteMapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
 		mapView.setOnGestureListener(new MapOnGestureListener(this));
 
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, new MapLocationListener(this));
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
+				0, new MapLocationListener(this));
 
 		Criteria criteria = new Criteria();
 		criteria.setAccuracy(Criteria.ACCURACY_FINE);
@@ -157,9 +160,8 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 
 		providerName = locationManager.getBestProvider(criteria, true);
 
-		if (providerName != null)
-		{
-			System.out.println("NO PROVIDER:" + providerName);
+		if (providerName != null) {
+			Log.d(TAG, getString(R.string.provider_) + providerName);
 		}
 
 		overlays = mapView.getOverlays();
@@ -180,12 +182,11 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	 * 
 	 * @param rid
 	 */
-	private void addSavedCheckPoints(long rid)
-	{
-		ArrayList<CheckPoint> checkPointList = databaseHandler.getCheckPoints(rid);
+	private void addSavedCheckPoints(long rid) {
 		ArrayList<Track> trackList;
-		for(CheckPoint checkPoint : checkPointList)
-		{
+		ArrayList<CheckPoint> checkPointList = databaseHandler
+				.getCheckPoints(rid);
+		for (CheckPoint checkPoint : checkPointList) {
 			trackList = databaseHandler.getTracks(checkPoint.getId());
 			checkPoint.addTracks(trackList);
 		}
@@ -195,8 +196,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	/**
 	 * Sets up the buttons in the view.
 	 */
-	private void setupButtons()
-	{
+	private void setupButtons() {
 		Button addCheckPointButton = (Button) findViewById(R.id.add_checkpoint);
 		Button showResultButton = (Button) findViewById(R.id.show_result_button);
 
@@ -205,14 +205,11 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 		startExistingRunButton = (Button) findViewById(R.id.start_existing_run_button);
 		stopExistingRunButton = (Button) findViewById(R.id.stop_existing_run_button);
 
-		if (newRoute)
-		{
+		if (newRoute) {
 			stopAndSaveButton.setOnClickListener(this);
 			startRunButton.setOnClickListener(this);
 			addCheckPointButton.setOnClickListener(this);
-		}
-		else
-		{
+		} else {
 			startExistingRunButton.setOnClickListener(this);
 			startExistingRunButton.setVisibility(View.VISIBLE);
 			stopExistingRunButton.setOnClickListener(this);
@@ -231,11 +228,21 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	 * view if the user is using a previously saved map.
 	 * 
 	 * @param id
+	 *            the route id
 	 */
-	private void drawRoute(long id)
-	{
+	private void initRoute(long id) {
+		ArrayList<GeoPoint> geoPoints = databaseHandler.getGeoPoints(id);
 		route = databaseHandler.getRoute(id);
-		RouteOverlay routeOverlay = new RouteOverlay(databaseHandler.getGeoPoints(id), 23, true);
+		route.setGeoPoints(geoPoints);
+
+		ArrayList<CheckPoint> checkPoints = databaseHandler.getCheckPoints(id);
+		route.setCheckPoints(checkPoints);
+
+		for (CheckPoint checkPoint : checkPoints) {
+			checkPoint.addTracks(databaseHandler.getTracks(checkPoint.getId()));
+		}
+
+		RouteOverlay routeOverlay = new RouteOverlay(geoPoints, 23, true);
 		overlays.add(routeOverlay);
 		nameOfExistingRoute = route.getName();
 	}
@@ -246,12 +253,12 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	 * which this method then saves into the database.
 	 */
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data)
-	{
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		if (requestCode == MediaSelectorActivity.REQUEST_MEDIA && resultCode == RESULT_OK)
-		{
-			selectedTracks = data.getParcelableArrayListExtra(MediaSelectorActivity.EXTRA_SELECTED_ITEMS);
+		if (requestCode == MediaSelectorActivity.REQUEST_MEDIA
+				&& resultCode == RESULT_OK) {
+			selectedTracks = data
+					.getParcelableArrayListExtra(MediaSelectorActivity.EXTRA_SELECTED_ITEMS);
 			currentCheckPoint.addTracks(selectedTracks);
 		}
 	}
@@ -261,8 +268,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	 * Might be implemented in a later stage.
 	 */
 	@Override
-	protected boolean isRouteDisplayed()
-	{
+	protected boolean isRouteDisplayed() {
 		return false;
 	}
 
@@ -277,35 +283,57 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	@Override
 	public void updateLocation(Location location)
 	{
+		GeoPoint geoPoint;
+		GeoPoint currentGeoPoint;
 		if (started)
 		{
-			GeoPoint p = new GeoPoint((int) (location.getLatitude() * 1E6), (int) (location.getLongitude() * 1E6));
-			geoPointList.add(p);
 
-			userSpeed = (3.6 * location.getSpeed()) + DISTANCE_UNIT_KILOMETRE + "/h";
+			currentGeoPoint = new GeoPoint((int) (location.getLatitude() * 1E6), (int) (location.getLongitude() * 1E6));
+			geoPointList.add(currentGeoPoint);
+			userSpeed = (3.6 * location.getSpeed()) + getString(R.string.km) + "/" + getString(R.string.h);
+
 			if (lastLocation != null)
 			{
 				totalDistance += lastLocation.distanceTo(location);
-				if (totalDistance >= DISTANCE_THRESHOLD_EU)
-				{
-					lengthPresentation = DISTANCE_UNIT_KILOMETRE;
-					userDistance = new DecimalFormat("#.##").format(totalDistance / 1000);
-				}
-				else
-				{
-					userDistance = "" + (int) totalDistance;
-				}
-				userDistanceRun = userDistance + lengthPresentation;
+
+
+				userDistance = new DecimalFormat("#.##").format(totalDistance / 1000);
+
 			}
 
 			lastLocation = location;
 
-			TextView speedView = (TextView) findViewById(R.id.show_speed_textview);
+			if (!newRoute)
+			{
+				for (CheckPoint checkPoint : route.getCheckPoints())
+				{
+					geoPoint = checkPoint.getPoint();
+					if (MapLocationListener.getDistance(currentGeoPoint, geoPoint) <= checkPoint.getRadius())
+					{
+						if (checkPoint != currentCheckPoint)
+						{
+							stopService(serviceIntent);
+							serviceIntent.putExtra(MediaService.DATA_PLAYLIST, checkPoint.getTracks());
+							serviceIntent.setAction(MediaService.ACTION_PLAY);
+							try
+							{
+								startService(serviceIntent);
+							}
+							catch (Exception e)
+							{
+								Log.e(TAG, getString(R.string.could_not_start_media_service_) + e.getMessage());
+							}
+							currentCheckPoint = checkPoint;
+						}
+
+						break;
+					}
+				}
+			}
+
+			lastLocation = location;
 			speedView.setText(userSpeed);
-
-			TextView distanceView = (TextView) findViewById(R.id.show_distance_textview);
-			distanceView.setText(userDistanceRun);
-
+			distanceView.setText(userDistance + getString(R.string.km));
 			mapView.postInvalidate();
 		}
 	}
@@ -313,8 +341,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	/**
 	 * When our activity resumes, we want to register for location updates.
 	 */
-	protected void onResume()
-	{
+	protected void onResume() {
 		super.onResume();
 		myLocationOverlay.enableMyLocation();
 	}
@@ -323,20 +350,9 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	 * When our activity pauses, we want to remove listening for location
 	 * updates
 	 */
-	protected void onPause()
-	{
+	protected void onPause() {
 		super.onPause();
 		myLocationOverlay.disableMyLocation();
-	}
-
-	/**
-	 * Get method for returning the Routelist consisting of geopoints.
-	 * 
-	 * @return ArrayList representing Geo Points.
-	 */
-	public ArrayList<GeoPoint> getRoute()
-	{
-		return geoPointList;
 	}
 
 	/**
@@ -358,58 +374,59 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	 *            the button being pressed.
 	 */
 	@Override
-	public void onClick(View v)
-	{
-		switch (v.getId())
-		{
-			case R.id.start_run_button:
-				acquireWakeLock();
-				started = true;
-				startRunButton.setVisibility(View.GONE);
-				stopAndSaveButton.setVisibility(View.VISIBLE);
-				startTimer();
-				break;
-			case R.id.stop_and_save_button:
-				handler.removeCallbacks(runnable);
-				routeResults = new Result(-1, -1, timePassed, (int) totalDistance, 0);
-				SaveRouteDialog saveRouteDialog = new SaveRouteDialog(this, this, routeResults);
-				saveRouteDialog.show();
-				releaseWakeLock();
-				break;
-			case R.id.add_checkpoint:
-				if (myLocationOverlay.isMyLocationEnabled())
-				{
-					GeoPoint geoPoint = myLocationOverlay.getMyLocation();
-					if (geoPoint != null)
-					{
-						createCheckPoint(geoPoint);
-					}
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.start_run_button:
+			acquireWakeLock();
+			started = true;
+			startRunButton.setVisibility(View.GONE);
+			stopAndSaveButton.setVisibility(View.VISIBLE);
+			startTimer();
+			break;
+		case R.id.stop_and_save_button:
+			handler.removeCallbacks(runnable);
+			routeResults = new Result(-1, -1, timePassed, (int) totalDistance,
+					0);
+			SaveRouteDialog saveRouteDialog = new SaveRouteDialog(this, this,
+					routeResults);
+			saveRouteDialog.show();
+			releaseWakeLock();
+			break;
+		case R.id.add_checkpoint:
+			if (myLocationOverlay.isMyLocationEnabled()) {
+				GeoPoint geoPoint = myLocationOverlay.getMyLocation();
+				if (geoPoint != null) {
+					createCheckPoint(geoPoint);
 				}
-				break;
-			case R.id.start_existing_run_button:
-				acquireWakeLock();
-				started = true;
-				startExistingRunButton.setVisibility(View.GONE);
-				stopExistingRunButton.setVisibility(View.VISIBLE);
-				timePassed = 0;
-				startTimer();
-				break;
-			case R.id.show_result_button:
-				Context context = this;
-				Intent intent;
-				intent = new Intent(context, ListExistingResultsActivity.class);
-				intent.putExtra(Route.EXTRA_ID, rid);
-				System.out.println("Print 1:" + rid);
-				context.startActivity(intent);
-				break;
-			case R.id.stop_existing_run_button:
-				handler.removeCallbacks(runnable);
-				routeResults = new Result(route.getId(), (int) System.currentTimeMillis() / 1000, timePassed, (int) totalDistance, 0);
-				databaseHandler.saveResult(routeResults);
-				stopExistingRunButton.setVisibility(View.GONE);
-				startExistingRunButton.setVisibility(View.VISIBLE);
-				releaseWakeLock();
-				break;
+			}
+			break;
+		case R.id.start_existing_run_button:
+			acquireWakeLock();
+			started = true;
+			startExistingRunButton.setVisibility(View.GONE);
+			stopExistingRunButton.setVisibility(View.VISIBLE);
+			timePassed = 0;
+			startTimer();
+			break;
+		case R.id.show_result_button:
+			Context context = this;
+			Intent intent;
+			intent = new Intent(context, ListExistingResultsActivity.class);
+			intent.putExtra(Route.EXTRA_ID, rid);
+			context.startActivity(intent);
+			break;		
+		case R.id.stop_existing_run_button:
+			handler.removeCallbacks(runnable);
+			routeResults = new Result(route.getId(),
+					(int) System.currentTimeMillis() / 1000, timePassed,
+					(int) totalDistance, 0);
+			databaseHandler.saveResult(routeResults);
+			stopExistingRunButton.setVisibility(View.GONE);
+			startExistingRunButton.setVisibility(View.VISIBLE);
+			stopService(serviceIntent);
+			releaseWakeLock();
+			break;
+
 		}
 	}
 
@@ -417,13 +434,10 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	 * Starts the timer that is used to let the user know for how long they have
 	 * been using the route.
 	 */
-	private void startTimer()
-	{
-		runnable = new Runnable()
-		{
+	private void startTimer() {
+		runnable = new Runnable() {
 			@Override
-			public void run()
-			{
+			public void run() {
 				timerTick();
 				handler.postDelayed(this, 1000);
 			}
@@ -438,8 +452,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	 * determine time while not alteringthe timePassed variable if we want to
 	 * pass that value to the database.
 	 */
-	private void timerTick()
-	{
+	private void timerTick() {
 		int seconds = timePassed % 60;
 		int minutes = timePassed / 60;
 		TextView timeView = (TextView) findViewById(R.id.show_time_textview);
@@ -455,8 +468,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	 * to update.
 	 */
 	@Override
-	public void onDeleteCheckPoint(long checkPointId)
-	{
+	public void onDeleteCheckPoint(long checkPointId) {
 		databaseHandler.deleteCheckPoint(checkPointId);
 		databaseHandler.deleteTracksByCid(checkPointId);
 		checkPointOverlay.deleteCheckPoint();
@@ -470,21 +482,16 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	 * to the checkpoint.
 	 */
 	@Override
-	public void onSaveCheckPoint(CheckPoint checkPoint)
-	{
+	public void onSaveCheckPoint(CheckPoint checkPoint) {
 		long cid = checkPoint.getId();
-		if(cid > 0)
-		{
+		if (cid > 0) {
 			databaseHandler.updateCheckPoint(checkPoint);
 			databaseHandler.deleteTracksByCid(cid);
-		}
-		else
-		{
+		} else {
 			cid = databaseHandler.saveCheckPoint(checkPoint);
 			checkPoint.setId(cid);
 		}
-		for (Track track : selectedTracks)
-		{
+		for (Track track : selectedTracks) {
 			databaseHandler.saveTrack(cid, track);
 		}
 		selectedTracks.clear();
@@ -496,8 +503,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	 * sets the current checkpoint to the last tapped.
 	 */
 	@Override
-	public void onCheckPointTap(CheckPoint checkPoint)
-	{
+	public void onCheckPointTap(CheckPoint checkPoint) {
 		currentCheckPoint = checkPoint;
 		showCheckPointDialog(checkPoint, EditCheckPointDialog.MODE_EDIT);
 	}
@@ -508,8 +514,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	 * @param checkPoint
 	 * @param mode
 	 */
-	private void showCheckPointDialog(CheckPoint checkPoint, int mode)
-	{
+	private void showCheckPointDialog(CheckPoint checkPoint, int mode) {
 		checkPointDialog = new EditCheckPointDialog(this, checkPoint, mode);
 		checkPointDialog.show();
 	}
@@ -522,12 +527,12 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	 * 
 	 * @param geoPoint
 	 */
-	private void createCheckPoint(GeoPoint geoPoint)
-	{
+	private void createCheckPoint(GeoPoint geoPoint) {
 		CheckPoint checkPoint = new CheckPoint(geoPoint);
 		currentCheckPoint = checkPoint;
 		checkPointOverlay.addCheckPoint(checkPoint);
 		showCheckPointDialog(checkPoint, EditCheckPointDialog.MODE_ADD);
+		mapView.postInvalidate();
 	}
 
 	/**
@@ -535,20 +540,17 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	 * tap which it sends to createCheckPoint
 	 */
 	@Override
-	public void onTap(int x, int y, int eventType)
-	{
-		switch (eventType)
-		{
-			case MapOnGestureListener.EVENT_DOUBLE_TAP:
-				mapView.getController().zoomInFixing(x, y);
-				break;
-			case MapOnGestureListener.EVENT_SINGLE_TAP:
-				if (checkPointDialog == null || !checkPointDialog.isShowing())
-				{
-					GeoPoint geoPoint = mapView.getProjection().fromPixels(x, y);
-					createCheckPoint(geoPoint);
-				}
-				break;
+	public void onTap(int x, int y, int eventType) {
+		switch (eventType) {
+		case MapOnGestureListener.EVENT_DOUBLE_TAP:
+			mapView.getController().zoomInFixing(x, y);
+			break;
+		case MapOnGestureListener.EVENT_SINGLE_TAP:
+			if (checkPointDialog == null || !checkPointDialog.isShowing()) {
+				GeoPoint geoPoint = mapView.getProjection().fromPixels(x, y);
+				createCheckPoint(geoPoint);
+			}
+			break;
 		}
 	}
 
@@ -558,13 +560,11 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	 * (main activity).
 	 */
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item)
-	{
-		switch (item.getItemId())
-		{
-			case android.R.id.home:
-				NavUtils.navigateUpFromSameTask(this);
-				return true;
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			NavUtils.navigateUpFromSameTask(this);
+			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -576,12 +576,10 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	 * that, the user is taken back to the main activity.
 	 */
 	@Override
-	public void onSaveRoute(String name, String description, boolean saveResult)
-	{
+	public void onSaveRoute(String name, String description, boolean saveResult) {
 		Route route = new Route(name, description);
 		route.setId(databaseHandler.saveRoute(route));
-		if (saveResult)
-		{
+		if (saveResult) {
 			routeResults.setRouteId(route.getId());
 			routeResults.setTimestamp((int) System.currentTimeMillis() / 1000);
 			databaseHandler.saveResult(routeResults);
@@ -596,14 +594,16 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	 * dismissed. This method just launches the main activity.
 	 */
 	@Override
-	public void onDismissRoute()
-	{
+	public void onDismissRoute() {
 		launchMainActivity();
 	}
-	
+
+	/**
+	 * Called by the system when the activity is shut down completely. Releases
+	 * the wake lock.
+	 */
 	@Override
-	public void onDestroy()
-	{
+	public void onDestroy() {
 		releaseWakeLock();
 		super.onDestroy();
 	}
@@ -611,42 +611,35 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	/**
 	 * Private helper method to launch the main activity.
 	 */
-	private void launchMainActivity()
-	{
+	private void launchMainActivity() {
 		Intent intent = new Intent(this, MainActivity.class);
 		this.startActivity(intent);
 	}
 
 	/**
-	 * Acquires the wake lock from the system
+	 * Acquires the wake lock from the system if it is available and not already
+	 * held.
 	 */
-	private void acquireWakeLock()
-	{
-		try
-		{
+	private void acquireWakeLock() {
+		try {
 			PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
-			if (wakeLock == null)
-			{
-				wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
+			if (wakeLock == null) {
+				wakeLock = powerManager.newWakeLock(
+						PowerManager.PARTIAL_WAKE_LOCK, TAG);
 			}
-			if (!wakeLock.isHeld())
-			{
+			if (!wakeLock.isHeld()) {
 				wakeLock.acquire();
 			}
-		}
-		catch (RuntimeException e)
-		{
-			Log.e(TAG, "Could not acquire wakelock: ", e);
+		} catch (RuntimeException e) {
+			Log.e(TAG, getString(R.string.could_not_acquire_wakelock_), e);
 		}
 	}
 
 	/**
-	 * Releases the wake lock if held
+	 * Releases the wake lock if available and held
 	 */
-	private void releaseWakeLock()
-	{
-		if (wakeLock != null && wakeLock.isHeld())
-		{
+	private void releaseWakeLock() {
+		if (wakeLock != null && wakeLock.isHeld()) {
 			wakeLock.release();
 			wakeLock = null;
 		}
