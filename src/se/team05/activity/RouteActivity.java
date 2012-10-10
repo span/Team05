@@ -129,7 +129,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 		if (rid != -1) {
 			newRoute = false;
 			initRoute(rid);
-			setTitle(R.string.saved_route_ + nameOfExistingRoute);
+			setTitle(getString(R.string.saved_route_) + nameOfExistingRoute);
 			addSavedCheckPoints(rid);
 		}
 		setupButtons();
