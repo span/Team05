@@ -35,7 +35,9 @@ import se.team05.overlay.CheckPointOverlay;
 import se.team05.overlay.RouteOverlay;
 import se.team05.service.MediaService;
 import se.team05.view.EditRouteMapView;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.location.Criteria;
@@ -58,12 +60,22 @@ import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 
 /**
- * This activity Presents at map to the user. It also tracks the users movement
- * and will paint the geoPointList as the user moves. This is accomplished by
- * using Google's map API.
+ * The main use of this activity and of this application in general
+ * is that the user is supposed to run a route of his or her choice and then be able to save it.
+ * As the main idea is that a user will run a route, we will from here on refer to this action as
+ * "running" or "exercise".
+ * 
+ * This activity Presents a map to the user. In the main menu the user gets the choice of running a new
+ * route or an existing one he/she has saved from earlier and thusly this activity will serve both functions.
+ * If the user chooses to run a new run he/she will be presented with a map and the possibility to record
+ * a new route. Recording will paint the path that the user undertakes, as well as time distance and speed.
+ * The user can also place checkpoints, which the user can use to activate music or sound at a given location.
+ * Both checkpoints and paths is represented by geopoints. After completion, the possibility to save this route will appear
+ * and the user gets transferred to the start screen. If the user chooses an old route instead, the old one will be painted
+ * in grey at the start and a new path in blue will gradually get painted as the user moves along. When the user is done
+ * he or she will instead be presented with the possibility to save the result
  * 
  * @author Markus Schutzer, Patrik Thitusson, Daniel Kvist
- * 
  */
 public class RouteActivity extends MapActivity implements View.OnClickListener,
 		EditCheckPointDialog.Callbacks, SaveRouteDialog.Callbacks,
@@ -104,7 +116,8 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	private WakeLock wakeLock;
 	private TextView speedView;
 	private TextView distanceView;
-	private Intent serviceIntent;;
+	private Intent serviceIntent;
+	private String formattedTimeString;;
 
 
 	/**
@@ -141,7 +154,9 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	}
 
 	/**
-	 * Sets up the map view and the location
+	 * Sets up the map view and the location. Sets the update rate of the location to 3000 milliseconds.
+	 * Also calls the Routeoverlay which is responsible for painting the user's path on the map and
+	 * tries to get a hold of the GPS-provider.
 	 */
 	private void setupMapAndLocation() {
 		distanceView = (TextView) findViewById(R.id.show_distance_textview);
@@ -151,7 +166,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 		mapView.setOnGestureListener(new MapOnGestureListener(this));
 
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000,
 				0, new MapLocationListener(this));
 
 		Criteria criteria = new Criteria();
@@ -227,8 +242,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	 * Gets route information from the database and draws an overlay on the map
 	 * view if the user is using a previously saved map.
 	 * 
-	 * @param id
-	 *            the route id
+	 * @param id the route id          
 	 */
 	private void initRoute(long id) {
 		ArrayList<GeoPoint> geoPoints = databaseHandler.getGeoPoints(id);
@@ -242,7 +256,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 			checkPoint.addTracks(databaseHandler.getTracks(checkPoint.getId()));
 		}
 
-		RouteOverlay routeOverlay = new RouteOverlay(geoPoints, 23, true);
+		RouteOverlay routeOverlay = new RouteOverlay(geoPoints, 10, true);
 		overlays.add(routeOverlay);
 		nameOfExistingRoute = route.getName();
 	}
@@ -275,10 +289,15 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	/**
 	 * This will be called when user changes location. It will create a new
 	 * Geopoint consisting of longitude and latitude represented by integers and
-	 * put it in a list (geoPointList).
+	 * put it in a list (geoPointList). It will also get the user's speed and total distance
+	 * traveled and convert this data into strings to be presented on the screen.
+	 * As of now this method will be called once every three seconds, this number is a 
+	 * tradeoff between fast updates which would be needed for doing fast paced activities like
+	 * cycling and slower like walking. Slow activities could do with a lesser update interval
+	 * and as such preserve battery life but as of this version the user does not have the possibility
+	 * to choose what kind of activity to undertake and thus the value is hard coded.
 	 * 
-	 * @param location
-	 *            the new location of the user
+	 * @param location the new location of the user          
 	 */
 	@Override
 	public void updateLocation(Location location)
@@ -420,7 +439,31 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 			routeResults = new Result(route.getId(),
 					(int) System.currentTimeMillis() / 1000, timePassed,
 					(int) totalDistance, 0);
-			databaseHandler.saveResult(routeResults);
+			
+
+			String giveUserDistanceString = getString(R.string.distance_of_run) + userDistance + getString(R.string.km) + "\n";
+			String giveUserTimeString = getString(R.string.time_) + formattedTimeString + "\n\n";
+			String giveUserResultData = giveUserDistanceString + giveUserTimeString; 
+			
+			System.out.println((int)totalDistance);
+			AlertDialog alertDialog = new AlertDialog.Builder(this).setTitle(R.string.save_result_)
+					.setMessage( giveUserResultData +  getString(R.string.do_you_want_to_save_this_result_))
+					.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
+					{
+						public void onClick(DialogInterface dialog, int id)
+						{
+							databaseHandler.saveResult(routeResults);
+						}
+					}).setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
+					{
+						public void onClick(DialogInterface dialog, int id)
+						{
+							onDismissRoute();
+						}
+					}).create();
+			alertDialog.show();
+			
+			
 			stopExistingRunButton.setVisibility(View.GONE);
 			startExistingRunButton.setVisibility(View.VISIBLE);
 			stopService(serviceIntent);
@@ -432,7 +475,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 
 	/**
 	 * Starts the timer that is used to let the user know for how long they have
-	 * been using the route.
+	 * been using the route. After initializing, this method will be called once every second
 	 */
 	private void startTimer() {
 		runnable = new Runnable() {
@@ -449,15 +492,15 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	/**
 	 * Method that gets called to update the UI with how much time that has
 	 * passed and presents this to the user. Will use field timePassed to
-	 * determine time while not alteringthe timePassed variable if we want to
+	 * determine time while not altering the timePassed variable if we want to
 	 * pass that value to the database.
 	 */
 	private void timerTick() {
 		int seconds = timePassed % 60;
 		int minutes = timePassed / 60;
 		TextView timeView = (TextView) findViewById(R.id.show_time_textview);
-		String result = String.format(" %02d:%02d", minutes, seconds);
-		timeView.setText(result);
+		formattedTimeString = String.format(" %02d:%02d", minutes, seconds);
+		timeView.setText(formattedTimeString);
 		timePassed++;
 	}
 

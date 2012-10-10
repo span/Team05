@@ -38,7 +38,7 @@
     <string name="button_addcheckpoint">Add CP</string>
     <string name="select_media">Select media</string>
     <string name="speed_of_run">Your Speed: </string>
-    <string name="time_">Time:</string>
+    <string name="time_">"Time: "</string>
     <string name="distance_">Distance:</string>
     <string name="speed_">Speed:</string>
     <string name="yes">Yes</string>
@@ -80,4 +80,6 @@
 	<string name="delete_results">Delete results</string>
 	<string name="distance_of_run_result">Distance: </string>
 	<string name="date">Date: </string>
+	<string name="save_result_">Save result?</string>
+	<string name="do_you_want_to_save_this_result_">Do you want to save this result?</string>
 </resources>
