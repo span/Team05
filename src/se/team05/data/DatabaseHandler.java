@@ -124,11 +124,11 @@ public class DatabaseHandler
 	 * 
 	 * @return an array with Route objects
 	 */
-	public Route[] getAllRoutes()
+	public ArrayList<Route> getAllRoutes()
 	{
 		dBRouteAdapter.open();
 		Cursor cursor = dBRouteAdapter.getAllRoutes();
-		List<Route> routeList = null;
+		ArrayList<Route> routeList = null;
 		if (cursor != null && cursor.getCount() != 0)
 		{
 			Route route;
@@ -153,7 +153,7 @@ public class DatabaseHandler
 		// TODO
 		// dbResultAdapter.close(); ??? /guswer
 		//
-		return (Route[]) routeList.toArray();
+		return routeList;
 	}
 
 	/**
