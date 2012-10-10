@@ -407,6 +407,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 			handler.removeCallbacks(runnable);
 			routeResults = new Result(-1, -1, timePassed, (int) totalDistance,
 					0);
+			
 			SaveRouteDialog saveRouteDialog = new SaveRouteDialog(this, this,
 					routeResults);
 			saveRouteDialog.show();
@@ -476,6 +477,12 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 		}
 	}
 	
+	/**
+	 * Separate method for sending a toast message informing the user that a result was saved on
+	 * a previously saved route by displaying the route's name.
+	 * 
+	 * @param name the named route to which the result gets saved
+	 */
 	private void informResultSaveToast(String name)
 	{
 		CharSequence text = getString(R.string.result_saved);
@@ -510,6 +517,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	private void timerTick() {
 		int seconds = timePassed % 60;
 		int minutes = timePassed / 60;
+
 		TextView timeView = (TextView) findViewById(R.id.show_time_textview);
 		formattedTimeString = String.format("%02d:%02d", minutes, seconds);
 		timeView.setText(formattedTimeString);
