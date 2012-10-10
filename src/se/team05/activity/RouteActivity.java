@@ -53,6 +53,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -117,7 +118,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	private TextView speedView;
 	private TextView distanceView;
 	private Intent serviceIntent;
-	private String formattedTimeString;;
+	private String formattedTimeString;
 
 
 	/**
@@ -453,6 +454,8 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 						public void onClick(DialogInterface dialog, int id)
 						{
 							databaseHandler.saveResult(routeResults);
+							informResultSaveToast();
+
 						}
 					}).setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
 					{
@@ -471,6 +474,15 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 			break;
 
 		}
+	}
+	
+	private void informResultSaveToast()
+	{
+		CharSequence text = getString(R.string.result_saved);
+		int duration = Toast.LENGTH_SHORT;
+
+		Toast toast = Toast.makeText(this, text, duration);
+		toast.show();
 	}
 
 	/**
@@ -499,7 +511,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 		int seconds = timePassed % 60;
 		int minutes = timePassed / 60;
 		TextView timeView = (TextView) findViewById(R.id.show_time_textview);
-		formattedTimeString = String.format(" %02d:%02d", minutes, seconds);
+		formattedTimeString = String.format("%02d:%02d", minutes, seconds);
 		timeView.setText(formattedTimeString);
 		timePassed++;
 	}
