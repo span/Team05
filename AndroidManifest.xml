@@ -46,6 +46,10 @@
             android:name=".activity.ListExistingRoutesActivity"
             android:label="@string/use_route" >
         </activity>
+        <activity 
+            android:name=".activity.ListExistingResultsActivity"
+            android:label="@string/result_list" >            
+        </activity>
         <activity
             android:name=".activity.MediaSelectorActivity"
             android:label="@string/select_media" >

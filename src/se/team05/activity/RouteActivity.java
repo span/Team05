@@ -27,6 +27,7 @@ import se.team05.content.Track;
 import se.team05.data.DatabaseHandler;
 import se.team05.dialog.EditCheckPointDialog;
 import se.team05.dialog.SaveRouteDialog;
+import se.team05.listener.MainActivityButtonListener;
 import se.team05.listener.MapLocationListener;
 import se.team05.listener.MapOnGestureListener;
 import se.team05.overlay.CheckPoint;
@@ -87,6 +88,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	private Runnable runnable;
 	private int timePassed = 0;
 	private String nameOfExistingRoute;
+	private long rid;
 
 	private ArrayList<Track> selectedTracks = new ArrayList<Track>();
 	private DatabaseHandler databaseHandler;
@@ -125,8 +127,10 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 		newRoute = true;
 		setupMapAndLocation();
 
-		long rid = getIntent().getLongExtra(Route.EXTRA_ID, -1);
-		if (rid != -1) {
+		rid = getIntent().getLongExtra(Route.EXTRA_ID, -1);
+
+		if (rid != -1)
+		{
 			newRoute = false;
 			initRoute(rid);
 			setTitle(getString(R.string.saved_route_) + nameOfExistingRoute);
@@ -353,14 +357,18 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 
 	/**
 	 * Button listener for this activity. Will activate the desired outcome of
-	 * any of the three buttons. In the case of Start Run the button will
-	 * disappear and will be replaced by a "Stop Run"-button, start run till
+	 * any of the buttons. In the case of Start Run the button will
+	 * disappear and will be replaced by a "Stop Run"-button, start run will
 	 * also start the timer and the recording of the user's locations and start
 	 * drawing his or hers route on the map. If the user presses the Stop
 	 * Run-button the recording will stop and the user will be prompted to
 	 * either save or discard this run. This will also stop the timer. The add
 	 * checkpoint will place a checkpoint at the users current location similar
 	 * to the single tap implementation.
+	 * If user has chosen to use an old route (instead of recording a new one) two
+	 * buttons appear: "Show results" and "Start Run" (start_existing_run_button)
+	 * "Show results" button will start a new activity that shows the results
+	 * for the route previously chosen.
 	 * 
 	 * @param v
 	 *            the button being pressed.
@@ -401,7 +409,12 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 			startTimer();
 			break;
 		case R.id.show_result_button:
-			break;
+			Context context = this;
+			Intent intent;
+			intent = new Intent(context, ListExistingResultsActivity.class);
+			intent.putExtra(Route.EXTRA_ID, rid);
+			context.startActivity(intent);
+			break;		
 		case R.id.stop_existing_run_button:
 			handler.removeCallbacks(runnable);
 			routeResults = new Result(route.getId(),
@@ -413,6 +426,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 			stopService(serviceIntent);
 			releaseWakeLock();
 			break;
+
 		}
 	}
 
