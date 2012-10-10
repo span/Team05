@@ -18,6 +18,7 @@ package se.team05.content;
 
 import java.io.File;
 import java.io.IOException;
+import se.team05.R;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -127,11 +128,11 @@ public class SoundManager
 		File storageDirectory = Environment.getExternalStorageDirectory();
 		try
 		{
-			soundFile = File.createTempFile("Music/sound-", ".mp3", storageDirectory);
+			soundFile = File.createTempFile(context.getString(R.string.music_sound_), context.getString(R.string._mp3), storageDirectory);
 		}
 		catch (IOException e)
 		{
-			Log.e(TAG, "Could not access sd-card: " + e.getMessage());
+			Log.e(TAG, context.getString(R.string.could_not_access_sd_card_) + e.getMessage());
 			return;
 		}
 
@@ -169,20 +170,20 @@ public class SoundManager
 	{
 		ContentValues values = new ContentValues(4);
 		long currentTime = System.currentTimeMillis();
-		values.put(MediaStore.Audio.Media.TITLE, "personal-trainer-" + soundFile.getName());
+		values.put(MediaStore.Audio.Media.TITLE, context.getString(R.string.personal_trainer_) + soundFile.getName());
 		values.put(MediaStore.Audio.Media.DATE_ADDED, (int) (currentTime / 1000));
-		values.put(MediaStore.Audio.Media.MIME_TYPE, "audio/mp3");
+		values.put(MediaStore.Audio.Media.MIME_TYPE, context.getString(R.string.audio_mp3));
 		values.put(MediaStore.Audio.Media.DATA, soundFile.getAbsolutePath());
-		values.put(MediaStore.Audio.Media.ARTIST, "Personal Trainer");
-		values.put(MediaStore.Audio.Media.ALBUM, "Personal Trainer Recordings");
+		values.put(MediaStore.Audio.Media.ARTIST, context.getString(R.string.personal_trainer));
+		values.put(MediaStore.Audio.Media.ALBUM, context.getString(R.string.personal_trainer_recordings));
 		values.put(MediaStore.Audio.Media.IS_MUSIC, true);
 
 		ContentResolver contentResolver = context.getContentResolver();
 		Uri mediaStoreUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 		Uri newUri = contentResolver.insert(mediaStoreUri, values);
 		context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, newUri));
-
-		Toast.makeText(context, "Added new recording: " + soundFile.getAbsolutePath(), Toast.LENGTH_LONG).show();
+		//TODO Check if this was wrongly formatted
+		Toast.makeText(context, context.getString(R.string.added_new_recording_) + soundFile.getAbsolutePath(), Toast.LENGTH_LONG).show();
 	}
 
 }

@@ -231,21 +231,30 @@ public class DatabaseHandler
 
 		return result;
 	}
-
-	/**
-	 * This method returns an array of results (instances of class Result)
-	 * retrieved from database via a database adapter.
-	 * 
-	 * @param routId
-	 *            id tells which row to get from database.
-	 * @return result
-	 */
-	public Result[] getAllResultsByRoutId(int routId)
+	
+	public Cursor getAllResultsCursorByRid(long rid)
 	{
-		List<Result> resultList = null;
 
 		dbResultAdapter.open();
-		Cursor cursor = dbResultAdapter.fetchResultById(routId);
+		Cursor cursor = dbResultAdapter.fetchResultByRid(rid);
+		
+		return cursor;
+	}
+	
+	/**
+	 * This method returns an ArrayList of results (instances of class Result)
+	 * retrieved from database via a database adapter.
+	 * 
+	 * @param rid
+	 *            id tells which row to get from database.
+	 * @return ArrayList<Result>
+	 */
+	public ArrayList<Result> getAllResultsByRid(long rid)
+	{
+		ArrayList<Result> resultList = null;
+
+		dbResultAdapter.open();
+		Cursor cursor = dbResultAdapter.fetchResultByRid(rid);
 		dbResultAdapter.close();
 
 		if (cursor != null && cursor.getCount() != 0)
@@ -261,7 +270,9 @@ public class DatabaseHandler
 				cursor.moveToNext();
 			}
 		}
-		return (Result[]) resultList.toArray();
+		cursor.close();
+		//return (Result[]) resultList.toArray();
+		return resultList;
 	}
 
 	/**
@@ -318,7 +329,7 @@ public class DatabaseHandler
 	 * @param rid
 	 *            the rout id
 	 */
-	public void deleteAllResultsByRoutId(int rid)
+	public void deleteAllResultsByRid(int rid)
 	{
 		dbResultAdapter.open();
 		dbResultAdapter.deleteResultByRid(rid);
