@@ -60,11 +60,16 @@ public class DBRouteAdapter extends DBAdapter
 	/**
 	 * Creates a route.
 	 * 
-	 * @param name the name of the route
-	 * @param description the description of the route
-	 * @param type the type of the route walk/run/bike
-	 * @param timeCoach the time coach interval (-1 if inactive)
-	 * @param lengthCoach the lenth coach interval (-1 if inactive)
+	 * @param name
+	 *            the name of the route
+	 * @param description
+	 *            the description of the route
+	 * @param type
+	 *            the type of the route walk/run/bike
+	 * @param timeCoach
+	 *            the time coach interval (-1 if inactive)
+	 * @param lengthCoach
+	 *            the lenth coach interval (-1 if inactive)
 	 */
 	public long insertRoute(String name, String description, int type, int timeCoach, int lengthCoach)
 	{
@@ -76,17 +81,18 @@ public class DBRouteAdapter extends DBAdapter
 		values.put(COLUMN_LENGTHCOACH, lengthCoach);
 		return db.insert(TABLE_ROUTES, null, values);
 	}
-	
+
 	/**
 	 * Execute query on the database, asking for all routes.
+	 * 
 	 * @return a cursor contraining the results
 	 */
 	public Cursor getAllRoutes()
 	{
-		return db.query(TABLE_ROUTES, new String[] {COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION, COLUMN_TYPE,
-				COLUMN_TIMECOACH, COLUMN_LENGTHCOACH}, null, null, null, null, null);
+		return db.query(TABLE_ROUTES, new String[] { COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION, COLUMN_TYPE,
+				COLUMN_TIMECOACH, COLUMN_LENGTHCOACH }, null, null, null, null, null);
 	}
-	
+
 	/**
 	 * Deletes a route with the corresponding id from the database.
 	 * 
@@ -97,5 +103,18 @@ public class DBRouteAdapter extends DBAdapter
 	public int deleteRoute(long id)
 	{
 		return db.delete(TABLE_ROUTES, COLUMN_ID + "=" + id, null);
+	}
+
+	/**
+	 * Fetches route information from the database with the corresponding route
+	 * id given as a parameter.
+	 * 
+	 * @param id
+	 *            the id to match the route id
+	 * @return a Cursor point to the result
+	 */
+	public Cursor fetchRoute(long id)
+	{
+		return db.query(TABLE_ROUTES, null, COLUMN_ID + "=" + id, null, null, null, null);
 	}
 }

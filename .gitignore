@@ -22,3 +22,7 @@ local.properties
 .DS_Store
 Thumbs.db
 
+# build files
+ant.properties
+build.xml
+build_orig.xml

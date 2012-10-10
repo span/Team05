@@ -29,6 +29,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
 /**
  * An activity that will present the user with the option to choose and old route.
@@ -39,12 +40,29 @@ import android.widget.SimpleCursorAdapter;
  */
 public class ListExistingRoutesActivity extends ListActivity
 {
+	private Context context;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		//requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.activity_list_existing_routes);
+		
+		
+		// Add empty view with quick link to record a new route
+		this.context = getApplicationContext();
+		TextView emptyView = (TextView) findViewById(R.id.empty_view);
+		emptyView.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				Intent intent = new Intent(context, RouteActivity.class);
+				startActivity(intent);
+			}
+		});
+		getListView().setEmptyView(emptyView);
 		
 		//setProgressBarIndeterminateVisibility(true);
 		

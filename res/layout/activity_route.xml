@@ -45,11 +45,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:context=".DisplayMessageActivity" />
-
     </LinearLayout>
-    
-    
-        <LinearLayout
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
@@ -64,7 +62,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:context=".DisplayMessageActivity" />
-
     </LinearLayout>
 
     <Button
@@ -85,5 +82,26 @@
         android:layout_height="wrap_content"
         android:text="@string/button_stop_and_save"
         android:visibility="gone" />
+
+    <Button
+        android:id="@+id/start_existing_run_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/button_start_run"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/stop_existing_run_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/stop"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/show_result_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/show_result" 
+        android:visibility="gone"/>
 
 </LinearLayout>

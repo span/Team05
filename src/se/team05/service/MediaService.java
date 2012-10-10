@@ -21,6 +21,7 @@ import java.util.ArrayList;
 
 import se.team05.R;
 import se.team05.activity.ListExistingRoutesActivity;
+import se.team05.content.Track;
 import se.team05.listener.MediaServicePhoneStateListener;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -65,9 +66,11 @@ public class MediaService extends Service implements OnCompletionListener, OnPre
 	public static final String DATA_PLAYLIST = "se.team05.service.data.PLAYLIST";
 
 	private MediaPlayer mediaPlayer;
-	private ArrayList<String> playList;
+	private ArrayList<Track> playList;
 	private PhoneStateListener phoneStateListener;
 	private TelephonyManager telephonyManager;
+	private Track currentTrack;
+	private int currentTrackIndex;
 
 	private static final int NOTIFICATION_ID = 1;
 
@@ -91,34 +94,20 @@ public class MediaService extends Service implements OnCompletionListener, OnPre
 	{
 		telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 		phoneStateListener = new MediaServicePhoneStateListener(this);
+		currentTrackIndex = 0;
 
 		initNotification();
 
-		playList = intent.getStringArrayListExtra(DATA_PLAYLIST);
+		playList = intent.getParcelableArrayListExtra(DATA_PLAYLIST);
+		currentTrack = playList.get(currentTrackIndex);
 		if (intent.getAction().equals(ACTION_PLAY))
 		{
 			if (!mediaPlayer.isPlaying())
 			{
-				try
-				{
-					mediaPlayer.setDataSource(getApplicationContext(), Uri.parse(playList.get(0)));
-					mediaPlayer.setOnCompletionListener(this);
-					mediaPlayer.setOnErrorListener(this);
-					mediaPlayer.setOnPreparedListener(this);
-					mediaPlayer.prepareAsync();
-				}
-				catch (IllegalArgumentException e)
-				{
-					e.printStackTrace();
-				}
-				catch (IllegalStateException e)
-				{
-					e.printStackTrace();
-				}
-				catch (IOException e)
-				{
-					e.printStackTrace();
-				}
+				mediaPlayer.setOnCompletionListener(this);
+				mediaPlayer.setOnErrorListener(this);
+				mediaPlayer.setOnPreparedListener(this);
+				initTrack(currentTrack);
 			}
 		}
 		return START_STICKY;
@@ -134,7 +123,8 @@ public class MediaService extends Service implements OnCompletionListener, OnPre
 	{
 		Context context = getApplicationContext();
 		Intent notificationIntent = new Intent(context, ListExistingRoutesActivity.class);
-		PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+		PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent,
+				PendingIntent.FLAG_CANCEL_CURRENT);
 
 		NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -143,7 +133,8 @@ public class MediaService extends Service implements OnCompletionListener, OnPre
 
 		builder.setContentIntent(contentIntent).setSmallIcon(R.drawable.ic_launcher)
 				.setLargeIcon(BitmapFactory.decodeResource(res, R.drawable.ic_launcher)).setTicker("My ticker string")
-				.setWhen(System.currentTimeMillis()).setOngoing(true).setContentTitle("My title").setContentText("My content text");
+				.setWhen(System.currentTimeMillis()).setOngoing(true).setContentTitle("My title")
+				.setContentText("My content text");
 		Notification n = builder.getNotification();
 
 		nm.notify(NOTIFICATION_ID, n);
@@ -237,12 +228,17 @@ public class MediaService extends Service implements OnCompletionListener, OnPre
 	}
 
 	/**
-	 * The media has reached the end, stop the media.
+	 * The media has reached the end, stop the media, and play the next track in
+	 * the playlist if there is one.
 	 */
 	@Override
 	public void onCompletion(MediaPlayer mp)
 	{
 		stopMedia();
+		if (currentTrackIndex < playList.size())
+		{
+			initTrack(playList.get(currentTrackIndex));
+		}
 	}
 
 	/**
@@ -276,6 +272,35 @@ public class MediaService extends Service implements OnCompletionListener, OnPre
 		}
 
 		cancelNotification();
+	}
+
+	/**
+	 * Private helper method that plays the media from the given Track
+	 * 
+	 * @param track
+	 *            the track to play
+	 */
+	private void initTrack(Track track)
+	{
+		try
+		{
+			mediaPlayer.reset();
+			mediaPlayer.setDataSource(getApplicationContext(), Uri.parse(track.getData()));
+			mediaPlayer.prepareAsync();
+		}
+		catch (IllegalArgumentException e)
+		{
+			e.printStackTrace();
+		}
+		catch (IllegalStateException e)
+		{
+			e.printStackTrace();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		currentTrackIndex++;
 	}
 
 }

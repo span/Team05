@@ -17,7 +17,6 @@ package se.team05.dialog;
  along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -51,6 +50,7 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 	public interface Callbacks
 	{
 		public void onDeleteCheckPoint(long checkPointId);
+
 		public void onSaveCheckPoint(CheckPoint checkPoint);
 	}
 
@@ -66,9 +66,10 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 	private SoundManager soundManager;
 	private int mode;
 	private ArrayList<Track> selectedTracks;
-	
+
 	/**
 	 * The constructor
+	 * 
 	 * @param context
 	 * @param checkPoint
 	 * @param mode
@@ -99,15 +100,15 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 		Button deleteButton = (Button) findViewById(R.id.delete_button);
 		deleteButton.setOnClickListener(this);
 		findViewById(R.id.save_button).setOnClickListener(this);
-		
-		if(mode==MODE_ADD)
+
+		if (mode == MODE_ADD)
 		{
 			deleteButton.setText("Cancel");
 		}
-		
+
 		nameTextField = (TextView) findViewById(R.id.name);
 		nameTextField.setText(checkPoint.getName());
-		
+
 		radiusTextField = (TextView) findViewById(R.id.radius_text);
 
 		SeekBar seekBar = (SeekBar) findViewById(R.id.seekBar1);
@@ -190,39 +191,45 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 	{
 		radiusTextField.setText("" + progress);
 	}
+
 	/**
 	 * Unused method
 	 */
 	@Override
 	public void onStartTrackingTouch(SeekBar seekBar)
 	{
-	
 	}
-	
+
 	/**
 	 * Unused method
 	 */
 	@Override
 	public void onStopTrackingTouch(SeekBar seekBar)
 	{
-	
 	}
-	
+
 	/**
-	 * Uses callback to delete the a checkpoint if it is created when the back button is pressed
-	 * if the dialog is in edit mode the back button is unchanged
+	 * Uses callback to delete the a checkpoint if it is created when the back
+	 * button is pressed if the dialog is in edit mode the back button is
+	 * unchanged
 	 */
 	@Override
 	public void onBackPressed()
 	{
-		if(mode == MODE_ADD)
+		if (mode == MODE_ADD)
 		{
 			callBack.onDeleteCheckPoint(checkPoint.getId());
 		}
-			
+
 		super.onBackPressed();
 	}
 
+	/**
+	 * Sets the selected tracks list of the current checkpoint.
+	 * 
+	 * @param selectedTracks
+	 *            a list of the selected tracks
+	 */
 	public void setSelectedTracks(ArrayList<Track> selectedTracks)
 	{
 		this.selectedTracks = selectedTracks;
