@@ -29,6 +29,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
@@ -44,67 +45,34 @@ import android.widget.TextView;
  */
 public class ListExistingResultsActivity extends ListActivity
 {
-	private Context context;
-
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		//requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.activity_list_existing_results);
 		
 		
-		// Add empty view with quick link to record a new route
-//		this.context = getApplicationContext();
-//		TextView emptyView = (TextView) findViewById(R.id.empty_view);
-//		emptyView.setOnClickListener(new View.OnClickListener()
-//		{
-//			@Override
-//			public void onClick(View v)
-//			{
-//				Intent intent = new Intent(context, RouteActivity.class);
-//				startActivity(intent);
-//			}
-//		});
-//		getListView().setEmptyView(emptyView);
-		
-		//setProgressBarIndeterminateVisibility(true);
-		
-		// Setup database connection and get cursor with results		
 		long rid = getIntent().getLongExtra(Route.EXTRA_ID, -1);
 		DatabaseHandler db = new DatabaseHandler(this);
-		System.out.println("Print 2:" + rid);
+		
 		Cursor cursor = db.getAllResultsCursorByRid(rid);
 		
-		startManagingCursor(cursor);
-		
-		@SuppressWarnings("deprecation")
-		ListAdapter adapter = new SimpleCursorAdapter(this,
-						android.R.layout.simple_list_item_1,
+		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,
+						//android.R.layout.simple_list_item_1,
+						android.R.layout.two_line_list_item,
 						cursor,
-						new String[] {DBResultAdapter.COLUMN_ID},
-						new int[] {android.R.id.text1});
+						new String[] {DBResultAdapter.COLUMN_TIME, DBResultAdapter.COLUMN_DISTANCE},
+						new int[] {android.R.id.text1, android.R.id.text2},
+						Adapter.NO_SELECTION);
 		
 		setListAdapter(adapter);
-		
-		// Setup adapter
-//		ResultListCursorAdapter resultListCursorAdapter = new ResultListCursorAdapter(
-//				this,
-//				android.R.layout.simple_list_item_1,
-//				cursor);
-//		
-//		this.setListAdapter(resultListCursorAdapter);
-//		
-		//setProgressBarIndeterminateVisibility(false);
+		//cursor.close();
+
 	}
 	
 //	public void onListItemClick(ListView l, View v, int position, long id)
 //	{
-//		//Starta dialog
-//		Intent intent;
-//		Bundle bundle = new Bundle();
-//		
-//		bundle.putLong("id", id);
+
 //		
 //		intent = new Intent(this.getApplicationContext(), RouteActivity.class);
 //		intent.putExtra(Route.EXTRA_ID, id);
