@@ -53,9 +53,10 @@
 	<string name="discard">Discard</string>
 	<string name="button_show_results">Show results</string>
 	<string name="stop">Stop</string>
-	<string name="show_result">Show result</string>
+	<string name="show_result">Show results</string>
 	<string name="please_add_a_route">Please add a route</string>
 	<string name="click_to_add_a_route">Click to add a route</string>
+	<string name="result_list">Results</string>
 	<string name="km">Km</string>
 	<string name="_metres">" metres"</string>
 	<string name="_0_00">0.00</string>
