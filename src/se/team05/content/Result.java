@@ -89,7 +89,7 @@ public class Result {
 	 * @param calories
 	 * 		calories (kcal) used during route
 	 */
-	public Result(int routId, int timestamp, int time, int distance, int calories)
+	public Result(long routId, int timestamp, int time, int distance, int calories)
 	{
 		this.routId = routId;
 		this.timestamp = timestamp;

@@ -1,5 +1,5 @@
 /**
-	This file is part of Personal Trainer.
+ 	This file is part of Personal Trainer.
 
     Personal Trainer is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -84,10 +84,14 @@ public class MediaSelectorActivity extends Activity implements LoaderCallbacks<C
 		loaderManager.initLoader(LOADER_ID_ARTIST, null, this);
 		listView = (ListView) findViewById(R.id.list);
 		selectedItems = getIntent().getParcelableArrayListExtra(EXTRA_SELECTED_ITEMS);
+		if(selectedItems == null)
+		{
+			selectedItems = new ArrayList<Track>();
+		}
 	}
 
 	/**
-	 * This method simply inflates the xml file which contains the menu options.
+	 * This method simply inflates the xml file which contains the menu options. The method i
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
@@ -124,9 +128,8 @@ public class MediaSelectorActivity extends Activity implements LoaderCallbacks<C
 			case R.id.track:
 				loaderManager.initLoader(LOADER_ID_TITLE, null, this);
 				return true;
-			default:
-				return super.onOptionsItemSelected(item);
 		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	/**
