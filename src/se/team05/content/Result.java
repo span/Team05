@@ -45,7 +45,7 @@ public class Result {
 	{
 		this._id = 1;
 		this.routId = 1;
-		this.timestamp = 1349286608;	// Date: October 3 2012, Time: 18:50
+		this.timestamp = 1349286608;	// Date: October 3 2012, Time: 18:50 ???
 		this.time = 300;  				// 5 minutes
 		this.calories = 1337;			// kcal
 		this.distance = 1337;
@@ -67,12 +67,13 @@ public class Result {
 	 * @param calories
 	 * 		calories (kcal) used during route
 	 */
-	public Result(int _id, int routId, int timestamp, int time, int distance, int calories)
+	public Result(int _id, long routId, int timestamp, int time, int distance, int calories)
 	{
 		this._id = _id;
 		this.routId = routId;
 		this.timestamp = timestamp;
 		this.time = time;
+		this.distance = distance;
 		this.calories = calories;
 	}
 	

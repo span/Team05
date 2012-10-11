@@ -19,6 +19,7 @@ package se.team05.activity;
 
 import se.team05.R;
 import se.team05.content.Result;
+import se.team05.data.DatabaseHandler;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,8 +27,8 @@ import android.widget.TextView;
 
 
 /**
- * An activity that will present the user with the option to view results of old routes.
- * Gets results from database and presents them in a listview.
+ * An activity that will present the user with the option to view a result of an old route.
+ * Gets results from database and present them.
  * 
  * @author Gustaf
  *
@@ -35,14 +36,11 @@ import android.widget.TextView;
 public class ShowResultsActivity extends Activity
 {
 
-	private long _id;
-	private long routId;
-	private long timestamp;
-	private long time;
-	private long calories;
-	private long distance;
+	private long id;
 	
+	private DatabaseHandler databaseHandler;
 	private Intent intent;
+	private Result result;
 	
 	/**
 	 * The onCreate method of the class starts off by setting the XML file which
@@ -57,45 +55,43 @@ public class ShowResultsActivity extends Activity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_show_results);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-		intent = getIntent();
-		_id = intent.getLongExtra(Result.RESULT_ID, 1);
 		
+		this.intent = getIntent();
+		this.databaseHandler = new DatabaseHandler(this);
+		
+		this.id = intent.getLongExtra(Result.RESULT_ID, 1);
+	
+		this.result = databaseHandler.getResultById(id);
+				
 		showResults();
 	}
-		
-	/**
-	 * 
-	 */
-//	public ShowResultsActivity(long _id, long routId, long timestamp, long time, long calories, long distance)
-//	{
-//		this._id = _id;
-//		this.routId = routId;
-//		this.timestamp = timestamp;
-//		this.time = time;
-//		this.calories = calories;
-//		this.distance = distance;
-//	}
+
 	
 	/**
 	 * 
 	 */
 	private void showResults()
 	{
+		int time = result.getTime();          
+		int distance = result.getDistance();
+		int timestamp = result.getTimestamp(); //Temporary during development
+		float speed = distance / time;  //Temporary during development
+		
 		TextView timeView = (TextView) findViewById(R.id.show_time_result_textview);
-		String time = "4";
-		timeView.setText(time);
+		String timeString = String.valueOf(time);
+		timeView.setText(timeString);
 		
 		TextView distanceView = (TextView) findViewById(R.id.show_distance_result_textview);
-		String distance = "5";
-		distanceView.setText(distance);
+		String distanceString = String.valueOf(distance);
+		distanceView.setText(distanceString);
 		
 		TextView speedView = (TextView) findViewById(R.id.show_speed_result_textview);
-		String speed = "6";
-		speedView.setText(speed);
+		String speedString = String.valueOf(speed);
+		speedView.setText(speedString);
 		
 		TextView dateView = (TextView) findViewById(R.id.show_date_result_textview);
-		String date = "7";
-		dateView.setText(date);		
+		String date = String.valueOf(timestamp);
+		dateView.setText(date);	
 	}
 
 }

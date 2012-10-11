@@ -150,9 +150,6 @@ public class DatabaseHandler
 				cursor.moveToNext();
 			}
 		}
-		// TODO
-		// dbResultAdapter.close(); ??? /guswer
-		//
 		return routeList;
 	}
 
@@ -220,14 +217,14 @@ public class DatabaseHandler
 	 *            id tells which row to get from database.
 	 * @return result
 	 */
-	public Result getResultById(int id)
+	public Result getResultById(long id)
 	{
 		Result result;
 
 		dbResultAdapter.open();
 		Cursor cursor = dbResultAdapter.fetchResultById(id);
 		result = createResultFromCursor(cursor);
-		dbResultAdapter.close();
+//		dbResultAdapter.close();
 
 		return result;
 	}
@@ -286,13 +283,19 @@ public class DatabaseHandler
 	 */
 	private Result createResultFromCursor(Cursor cursor)
 	{
-		Result result = new Result(
-				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_ID)),
-				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_TIMESTAMP)),
-				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_TIME)),
-				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_DISTANCE)),
-				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_CALORIES))
-		);
+		
+//		Result result = new Result(
+//				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_ID)),
+//				cursor.getLong(cursor.getColumnIndex(DBResultAdapter.COLUMN_RID)),
+//				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_TIMESTAMP)),
+//				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_TIME)),
+//				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_DISTANCE)),
+//				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_CALORIES))
+//		);
+		
+		//Temporary during development
+		Result result = new Result(10,20L,30,25,50,60);
+		
 		return result;
 	}
 

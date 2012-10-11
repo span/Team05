@@ -91,7 +91,7 @@ public class DBResultAdapter extends DBAdapter {
 	 * 		database id of the result
 	 * @return Cursor to the result
 	 */
-	public Cursor fetchResultById(int id)
+	public Cursor fetchResultById(long id)
 	{
 		return db.query(TABLE_RESULT, null, COLUMN_ID + "=" + id, null, null, null, null);
 	}
@@ -115,7 +115,7 @@ public class DBResultAdapter extends DBAdapter {
 	 * 		the id of the specific result to be deleted
 	 * @return the number of rows affected
 	 */
-	public int deleteResultById(int id)
+	public long deleteResultById(int id)
 	{
 		return db.delete(TABLE_RESULT, COLUMN_ID + "=" + id, null);
 	}
@@ -127,7 +127,7 @@ public class DBResultAdapter extends DBAdapter {
 	 *            the rout id whose results shall be deleted
 	 * @return the number of rows affected
 	 */
-	public int deleteResultByRid(int rid)
+	public long deleteResultByRid(long rid)
 	{
 		return db.delete(TABLE_RESULT, COLUMN_RID + "=" + rid, null);
 	}
