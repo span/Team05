@@ -73,7 +73,7 @@ public class DBResultAdapter extends DBAdapter {
 	 * 			calories used while carrying out the route
 	 * @return the id given to the result in the database
 	 */
-	public long instertResult (long rid, int date, int time, int distance, int calories)
+	public long instertResult(long rid, int date, int time, int distance, int calories)
 	{
 		ContentValues values = new ContentValues();
 		values.put(COLUMN_RID, rid);
@@ -97,13 +97,13 @@ public class DBResultAdapter extends DBAdapter {
 	}
 	
 	/**
-	 * Returns the cursors of the rows of all results corresponding to a route.
+	 * Returns the cursor of the rows of all results corresponding to a route.
 	 * 
 	 * @param rid
 	 * 				database route id
 	 * @return Cursor to the result
 	 */
-	public Cursor fetchResultByRid(int rid)
+	public Cursor fetchResultByRid(long rid)
 	{
 		return db.query(TABLE_RESULT, null, COLUMN_RID + "=" + rid, null, null, null, null);
 	}

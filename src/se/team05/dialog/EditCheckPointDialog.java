@@ -169,7 +169,7 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 			try
 			{
 				soundManager.startRecording();
-				recordButton.setText("Stop recording");
+				recordButton.setText(R.string.stop_recording);
 			}
 			catch (IOException e)
 			{
@@ -222,17 +222,6 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 		}
 
 		super.onBackPressed();
-	}
-
-	/**
-	 * Sets the selected tracks list of the current checkpoint.
-	 * 
-	 * @param selectedTracks
-	 *            a list of the selected tracks
-	 */
-	public void setSelectedTracks(ArrayList<Track> selectedTracks)
-	{
-		this.selectedTracks = selectedTracks;
 	}
 
 }
