@@ -122,10 +122,12 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	private Intent serviceIntent;
 	private String formattedTimeString;
 	
-	private int dialogShown = -1;
-	private static int SAVEROUTEDIALOG = 0;
-	private static int SAVERESULTDIALOG = 1;
-	private static int CHECKPOINTDIALOG = 2;
+	
+	private final int NONEDIALOG = -1;
+	private final int SAVEROUTEDIALOG = 0;
+	private final int SAVERESULTDIALOG = 1;
+	private final int CHECKPOINTDIALOG = 2;
+	private int dialogShown = NONEDIALOG;
 	/**
 	 * Will present a map to the user and will also display a dot representing
 	 * the user's location. Also contains three buttons of which one
@@ -177,9 +179,29 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 		timePassed = savedInstanceState.getInt("timePassed");
 		rid = savedInstanceState.getLong("rid");
 		started = savedInstanceState.getBoolean("started");
+		dialogShown = savedInstanceState.getInt("dialogShown");
 		if (rid==-1)
 		{
 			addSavedCheckPoints(rid);
+		}
+		switch (dialogShown)
+		{
+			case CHECKPOINTDIALOG:
+//				 float checkPointId = savedInstanceState.getFloat("currentCheckPoint");
+//				 for(CheckPoint checkPoint : checkPointOverlay.getOverlays())
+//				 {
+//					 if(checkPointId == checkPoint.getId())
+//					 {
+//							 currentCheckPoint = checkPoint;
+//					 }
+//				 }
+//				 showCheckPointDialog(currentCheckPoint, EditCheckPointDialog.MODE_EDIT);
+				break;
+			case SAVEROUTEDIALOG:
+				showSaveRouteDialog();
+				break;
+			case SAVERESULTDIALOG:
+				break;
 		}
 
 	}
@@ -439,13 +461,8 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 			break;
 		case R.id.stop_and_save_button:
 			handler.removeCallbacks(runnable);
-			routeResults = new Result(-1, -1, timePassed, (int) totalDistance,
-					0);
-			
-			SaveRouteDialog saveRouteDialog = new SaveRouteDialog(this, this,
-					routeResults);
-			saveRouteDialog.show();
-			dialogShown = SAVEROUTEDIALOG;
+			started = false;
+			showSaveRouteDialog();
 			releaseWakeLock();
 			break;
 		case R.id.add_checkpoint:
@@ -512,7 +529,13 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 
 		}
 	}
-	
+	private void showSaveRouteDialog()
+	{
+		routeResults = new Result(-1, -1, timePassed, (int) totalDistance,0);
+		SaveRouteDialog saveRouteDialog = new SaveRouteDialog(this, this, routeResults);
+		saveRouteDialog.show();
+		dialogShown = SAVEROUTEDIALOG;
+	}
 	/**
 	 * Separate method for sending a toast message informing the user that a result was saved on
 	 * a previously saved route by displaying the route's name.
@@ -568,6 +591,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	 */
 	@Override
 	public void onDeleteCheckPoint(long checkPointId) {
+		dialogShown = NONEDIALOG;
 		databaseHandler.deleteCheckPoint(checkPointId);
 		databaseHandler.deleteTracksByCid(checkPointId);
 		checkPointOverlay.deleteCheckPoint();
@@ -582,6 +606,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	 */
 	@Override
 	public void onSaveCheckPoint(CheckPoint checkPoint) {
+		dialogShown = NONEDIALOG;
 		long cid = checkPoint.getId();
 		if (cid > 0) {
 			databaseHandler.updateCheckPoint(checkPoint);
@@ -677,6 +702,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	 */
 	@Override
 	public void onSaveRoute(String name, String description, boolean saveResult) {
+		dialogShown = NONEDIALOG;
 		Route route = new Route(name, description);
 		route.setId(databaseHandler.saveRoute(route));
 		if (saveResult) {
@@ -752,7 +778,10 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
         outState.putInt("timePassed", timePassed);
         outState.putLong("rid", rid);
         outState.putInt("dialogShown", dialogShown);
-        
+        if(dialogShown == CHECKPOINTDIALOG)
+        {
+        //	outState.putFloat("currentCheckPoint", currentCheckPoint.getId());
+        }
     }
 
 }
