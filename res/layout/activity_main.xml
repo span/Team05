@@ -13,47 +13,60 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
+    along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.    
+    (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:padding="8dp" >
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/welcome_text"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:orientation="vertical" >
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:paddingTop="8dp"
+        android:text="@string/welcome_to_personal_trainer"
+        android:textSize="18sp" />
 
-        <TextView
-            android:id="@+id/welcome_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity=""
-            android:text="@string/welcome_to_personal_trainer" />
+    <RelativeLayout
+        android:id="@+id/mid_wrapper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" >
 
         <ImageView
             android:id="@+id/image_new_route"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:src="@drawable/file_video_icon" />
+            android:paddingBottom="16dp"
+            android:src="@drawable/btn_add_route" />
 
         <ImageView
             android:id="@+id/image_existing_route"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:src="@drawable/notebook_icon" />
-        
+            android:layout_below="@+id/image_new_route"
+            android:paddingTop="16dp"
+            android:src="@drawable/btn_use_route" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/bottom_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:paddingBottom="8dp" >
+
         <TextView
-            android:id="@+id/welcome_text"
+            android:id="@+id/instruction_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="10sp"
-            android:text="@string/start_screen_instructions" />
-
+            android:text="@string/start_screen_instructions"
+            android:textSize="12sp" />
     </LinearLayout>
+
 </RelativeLayout>
