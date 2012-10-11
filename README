@@ -7,11 +7,41 @@ Team05 IRC: irc.chalmers.it #Team05
 
 Team05 members: span, snadde, guswer, demonicblue, elefantbilen
 
-==================================== ::: ===============================
-
-                                  CHANGELOG
 
 ==================================== ::: ===============================
+                                   RELEASES
+==================================== ::: ===============================
+
+#######################################################
+v.0.3.1
+#######################################################
+
+# New features
+User can record a new route
+User can add checkpoints to a route
+User can record audio and add as music on a checkpoint
+User can add music to a checkpoint
+User can select and use an old route
+
+# Known bugs and limitations
+Missing UP/HOME button on some activities
+Filename on recorded sounds is not user friendly
+Route name can be an empty string
+When no routes have been recorded, an empty list is shown
+
+
+==================================== ::: ===============================
+
+                                  HANDINS
+
+==================================== ::: ===============================
+
+
+HANDIN 4
+Filerna ligger i handin4 mappen
+
+HANDIN 3
+Filerna ligger i handin3 mappen
 
 HANDIN 2
 Filerna till handin två ligger i mappen doc/handin2/
