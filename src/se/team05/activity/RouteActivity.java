@@ -27,7 +27,6 @@ import se.team05.content.Track;
 import se.team05.data.DatabaseHandler;
 import se.team05.dialog.EditCheckPointDialog;
 import se.team05.dialog.SaveRouteDialog;
-import se.team05.listener.MainActivityButtonListener;
 import se.team05.listener.MapLocationListener;
 import se.team05.listener.MapOnGestureListener;
 import se.team05.overlay.CheckPoint;
@@ -333,16 +332,21 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 						if (checkPoint != currentCheckPoint)
 						{
 							stopService(serviceIntent);
-							serviceIntent.putExtra(MediaService.DATA_PLAYLIST, checkPoint.getTracks());
-							serviceIntent.setAction(MediaService.ACTION_PLAY);
-							try
+							ArrayList<Track> playList = checkPoint.getTracks();
+							if(playList.size() > 0)
 							{
-								startService(serviceIntent);
+								serviceIntent.putExtra(MediaService.DATA_PLAYLIST, playList);
+								serviceIntent.setAction(MediaService.ACTION_PLAY);
+								try
+								{
+									startService(serviceIntent);
+								}
+								catch (Exception e)
+								{
+									Log.e(TAG, getString(R.string.could_not_start_media_service_) + e.getMessage());
+								}
 							}
-							catch (Exception e)
-							{
-								Log.e(TAG, getString(R.string.could_not_start_media_service_) + e.getMessage());
-							}
+							
 							currentCheckPoint = checkPoint;
 						}
 
