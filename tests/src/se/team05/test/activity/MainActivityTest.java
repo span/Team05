@@ -17,11 +17,13 @@
 
 package se.team05.test.activity;
 
-import com.jayway.android.robotium.solo.Solo;
-
-import se.team05.activity.*;
+import se.team05.activity.ListExistingRoutesActivity;
+import se.team05.activity.MainActivity;
+import se.team05.activity.RouteActivity;
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.Button;
+
+import com.jayway.android.robotium.solo.Solo;
 
 /**
  * This test class utilizes Robotium for simple UI-testing of
@@ -105,7 +107,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
 	public void testNewRouteButton()
 	{
 		solo.clickOnView(newRouteButton);
-		solo.assertCurrentActivity("wrong class", NewRouteActivity.class);
+		solo.assertCurrentActivity("wrong class", RouteActivity.class);
 		solo.goBack();
 		solo.assertCurrentActivity("wrong class", MainActivity.class);
 	}
@@ -117,7 +119,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
 	public void testUseExistingButton()
 	{
 		solo.clickOnView(useExistingButton);
-		solo.assertCurrentActivity("wrong class", UseExistingRouteActivity.class);
+		solo.assertCurrentActivity("wrong class", ListExistingRoutesActivity.class);
 		solo.goBack();
 		solo.assertCurrentActivity("wrong class", MainActivity.class);
 	}
