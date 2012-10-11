@@ -83,4 +83,6 @@
 	<string name="must_use_a_valid_name">Must use a valid name</string>
 	<string name="discard_route_">Discard route?</string>
 	<string name="do_you_really_want_to_discard_your_route_">Do you really want to discard your route?</string>
+	<string name="welcome_to_personal_trainer">Welcome to Personal Trainer\n\n</string>
+	<string name="start_screen_instructions">\n\nPress play to run a new route or the notepad to check out your saved stats and routes</string>
 </resources>
