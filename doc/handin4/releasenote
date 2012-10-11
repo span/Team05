@@ -1,0 +1,20 @@
+==================================== ::: ===============================
+                                   RELEASES
+==================================== ::: ===============================
+
+#######################################################
+v.0.3.1
+#######################################################
+
+# New features
+User can record a new route
+User can add checkpoints to a route
+User can record audio and add as music on a checkpoint
+User can add music to a checkpoint
+User can select and use an old route
+
+# Known bugs and limitations
+Missing UP/HOME button on some activities
+Filename on recorded sounds is not user friendly
+Route name can be an empty string
+When no routes have been recorded, an empty list is shown
