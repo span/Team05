@@ -21,6 +21,7 @@ package se.team05.activity;
 
 import java.sql.Date;
 import java.text.DecimalFormat;
+import java.util.concurrent.TimeUnit;
 
 import se.team05.R;
 import se.team05.content.Result;
@@ -73,8 +74,10 @@ public class ShowResultsActivity extends Activity
 				
 		showResults();
 		
-		Button deleteResultsButton = (Button) findViewById(R.id.delete_results_button);
-		deleteResultsButton.setOnClickListener(new ShowResultActivityButtonListener(this, id));	
+		
+		//TODO App is unstable if this listener is invoked. Needs to be fixed! /Gustaf
+//		Button deleteResultsButton = (Button) findViewById(R.id.delete_results_button);
+//		deleteResultsButton.setOnClickListener(new ShowResultActivityButtonListener(this, id));	
 		
 	}
 
@@ -84,43 +87,33 @@ public class ShowResultsActivity extends Activity
 	 */
 	private void showResults()
 	{
-		String formattedTimeString;
-		String formattedDistanceString;
-		String speedString;
-		String dateString;
-		
 		int timeInSeconds = result.getTime();
-		float timeInHours = timeInSeconds / 3600;
-		int seconds = timeInSeconds % 60;
-		int minutes = timeInSeconds % 3600;
-		int hours = timeInSeconds / 3600;
-		
+		long millis = timeInSeconds * 1000;
 		int distanceInMeters = result.getDistance();
-		float distanceInKm = (distanceInMeters / 1000);
-		
-		float speed = distanceInKm / timeInHours;
-		
+		double speed = (distanceInMeters / timeInSeconds) * 3.6;
 		long timestamp = result.getTimestamp();
 		Date date = new Date(timestamp * 1000);
 
 		//Present date
 		TextView dateView = (TextView) findViewById(R.id.show_date_result_textview);
-		dateString = String.valueOf(date);
-		dateView.setText(dateString);
+		String dateString = String.valueOf(date);
+		dateView.setText(dateString);    
 		
 		//Present time
 		TextView timeView = (TextView) findViewById(R.id.show_time_result_textview);
-		formattedTimeString = String.format(" %02d:%02d:%02d", hours, minutes, seconds);
+		String formattedTimeString = String.format(" %02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(millis),
+	            TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),
+	            TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
 		timeView.setText(formattedTimeString);
 		
 		//Present distance
 		TextView distanceView = (TextView) findViewById(R.id.show_distance_result_textview);
-		formattedDistanceString = String.format(" %,d", distanceInMeters);
+		String formattedDistanceString = String.format(" %,d", distanceInMeters);
 		distanceView.setText(formattedDistanceString);
 		
 		//Present speed
 		TextView speedView = (TextView) findViewById(R.id.show_speed_result_textview);		
-		speedString = String.valueOf(speed);
+		String speedString = String.valueOf(speed);
 		speedView.setText(speedString);		
 	}
 	
