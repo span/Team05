@@ -14,7 +14,7 @@
 
     You should have received a copy of the GNU General Public License
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.    
-    (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
+    (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -42,7 +42,7 @@
             android:id="@+id/image_new_route"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingBottom="16dp"
+            android:paddingBottom="32dp"
             android:src="@drawable/btn_add_route" />
 
         <ImageView
@@ -50,47 +50,50 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/image_new_route"
-            android:paddingTop="16dp"
+            android:paddingTop="32dp"
             android:src="@drawable/btn_use_route" />
     </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/bottom_wrapper"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:paddingBottom="8dp" >
+        android:layout_centerHorizontal="true"
+        android:paddingBottom="16dp" >
 
         <TextView
+            style="@style/footerTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Click "
-            android:textSize="12sp" />
+            android:text="@string/click_"
+             />
 
         <TextView
+            style="@style/footerTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="+"
             android:textColor="#1388fc"
-            android:textSize="12sp"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/instruction_text"
+            style="@style/footerTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=" to add a route and"
-            android:textSize="12sp" />
+            android:text="@string/_to_add_a_route_and"
+             />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <TextView
+            style="@style/footerTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="to use an old route"
-            android:textSize="12sp" />
+            android:text="@string/to_use_an_old_route" />
     </LinearLayout>
 
 </RelativeLayout>
