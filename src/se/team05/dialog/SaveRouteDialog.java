@@ -16,6 +16,7 @@
 
     (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
 */
+
 package se.team05.dialog;
 
 import se.team05.R;
