@@ -111,6 +111,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
 		solo.clickOnView(newRouteButton);
 		solo.assertCurrentActivity("wrong class", RouteActivity.class);
 		solo.goBack();
+		solo.clickOnText("Yes");
 		solo.assertCurrentActivity("wrong class", MainActivity.class);
 	}
 	
