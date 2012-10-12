@@ -16,22 +16,7 @@
 
     (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
 */
-/**
-	This file is part of Personal Trainer.
 
-    Personal Trainer is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    any later version.
-
-    Personal Trainer is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
- */
 package se.team05.activity;
 
 import java.text.DecimalFormat;
@@ -136,8 +121,13 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	private TextView distanceView;
 	private Intent serviceIntent;
 	private String formattedTimeString;
-
-
+	
+	
+	private final int NONEDIALOG = -1;
+	private final int SAVEROUTEDIALOG = 0;
+	private final int SAVERESULTDIALOG = 1;
+	private final int CHECKPOINTDIALOG = 2;
+	private int dialogShown = NONEDIALOG;
 	/**
 	 * Will present a map to the user and will also display a dot representing
 	 * the user's location. Also contains three buttons of which one
@@ -157,9 +147,16 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 		route = new Route(getString(R.string.new_route), getString(R.string.this_is_a_new_route));
 		newRoute = true;
 		setupMapAndLocation();
-
-		rid = getIntent().getLongExtra(Route.EXTRA_ID, -1);
-
+		
+		if (savedInstanceState!=null)
+		{
+			restoreInstance(savedInstanceState);
+		}
+		else
+		{
+			rid = getIntent().getLongExtra(Route.EXTRA_ID, -1);
+		}
+		
 		if (rid != -1)
 		{
 			newRoute = false;
@@ -168,7 +165,85 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 			addSavedCheckPoints(rid);
 		}
 		setupButtons();
+		
+		if (started)
+		{
+			onClick(findViewById(R.id.start_run_button));
+		}
 		mapView.postInvalidate();
+	}
+	
+	private void restoreInstance(Bundle savedInstanceState)
+	{
+		totalDistance = savedInstanceState.getFloat("totalDistance");
+		timePassed = savedInstanceState.getInt("timePassed");
+		rid = savedInstanceState.getLong("rid");
+		started = savedInstanceState.getBoolean("started");
+		newRoute = savedInstanceState.getBoolean("newRoute", newRoute);
+		dialogShown = savedInstanceState.getInt("dialogShown");
+		formattedTimeString = savedInstanceState.getString("formattedTimeString");
+		if (rid==-1)
+		{
+			addSavedCheckPoints(rid);
+		}
+		switch (dialogShown)
+		{
+			case CHECKPOINTDIALOG:
+				 long checkPointId = savedInstanceState.getLong("currentCheckPoint");
+				 currentCheckPoint = databaseHandler.getCheckPoint(checkPointId);
+				 showCheckPointDialog(currentCheckPoint, EditCheckPointDialog.MODE_EDIT);
+				 String nameText = savedInstanceState.getString("nameText");
+				 String radiusText = savedInstanceState.getString("radiusText");
+				 checkPointDialog.setNameText(nameText);
+				 checkPointDialog.setRadiusTextField(radiusText);
+				 
+				break;
+			case SAVEROUTEDIALOG:
+				showSaveRouteDialog();
+				break;
+			case SAVERESULTDIALOG:
+				showSaveResultDialog(rid);
+				break;
+		}
+
+	}
+
+	private void showSaveResultDialog(long rid)
+	{
+		routeResults = new Result(rid,
+				(int) System.currentTimeMillis() / 1000, timePassed,
+				(int) totalDistance, 0);
+		
+		String giveUserDistanceString = getString(R.string.distance_of_run) + userDistance + getString(R.string.km) + "\n";
+		String giveUserTimeString = getString(R.string.time_) + formattedTimeString + "\n\n";
+		String giveUserResultData = giveUserDistanceString + giveUserTimeString; 
+		
+		AlertDialog alertDialog = new AlertDialog.Builder(this).setTitle(R.string.save_result_)
+				.setMessage( giveUserResultData +  getString(R.string.do_you_want_to_save_this_result_))
+				.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
+				{
+					public void onClick(DialogInterface dialog, int id)
+					{
+						databaseHandler.saveResult(routeResults);
+						informResultSaveToast(route.getName());
+						dialogShown = NONEDIALOG;
+					}
+				}).setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
+				{
+					public void onClick(DialogInterface dialog, int id)
+					{
+						onDismissRoute();
+						dialogShown = NONEDIALOG;
+					}
+				}).create();
+		alertDialog.show();
+		started = false;
+		dialogShown = SAVERESULTDIALOG;
+		
+		
+
+		releaseWakeLock();
+		
 	}
 
 	/**
@@ -268,12 +343,11 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 		route.setGeoPoints(geoPoints);
 
 		ArrayList<CheckPoint> checkPoints = databaseHandler.getCheckPoints(id);
-		route.setCheckPoints(checkPoints);
 
-		for (CheckPoint checkPoint : checkPoints) {
-			checkPoint.addTracks(databaseHandler.getTracks(checkPoint.getId()));
-		}
-
+			route.setCheckPoints(checkPoints);	
+			for (CheckPoint checkPoint : checkPoints) {
+				checkPoint.addTracks(databaseHandler.getTracks(checkPoint.getId()));
+			}
 		RouteOverlay routeOverlay = new RouteOverlay(geoPoints, 10, true);
 		overlays.add(routeOverlay);
 		nameOfExistingRoute = route.getName();
@@ -427,12 +501,8 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 			break;
 		case R.id.stop_and_save_button:
 			handler.removeCallbacks(runnable);
-			routeResults = new Result(-1, -1, timePassed, (int) totalDistance,
-					0);
-			
-			SaveRouteDialog saveRouteDialog = new SaveRouteDialog(this, this,
-					routeResults);
-			saveRouteDialog.show();
+			started = false;
+			showSaveRouteDialog();
 			releaseWakeLock();
 			break;
 		case R.id.add_checkpoint:
@@ -460,45 +530,21 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 			break;		
 		case R.id.stop_existing_run_button:
 			handler.removeCallbacks(runnable);
-			routeResults = new Result(route.getId(),
-					(int) System.currentTimeMillis() / 1000, timePassed,
-					(int) totalDistance, 0);
-			
-
-			String giveUserDistanceString = getString(R.string.distance_of_run) + userDistance + getString(R.string.km) + "\n";
-			String giveUserTimeString = getString(R.string.time_) + formattedTimeString + "\n\n";
-			String giveUserResultData = giveUserDistanceString + giveUserTimeString; 
-			
-			System.out.println((int)totalDistance);
-			AlertDialog alertDialog = new AlertDialog.Builder(this).setTitle(R.string.save_result_)
-					.setMessage( giveUserResultData +  getString(R.string.do_you_want_to_save_this_result_))
-					.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
-					{
-						public void onClick(DialogInterface dialog, int id)
-						{
-							databaseHandler.saveResult(routeResults);
-							informResultSaveToast(route.getName());
-
-						}
-					}).setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
-					{
-						public void onClick(DialogInterface dialog, int id)
-						{
-							onDismissRoute();
-						}
-					}).create();
-			alertDialog.show();
-			
-			
+			showSaveResultDialog(route.getId());
 			stopExistingRunButton.setVisibility(View.GONE);
 			startExistingRunButton.setVisibility(View.VISIBLE);
 			stopService(serviceIntent);
-			releaseWakeLock();
 			break;
-
 		}
 	}
 	
+	private void showSaveRouteDialog()
+	{
+		routeResults = new Result(-1, -1, timePassed, (int) totalDistance,0);
+		SaveRouteDialog saveRouteDialog = new SaveRouteDialog(this, this, routeResults);
+		saveRouteDialog.show();
+		dialogShown = SAVEROUTEDIALOG;
+	}
 	/**
 	 * Separate method for sending a toast message informing the user that a result was saved on
 	 * a previously saved route by displaying the route's name.
@@ -554,6 +600,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	 */
 	@Override
 	public void onDeleteCheckPoint(long checkPointId) {
+		dialogShown = NONEDIALOG;
 		databaseHandler.deleteCheckPoint(checkPointId);
 		databaseHandler.deleteTracksByCid(checkPointId);
 		checkPointOverlay.deleteCheckPoint();
@@ -568,6 +615,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	 */
 	@Override
 	public void onSaveCheckPoint(CheckPoint checkPoint) {
+		dialogShown = NONEDIALOG;
 		long cid = checkPoint.getId();
 		if (cid > 0) {
 			databaseHandler.updateCheckPoint(checkPoint);
@@ -602,6 +650,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	private void showCheckPointDialog(CheckPoint checkPoint, int mode) {
 		checkPointDialog = new EditCheckPointDialog(this, checkPoint, mode);
 		checkPointDialog.show();
+		dialogShown = CHECKPOINTDIALOG;
 	}
 
 	/**
@@ -662,6 +711,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	 */
 	@Override
 	public void onSaveRoute(String name, String description, boolean saveResult) {
+		dialogShown = NONEDIALOG;
 		Route route = new Route(name, description);
 		route.setId(databaseHandler.saveRoute(route));
 		if (saveResult) {
@@ -680,6 +730,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	 */
 	@Override
 	public void onDismissRoute() {
+		databaseHandler.deleteCheckPoints(rid);
 		launchMainActivity();
 	}
 
@@ -729,4 +780,50 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 			wakeLock = null;
 		}
 	}
+	@Override
+    protected void onSaveInstanceState(final Bundle outState) {
+        outState.putBoolean("started", started);
+        outState.putFloat("totalDistance", totalDistance);
+        outState.putInt("timePassed", timePassed);
+        outState.putLong("rid", rid);
+        outState.putInt("dialogShown", dialogShown);
+        outState.putBoolean("newRoute", newRoute);
+        outState.putString("formattedTimeString", formattedTimeString);
+        if(dialogShown == CHECKPOINTDIALOG)
+        {
+        	onSaveCheckPoint(currentCheckPoint);
+        	outState.putLong("currentCheckPoint", currentCheckPoint.getId());
+        	outState.putString("nameText", checkPointDialog.getNameText());
+        	outState.putString("radiusText", checkPointDialog.getRadiusText());
+        	
+        }
+    }
+
+	@Override
+	public void onResumeTimer()
+	{
+		startTimer();
+	}
+	
+	@Override
+	public void onBackPressed()
+	{
+		AlertDialog alertDialog = new AlertDialog.Builder(this).setTitle(R.string.discard_route_)
+				.setMessage(R.string.do_you_really_want_to_discard_your_route_)
+				.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
+				{
+					public void onClick(DialogInterface dialog, int id)
+					{
+						finish();
+					}
+				}).setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
+				{
+					public void onClick(DialogInterface dialog, int id)
+					{
+						dialog.cancel();
+					}
+				}).create();
+		alertDialog.show();
+	}
+
 }

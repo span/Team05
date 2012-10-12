@@ -16,7 +16,6 @@
 
     (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
 */
-
 package se.team05.dialog;
 
 import se.team05.R;
@@ -55,6 +54,8 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 		public void onSaveRoute(String name, String description, boolean saveResult);
 
 		public void onDismissRoute();
+		
+		public void onResumeTimer();
 	}
 
 	private Context context;
@@ -116,16 +117,17 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 		double speed = (routeDistance / time) * 3.6;
 		String speedText = String.valueOf(speed);
 		speedTextView.setText(speedText + context.getString(R.string.km) + "/" + context.getString(R.string.h));
-
+		setCanceledOnTouchOutside(false);
 		//Make the check box toggle on click.
-		CheckedTextView chkBox = (CheckedTextView) findViewById(R.id.save_result);
-	    chkBox.setOnClickListener(new View.OnClickListener()
+		CheckedTextView checkBox = (CheckedTextView) findViewById(R.id.save_result);
+	    checkBox.setOnClickListener(new View.OnClickListener()
 	    {
 	        public void onClick(View v)
 	        {
 	            ((CheckedTextView) v).toggle();
 	        }
 	    });		
+
 	}
 
 	/**
@@ -198,5 +200,10 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 		{
 			return true;
 		}
+	}
+	@Override
+	public void onBackPressed()
+	{
+		callbacks.onResumeTimer();
 	}
 }

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical" 
+        android:layout_weight="0.5">
+
+        <se.team05.view.EditRouteMapView
+            android:id="@+id/mapview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:apiKey="0I2UCcv57MHZz_RXqTZvIH1A7GKKqKBiel4X_Iw"
+            android:clickable="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:layout_weight="1" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/speed_of_run" />
+
+            <TextView
+                android:id="@+id/show_speed_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:context=".DisplayMessageActivity" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/distance_of_run" />
+
+            <TextView
+                android:id="@+id/show_distance_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:context=".DisplayMessageActivity" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/time_of_run" />
+
+            <TextView
+                android:id="@+id/show_time_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:context=".DisplayMessageActivity" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/add_checkpoint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/button_addcheckpoint" />
+
+        <Button
+            android:id="@+id/start_run_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/button_start_run" />
+
+        <Button
+            android:id="@+id/stop_and_save_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/button_stop_and_save"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/start_existing_run_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/button_start_run"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/stop_existing_run_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/stop"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/show_result_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/show_result"
+            android:visibility="gone" />
+    </LinearLayout>
+
+</LinearLayout>
