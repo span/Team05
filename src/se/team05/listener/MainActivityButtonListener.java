@@ -25,6 +25,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ImageView;
+import android.graphics.PorterDuff;
 
 /**
  * This is the listener class for the main activity and it takes a Context as a
@@ -39,6 +41,7 @@ import android.view.View.OnClickListener;
 public class MainActivityButtonListener implements OnClickListener
 {
 	private Context context;
+	ImageView imageViewButton;
 
 	/**
 	 * A simple constructor for the listener that takes the Context as a
@@ -56,7 +59,8 @@ public class MainActivityButtonListener implements OnClickListener
 	/**
 	 * The onClick method of the listener simply checks which View triggered the
 	 * click event and then creates an intent that is used to launch the
-	 * activity which corresponds to the view.
+	 * activity which corresponds to the view. Also will paint the button (represented by an imageview) in
+	 * a transparent grey colour to inform the user that the button has been registered.
 	 * 
 	 * @param v
 	 *            the view which triggers the event
@@ -67,15 +71,20 @@ public class MainActivityButtonListener implements OnClickListener
 		Intent intent;
 		switch (v.getId())
 		{
-			case R.id.new_route_button:
+			case R.id.image_new_route:
 				intent = new Intent(context, RouteActivity.class);
+				imageViewButton = (ImageView) v.findViewById(R.id.image_new_route);
+				imageViewButton.setColorFilter(0x60EDEDED, PorterDuff.Mode.MULTIPLY);
 				break;
-			case R.id.use_existing_button:
+			case R.id.image_existing_route:
 				intent = new Intent(context, ListExistingRoutesActivity.class);
+				imageViewButton = (ImageView) v.findViewById(R.id.image_existing_route);
+				imageViewButton.setColorFilter(0x60EDEDED, PorterDuff.Mode.MULTIPLY);
 				break;
 			default:
 				return;
 		}
+	
 		context.startActivity(intent);
 	}
 }
