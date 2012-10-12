@@ -126,6 +126,7 @@
             android:checked="true"
             android:clickable="true"
             android:focusable="true"
+            android:paddingLeft="8dp"
             android:paddingTop="4dp"
             android:text="@string/save_results" />
     </LinearLayout>

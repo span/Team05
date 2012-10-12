@@ -16,6 +16,7 @@
 
     (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
 */
+
 package se.team05.dialog;
 
 import se.team05.R;
@@ -109,7 +110,7 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 		int min = time / 60;
 		int sec = time % 60;
 
-		String resultat = String.format(" %02d:%02d", min, sec);
+		String resultat = String.format("%02d:%02d", min, sec);
 		timeTextView.setText(resultat);
 
 		double speed = (routeDistance / time) * 3.6;
