@@ -91,11 +91,11 @@ public class DBResultAdapter extends DBAdapter {
 	 * 			calories used while carrying out the route
 	 * @return the id given to the result in the database
 	 */
-	public long instertResult(long rid, int date, int time, int distance, int calories)
+	public long instertResult(long rid, long timestamp, int time, int distance, int calories)
 	{
 		ContentValues values = new ContentValues();
 		values.put(COLUMN_RID, rid);
-		values.put(COLUMN_TIMESTAMP, date);
+		values.put(COLUMN_TIMESTAMP, timestamp);
 		values.put(COLUMN_TIME, time);
 		values.put(COLUMN_DISTANCE, distance);
 		values.put(COLUMN_CALORIES, calories);
@@ -109,7 +109,7 @@ public class DBResultAdapter extends DBAdapter {
 	 * 		database id of the result
 	 * @return Cursor to the result
 	 */
-	public Cursor fetchResultById(int id)
+	public Cursor fetchResultById(long id)
 	{
 		return db.query(TABLE_RESULT, null, COLUMN_ID + "=" + id, null, null, null, null);
 	}
@@ -133,7 +133,7 @@ public class DBResultAdapter extends DBAdapter {
 	 * 		the id of the specific result to be deleted
 	 * @return the number of rows affected
 	 */
-	public int deleteResultById(int id)
+	public long deleteResultById(long id)
 	{
 		return db.delete(TABLE_RESULT, COLUMN_ID + "=" + id, null);
 	}
@@ -145,7 +145,7 @@ public class DBResultAdapter extends DBAdapter {
 	 *            the rout id whose results shall be deleted
 	 * @return the number of rows affected
 	 */
-	public int deleteResultByRid(int rid)
+	public long deleteResultByRid(long rid)
 	{
 		return db.delete(TABLE_RESULT, COLUMN_RID + "=" + rid, null);
 	}
