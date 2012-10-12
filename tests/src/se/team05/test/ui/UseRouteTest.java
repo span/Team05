@@ -15,6 +15,7 @@ import se.team05.data.Database;
 import se.team05.data.DatabaseHandler;
 import se.team05.overlay.CheckPoint;
 import se.team05.test.util.MockLocationUtil;
+import android.app.Activity;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
@@ -22,6 +23,7 @@ import android.provider.MediaStore;
 import android.test.ActivityInstrumentationTestCase2;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.google.android.maps.GeoPoint;
 import com.jayway.android.robotium.solo.Solo;
@@ -29,6 +31,7 @@ import com.jayway.android.robotium.solo.Solo;
 public class UseRouteTest extends ActivityInstrumentationTestCase2<MainActivity>
 {
 	private Solo solo;
+	private ImageView oldRouteImage;
 
 	public UseRouteTest()
 	{
@@ -39,7 +42,10 @@ public class UseRouteTest extends ActivityInstrumentationTestCase2<MainActivity>
 	protected void setUp() throws Exception
 	{
 		super.setUp();
-		solo = new Solo(this.getInstrumentation(), getActivity());
+		
+		Activity activity = getActivity();
+		solo = new Solo(this.getInstrumentation(), activity);
+		oldRouteImage = (ImageView) activity.findViewById(R.id.image_existing_route);
 
 		SQLiteDatabase db = new Database(this.getInstrumentation().getTargetContext()).getWritableDatabase();
 		db.delete(DBRouteAdapter.TABLE_ROUTES, null, null);
@@ -59,7 +65,7 @@ public class UseRouteTest extends ActivityInstrumentationTestCase2<MainActivity>
 
 	public void testUseRouteIfNonExisting()
 	{
-		solo.clickOnButton(1);
+		solo.clickOnView(oldRouteImage);
 		solo.assertCurrentActivity("Expected ListExistingRoutesActivity", ListExistingRoutesActivity.class);
 		solo.clickOnText("Click to add a route");
 		solo.assertCurrentActivity("Expected RouteActivity", RouteActivity.class);
@@ -96,7 +102,8 @@ public class UseRouteTest extends ActivityInstrumentationTestCase2<MainActivity>
 			databaseHandler.saveTrack(cid, track);
 		}
 		
-		solo.clickOnButton(1);
+		solo.clickOnView(oldRouteImage);
+		solo.assertCurrentActivity("ListExistingRoutesActivity expected", ListExistingRoutesActivity.class);
 		solo.clickInList(0);
 		solo.assertCurrentActivity("Expected RouteActivity", RouteActivity.class);
 		
