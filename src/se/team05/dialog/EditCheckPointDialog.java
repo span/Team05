@@ -68,6 +68,7 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 	private SoundManager soundManager;
 	private int mode;
 	private ArrayList<Track> selectedTracks;
+	private SeekBar seekBar;
 
 	/**
 	 * The constructor
@@ -108,12 +109,12 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 			deleteButton.setText("Cancel");
 		}
 
-		nameTextField = (TextView) findViewById(R.id.name);
+		nameTextField = ((TextView) findViewById(R.id.name));
 		nameTextField.setText(checkPoint.getName());
 
-		radiusTextField = (TextView) findViewById(R.id.radius_text);
+		radiusTextField = ((TextView) findViewById(R.id.radius_text));
 
-		SeekBar seekBar = (SeekBar) findViewById(R.id.seekBar1);
+		seekBar = ((SeekBar) findViewById(R.id.seekBar1));
 		seekBar.setOnSeekBarChangeListener(this);
 		seekBar.setProgress(checkPoint.getRadius());
 
@@ -225,5 +226,43 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 
 		super.onBackPressed();
 	}
+
+	/**
+	 * @return the nameTextField«s String value
+	 */
+	public String getNameText()
+	{
+		return nameTextField.getText().toString();
+	}
+
+	/**
+	 * @param nameTextField the nameTextField to set
+	 */
+	public void setNameText(String nameText)
+	{
+		this.nameTextField.setText(nameText);
+	}
+
+	/**
+	 * @return the radiusTextField String value
+	 */
+	public String getRadiusText()
+	{
+		return radiusTextField.getText().toString();
+	}
+
+	/**
+	 * Sets the radiusTextField and seekbar to String radiusText
+	 * @param radiusTextField the radiusText to set
+	 */
+	public void setRadiusTextField(String radiusText)
+	{
+		this.radiusTextField.setText(radiusText);
+		seekBar.setProgress(Integer.parseInt(radiusText));
+	}
+
+
+	
+	
 
 }

@@ -54,6 +54,8 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 		public void onSaveRoute(String name, String description, boolean saveResult);
 
 		public void onDismissRoute();
+		
+		public void onResumeTimer();
 	}
 
 	private Context context;
@@ -116,7 +118,7 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 		double speed = (routeDistance / time) * 3.6;
 		String speedText = String.valueOf(speed);
 		speedTextView.setText(speedText + context.getString(R.string.km) + "/" + context.getString(R.string.h));
-
+		setCanceledOnTouchOutside(false);
 	}
 
 	/**
@@ -189,5 +191,10 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 		{
 			return true;
 		}
+	}
+	@Override
+	public void onBackPressed()
+	{
+		callbacks.onResumeTimer();
 	}
 }

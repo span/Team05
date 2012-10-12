@@ -192,6 +192,11 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 				 long checkPointId = savedInstanceState.getLong("currentCheckPoint");
 				 currentCheckPoint = databaseHandler.getCheckPoint(checkPointId);
 				 showCheckPointDialog(currentCheckPoint, EditCheckPointDialog.MODE_EDIT);
+				 String nameText = savedInstanceState.getString("nameText");
+				 String radiusText = savedInstanceState.getString("radiusText");
+				 checkPointDialog.setNameText(nameText);
+				 checkPointDialog.setRadiusTextField(radiusText);
+				 
 				break;
 			case SAVEROUTEDIALOG:
 				showSaveRouteDialog();
@@ -788,7 +793,37 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
         {
         	onSaveCheckPoint(currentCheckPoint);
         	outState.putLong("currentCheckPoint", currentCheckPoint.getId());
+        	outState.putString("nameText", checkPointDialog.getNameText());
+        	outState.putString("radiusText", checkPointDialog.getRadiusText());
+        	
         }
     }
+
+	@Override
+	public void onResumeTimer()
+	{
+		startTimer();
+	}
+	
+	@Override
+	public void onBackPressed()
+	{
+		AlertDialog alertDialog = new AlertDialog.Builder(this).setTitle(R.string.discard_route_)
+				.setMessage(R.string.do_you_really_want_to_discard_your_route_)
+				.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
+				{
+					public void onClick(DialogInterface dialog, int id)
+					{
+						finish();
+					}
+				}).setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
+				{
+					public void onClick(DialogInterface dialog, int id)
+					{
+						dialog.cancel();
+					}
+				}).create();
+		alertDialog.show();
+	}
 
 }
