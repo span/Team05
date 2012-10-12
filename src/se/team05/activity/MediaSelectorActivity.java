@@ -13,6 +13,24 @@
 
     You should have received a copy of the GNU General Public License
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
+
+    (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
+*/
+/**
+ 	This file is part of Personal Trainer.
+
+    Personal Trainer is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    Personal Trainer is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
  */
 package se.team05.activity;
 
@@ -84,10 +102,14 @@ public class MediaSelectorActivity extends Activity implements LoaderCallbacks<C
 		loaderManager.initLoader(LOADER_ID_ARTIST, null, this);
 		listView = (ListView) findViewById(R.id.list);
 		selectedItems = getIntent().getParcelableArrayListExtra(EXTRA_SELECTED_ITEMS);
+		if(selectedItems == null)
+		{
+			selectedItems = new ArrayList<Track>();
+		}
 	}
 
 	/**
-	 * This method simply inflates the xml file which contains the menu options.
+	 * This method simply inflates the xml file which contains the menu options. The method i
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
@@ -102,6 +124,7 @@ public class MediaSelectorActivity extends Activity implements LoaderCallbacks<C
 	 * user selection either the selected tracks are passed back to the calling
 	 * activity or a new query is made to the media store to sort on either
 	 * artist, album or title.
+	 * TODO How format XML-string
 	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
@@ -124,9 +147,8 @@ public class MediaSelectorActivity extends Activity implements LoaderCallbacks<C
 			case R.id.track:
 				loaderManager.initLoader(LOADER_ID_TITLE, null, this);
 				return true;
-			default:
-				return super.onOptionsItemSelected(item);
 		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	/**

@@ -13,6 +13,8 @@
 
     You should have received a copy of the GNU General Public License
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
+
+    (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
 */
 package se.team05.activity;
 
@@ -90,13 +92,13 @@ public class ListExistingRoutesActivity extends ListActivity
 		Intent intent;
 		Bundle bundle = new Bundle();
 		
-		bundle.putLong("id", id);
+		bundle.putLong(getString(R.string.id), id);
 		
 		intent = new Intent(this.getApplicationContext(), RouteActivity.class);
 		intent.putExtra(Route.EXTRA_ID, id);
 		
-		Log.d("Id", String.valueOf(id));
-		Log.d("Position", String.valueOf(position));
+		Log.d(getString(R.string.id), String.valueOf(id));
+		Log.d(getString(R.string.position), String.valueOf(position));
 		
 		this.startActivity(intent);
 	}

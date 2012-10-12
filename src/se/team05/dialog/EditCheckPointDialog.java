@@ -1,3 +1,21 @@
+/**
+	This file is part of Personal Trainer.
+
+    Personal Trainer is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    Personal Trainer is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
+
+    (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
+*/
 package se.team05.dialog;
 
 /**
@@ -169,7 +187,7 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 			try
 			{
 				soundManager.startRecording();
-				recordButton.setText("Stop recording");
+				recordButton.setText(R.string.stop_recording);
 			}
 			catch (IOException e)
 			{
@@ -222,17 +240,6 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 		}
 
 		super.onBackPressed();
-	}
-
-	/**
-	 * Sets the selected tracks list of the current checkpoint.
-	 * 
-	 * @param selectedTracks
-	 *            a list of the selected tracks
-	 */
-	public void setSelectedTracks(ArrayList<Track> selectedTracks)
-	{
-		this.selectedTracks = selectedTracks;
 	}
 
 }

@@ -13,6 +13,24 @@
 
     You should have received a copy of the GNU General Public License
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
+
+    (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
+*/
+/**
+	This file is part of Personal Trainer.
+
+    Personal Trainer is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    Personal Trainer is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
  */
 package se.team05.data;
 
@@ -73,7 +91,7 @@ public class DBResultAdapter extends DBAdapter {
 	 * 			calories used while carrying out the route
 	 * @return the id given to the result in the database
 	 */
-	public long instertResult (long rid, int date, int time, int distance, int calories)
+	public long instertResult(long rid, int date, int time, int distance, int calories)
 	{
 		ContentValues values = new ContentValues();
 		values.put(COLUMN_RID, rid);
@@ -97,13 +115,13 @@ public class DBResultAdapter extends DBAdapter {
 	}
 	
 	/**
-	 * Returns the cursors of the rows of all results corresponding to a route.
+	 * Returns the cursor of the rows of all results corresponding to a route.
 	 * 
 	 * @param rid
 	 * 				database route id
 	 * @return Cursor to the result
 	 */
-	public Cursor fetchResultByRid(int rid)
+	public Cursor fetchResultByRid(long rid)
 	{
 		return db.query(TABLE_RESULT, null, COLUMN_RID + "=" + rid, null, null, null, null);
 	}

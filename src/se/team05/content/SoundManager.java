@@ -13,11 +13,30 @@
 
     You should have received a copy of the GNU General Public License
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
+
+    (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
+*/
+/**
+	This file is part of Personal Trainer.
+
+    Personal Trainer is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    Personal Trainer is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
  */
 package se.team05.content;
 
 import java.io.File;
 import java.io.IOException;
+import se.team05.R;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -127,11 +146,11 @@ public class SoundManager
 		File storageDirectory = Environment.getExternalStorageDirectory();
 		try
 		{
-			soundFile = File.createTempFile("Music/sound-", ".mp3", storageDirectory);
+			soundFile = File.createTempFile(context.getString(R.string.music_sound_), context.getString(R.string._mp3), storageDirectory);
 		}
 		catch (IOException e)
 		{
-			Log.e(TAG, "Could not access sd-card: " + e.getMessage());
+			Log.e(TAG, context.getString(R.string.could_not_access_sd_card_) + e.getMessage());
 			return;
 		}
 
@@ -169,20 +188,20 @@ public class SoundManager
 	{
 		ContentValues values = new ContentValues(4);
 		long currentTime = System.currentTimeMillis();
-		values.put(MediaStore.Audio.Media.TITLE, "personal-trainer-" + soundFile.getName());
+		values.put(MediaStore.Audio.Media.TITLE, context.getString(R.string.personal_trainer_) + soundFile.getName());
 		values.put(MediaStore.Audio.Media.DATE_ADDED, (int) (currentTime / 1000));
-		values.put(MediaStore.Audio.Media.MIME_TYPE, "audio/mp3");
+		values.put(MediaStore.Audio.Media.MIME_TYPE, context.getString(R.string.audio_mp3));
 		values.put(MediaStore.Audio.Media.DATA, soundFile.getAbsolutePath());
-		values.put(MediaStore.Audio.Media.ARTIST, "Personal Trainer");
-		values.put(MediaStore.Audio.Media.ALBUM, "Personal Trainer Recordings");
+		values.put(MediaStore.Audio.Media.ARTIST, context.getString(R.string.personal_trainer));
+		values.put(MediaStore.Audio.Media.ALBUM, context.getString(R.string.personal_trainer_recordings));
 		values.put(MediaStore.Audio.Media.IS_MUSIC, true);
 
 		ContentResolver contentResolver = context.getContentResolver();
 		Uri mediaStoreUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 		Uri newUri = contentResolver.insert(mediaStoreUri, values);
 		context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, newUri));
-
-		Toast.makeText(context, "Added new recording: " + soundFile.getAbsolutePath(), Toast.LENGTH_LONG).show();
+		//TODO Check if this was wrongly formatted
+		Toast.makeText(context, context.getString(R.string.added_new_recording_) + soundFile.getAbsolutePath(), Toast.LENGTH_LONG).show();
 	}
 
 }
