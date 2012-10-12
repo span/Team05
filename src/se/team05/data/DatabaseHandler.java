@@ -283,18 +283,18 @@ public class DatabaseHandler
 	 */
 	private Result createResultFromCursor(Cursor cursor)
 	{
-		
-//		Result result = new Result(
-//				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_ID)),
-//				cursor.getLong(cursor.getColumnIndex(DBResultAdapter.COLUMN_RID)),
-//				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_TIMESTAMP)),
-//				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_TIME)),
-//				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_DISTANCE)),
-//				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_CALORIES))
-//		);
+		cursor.moveToFirst();
+		Result result = new Result(
+				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_ID)),
+				cursor.getLong(cursor.getColumnIndex(DBResultAdapter.COLUMN_RID)),
+				cursor.getLong(cursor.getColumnIndex(DBResultAdapter.COLUMN_TIMESTAMP)),
+				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_TIME)),
+				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_DISTANCE)),
+				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_CALORIES))
+		);
 		
 		//Temporary during development
-		Result result = new Result(10,20L,30,25,50,60);
+		Result result2 = new Result(10,20L,1261440000L,3600,6000,60);
 		
 		return result;
 	}
@@ -319,7 +319,7 @@ public class DatabaseHandler
 	 * @param id
 	 *            id of result to be deleted.
 	 */
-	public void deleteResultById(int id)
+	public void deleteResultById(long id)
 	{
 		dbResultAdapter.open();
 		dbResultAdapter.deleteResultById(id);
@@ -332,7 +332,7 @@ public class DatabaseHandler
 	 * @param rid
 	 *            the rout id
 	 */
-	public void deleteAllResultsByRid(int rid)
+	public void deleteAllResultsByRid(long rid)
 	{
 		dbResultAdapter.open();
 		dbResultAdapter.deleteResultByRid(rid);

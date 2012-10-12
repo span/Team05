@@ -17,12 +17,18 @@
 
 package se.team05.activity;
 
+import java.sql.Date;
+import java.text.DecimalFormat;
+
 import se.team05.R;
 import se.team05.content.Result;
 import se.team05.data.DatabaseHandler;
+import se.team05.listener.MainActivityButtonListener;
+import se.team05.listener.ShowResultActivityButtonListener;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.TextView;
 
 
@@ -30,7 +36,7 @@ import android.widget.TextView;
  * An activity that will present the user with the option to view a result of an old route.
  * Gets results from database and present them.
  * 
- * @author Gustaf
+ * @author Gustaf Werlinder
  *
  */
 public class ShowResultsActivity extends Activity
@@ -64,6 +70,10 @@ public class ShowResultsActivity extends Activity
 		this.result = databaseHandler.getResultById(id);
 				
 		showResults();
+		
+		Button deleteResultsButton = (Button) findViewById(R.id.delete_results_button);
+		deleteResultsButton.setOnClickListener(new ShowResultActivityButtonListener(this, id));	
+		
 	}
 
 	
@@ -72,26 +82,50 @@ public class ShowResultsActivity extends Activity
 	 */
 	private void showResults()
 	{
-		int time = result.getTime();          
-		int distance = result.getDistance();
-		int timestamp = result.getTimestamp(); //Temporary during development
-		float speed = distance / time;  //Temporary during development
+		String formattedTimeString;
+		String formattedDistanceString;
+		String speedString;
+		String dateString;
 		
-		TextView timeView = (TextView) findViewById(R.id.show_time_result_textview);
-		String timeString = String.valueOf(time);
-		timeView.setText(timeString);
+		int timeInSeconds = result.getTime();
+		float timeInHours = timeInSeconds / 3600;
+		int seconds = timeInSeconds % 60;
+		int minutes = timeInSeconds % 3600;
+		int hours = timeInSeconds / 3600;
 		
-		TextView distanceView = (TextView) findViewById(R.id.show_distance_result_textview);
-		String distanceString = String.valueOf(distance);
-		distanceView.setText(distanceString);
+		int distanceInMeters = result.getDistance();
+		float distanceInKm = (distanceInMeters / 1000);
 		
-		TextView speedView = (TextView) findViewById(R.id.show_speed_result_textview);
-		String speedString = String.valueOf(speed);
-		speedView.setText(speedString);
+		float speed = distanceInKm / timeInHours;
 		
-		TextView dateView = (TextView) findViewById(R.id.show_date_result_textview);
-		String date = String.valueOf(timestamp);
-		dateView.setText(date);	
-	}
+		long timestamp = result.getTimestamp();
+		Date date = new Date(timestamp * 1000);
 
+		//Present date
+		TextView dateView = (TextView) findViewById(R.id.show_date_result_textview);
+		dateString = String.valueOf(date);
+		dateView.setText(dateString);
+		
+		//Present time
+		TextView timeView = (TextView) findViewById(R.id.show_time_result_textview);
+		formattedTimeString = String.format(" %02d:%02d:%02d", hours, minutes, seconds);
+		timeView.setText(formattedTimeString);
+		
+		//Present distance
+		TextView distanceView = (TextView) findViewById(R.id.show_distance_result_textview);
+		formattedDistanceString = String.format(" %,d", distanceInMeters);
+		distanceView.setText(formattedDistanceString);
+		
+		//Present speed
+		TextView speedView = (TextView) findViewById(R.id.show_speed_result_textview);		
+		speedString = String.valueOf(speed);
+		speedView.setText(speedString);		
+	}
+	
+	@Override
+	public void onDestroy()
+	{
+		super.onDestroy();
+	}
+	
 }

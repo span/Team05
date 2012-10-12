@@ -41,8 +41,7 @@ import android.widget.TextView;
  * An activity that will present the user with the option to view results of an old route.
  * Gets results from database and presents them in a listview.
  * 
- * @author Gustaf
- * http://developer.android.com/reference/android/app/ListActivity.html
+ * @author Gustaf Werlinder
  *
  */
 public class ListExistingResultsActivity extends ListActivity
@@ -51,8 +50,7 @@ public class ListExistingResultsActivity extends ListActivity
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_list_existing_results);
-		
+		setContentView(R.layout.activity_list_existing_results);		
 		
 		long rid = getIntent().getLongExtra(Route.EXTRA_ID, -1);
 		DatabaseHandler db = new DatabaseHandler(this);
@@ -60,34 +58,22 @@ public class ListExistingResultsActivity extends ListActivity
 		Cursor cursor = db.getAllResultsCursorByRid(rid);
 		
 		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,
-						//android.R.layout.simple_list_item_1,
-						android.R.layout.two_line_list_item,
+						android.R.layout.simple_list_item_1,
 						cursor,
-						new String[] {DBResultAdapter.COLUMN_TIME, DBResultAdapter.COLUMN_DISTANCE},
-						new int[] {android.R.id.text1, android.R.id.text2},
+						new String[] {DBResultAdapter.COLUMN_ID},
+						new int[] {android.R.id.text1},
 						Adapter.NO_SELECTION);
 		
 		setListAdapter(adapter);
 		//cursor.close();
-
 	}
 	
 	public void onListItemClick(ListView l, View v, int position, long id)
 	{
 		Context context = this;
 		Intent intent;
-		
-//		intent = new Intent(context, RouteActivity.class);
-
 		intent = new Intent(context, ShowResultsActivity.class);
-//		intent.putExtra(Result.RESULT_ID, id);
 		intent.putExtra(Result.RESULT_ID, 1);
-		
-//		Log.d("Id", String.valueOf(id));
-//		Log.d("Position", String.valueOf(position));
-		
 		context.startActivity(intent);
 	}
-
-
 }
