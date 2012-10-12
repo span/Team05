@@ -13,6 +13,8 @@
 
     You should have received a copy of the GNU General Public License
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
+
+    (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
 */
 
 package se.team05.test.activity;
@@ -21,7 +23,7 @@ import se.team05.activity.ListExistingRoutesActivity;
 import se.team05.activity.MainActivity;
 import se.team05.activity.RouteActivity;
 import android.test.ActivityInstrumentationTestCase2;
-import android.widget.Button;
+import android.widget.ImageView;
 
 import com.jayway.android.robotium.solo.Solo;
 
@@ -39,8 +41,8 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
 	
 	private MainActivity mActivity;
 	
-	private Button newRouteButton;
-	private Button useExistingButton;
+	private ImageView newRouteButton;
+	private ImageView useExistingButton;
 	
 	/**
 	 * Making sure to call inherited parent constructor, nothing more.
@@ -66,12 +68,12 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
 		
 		mActivity = this.getActivity();
 		
-		newRouteButton = (Button) mActivity.findViewById(
-				se.team05.R.id.new_route_button
+		newRouteButton = (ImageView) mActivity.findViewById(
+				se.team05.R.id.image_new_route
 		);
 		
-		useExistingButton = (Button) mActivity.findViewById(
-				se.team05.R.id.use_existing_button
+		useExistingButton = (ImageView) mActivity.findViewById(
+				se.team05.R.id.image_existing_route
 		);
 		
 	}

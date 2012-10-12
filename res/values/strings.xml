@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
     This file is part of Personal Trainer.
 
@@ -13,6 +14,8 @@
 
     You should have received a copy of the GNU General Public License
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
+    
+    (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
 -->
 <resources>
 
@@ -77,10 +80,19 @@
 	<string name="_mp3">.mp3</string>
 	<string name="could_not_access_sd_card_">"Could not access sd-card: "</string>
 	<string name="stop_recording">Stop recording</string>
+	<string name="delete_results">Delete results</string>
+	<string name="distance_of_run_result">Distance: </string>
+	<string name="date">Date: </string>
 	<string name="save_result_">Save result?</string>
 	<string name="do_you_want_to_save_this_result_">Do you want to save this result?</string>
+	<string name="no_results_registerd">No results registerd</string>
 	<string name="result_saved">Result saved: </string>
 	<string name="must_use_a_valid_name">Must use a valid name</string>
 	<string name="discard_route_">Discard route?</string>
 	<string name="do_you_really_want_to_discard_your_route_">Do you really want to discard your route?</string>
+	<string name="welcome_to_personal_trainer">Welcome to Personal Trainer</string>
+	<string name="start_screen_instructions">Press play to run a new route or the notepad to check out your saved stats and routes</string>
+	<string name="click_">"Click "</string>
+	<string name="_to_add_a_route_and">" to add a route and"</string>
+	<string name="to_use_an_old_route">to use an old route</string>
 </resources>

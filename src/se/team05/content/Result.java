@@ -30,9 +30,11 @@ package se.team05.content;
  */
 public class Result {
 	
+	public static String RESULT_ID = "id";
+	
 	private int _id;
 	private long routId;
-	private int timestamp;
+	private long timestamp;
 	private int time;
 	private int calories;
 	private int distance;
@@ -45,7 +47,7 @@ public class Result {
 	{
 		this._id = 1;
 		this.routId = 1;
-		this.timestamp = 1349286608;	// Date: October 3 2012, Time: 18:50
+		this.timestamp = 1349286608;	// Date: October 3 2012, Time: 18:50 ???
 		this.time = 300;  				// 5 minutes
 		this.calories = 1337;			// kcal
 		this.distance = 1337;
@@ -67,12 +69,13 @@ public class Result {
 	 * @param calories
 	 * 		calories (kcal) used during route
 	 */
-	public Result(int _id, int routId, int timestamp, int time, int distance, int calories)
+	public Result(int _id, long routId, long timestamp, int time, int distance, int calories)
 	{
 		this._id = _id;
 		this.routId = routId;
 		this.timestamp = timestamp;
 		this.time = time;
+		this.distance = distance;
 		this.calories = calories;
 	}
 	
@@ -91,7 +94,7 @@ public class Result {
 	 * @param calories
 	 * 		calories (kcal) used during route
 	 */
-	public Result(long routId, int timestamp, int time, int distance, int calories)
+	public Result(long routId, long timestamp, int time, int distance, int calories)
 	{
 		this.routId = routId;
 		this.timestamp = timestamp;
@@ -122,7 +125,7 @@ public class Result {
 	 * @return time and date when the result was created 
 	 * 			in the format of nanoseconds passed since year 1970
 	 */
-	public int getTimestamp() {
+	public long getTimestamp() {
 		return timestamp;
 	}
 	/**
@@ -132,7 +135,7 @@ public class Result {
 	 * 		time and date when the result is created
 	 * 		in the format of nanoseconds passed since year 1970
 	 */
-	public void setTimestamp(int timestamp) {
+	public void setTimestamp(long timestamp) {
 		this.timestamp = timestamp;
 	}
 	

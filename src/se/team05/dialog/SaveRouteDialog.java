@@ -105,7 +105,6 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 
 		int routeDistance = result.getDistance();
 		String distanceText = String.valueOf(routeDistance);
-		System.out.println("HAR:" + distanceText);
 		distanceTextView.setText(distanceText + context.getString(R.string.km));
 
 		int time = result.getTime();
@@ -119,6 +118,16 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 		String speedText = String.valueOf(speed);
 		speedTextView.setText(speedText + context.getString(R.string.km) + "/" + context.getString(R.string.h));
 		setCanceledOnTouchOutside(false);
+		//Make the check box toggle on click.
+		CheckedTextView checkBox = (CheckedTextView) findViewById(R.id.save_result);
+	    checkBox.setOnClickListener(new View.OnClickListener()
+	    {
+	        public void onClick(View v)
+	        {
+	            ((CheckedTextView) v).toggle();
+	        }
+	    });		
+
 	}
 
 	/**

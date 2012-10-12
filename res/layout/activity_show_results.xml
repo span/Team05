@@ -14,57 +14,16 @@
 
     You should have received a copy of the GNU General Public License
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
-    
-    (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
 -->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <se.team05.view.EditRouteMapView
-        android:id="@+id/mapview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:apiKey="0I2UCcv57MHZz_RXqTZvIH1A7GKKqKBiel4X_Iw"
-        android:clickable="true" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/speed_of_run" />
-
-        <TextView
-            android:id="@+id/show_speed_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:context=".DisplayMessageActivity" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/distance_of_run" />
-
-        <TextView
-            android:id="@+id/show_distance_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:context=".DisplayMessageActivity" />
-    </LinearLayout>
-
+<!--     Show time -->
+    
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -76,50 +35,80 @@
             android:text="@string/time_of_run" />
 
         <TextView
-            android:id="@+id/show_time_textview"
+            android:id="@+id/show_time_result_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:context=".DisplayMessageActivity" />
     </LinearLayout>
-
-    <Button
-        android:id="@+id/add_checkpoint"
+    
+<!--     Show distance -->
+    
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/button_addcheckpoint" />
+        android:orientation="horizontal" >
 
-    <Button
-        android:id="@+id/start_run_button"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/distance_of_run_result" />
+
+        <TextView
+            android:id="@+id/show_distance_result_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:context=".DisplayMessageActivity" />
+    </LinearLayout>
+    
+<!--     Show speed -->
+    
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/button_start_run" />
+        android:orientation="horizontal" >
 
-    <Button
-        android:id="@+id/stop_and_save_button"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/speed_of_run" />
+
+        <TextView
+            android:id="@+id/show_speed_result_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:context=".DisplayMessageActivity" />
+    </LinearLayout>
+    
+<!-- 	Show date -->
+    
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/button_stop_and_save"
-        android:visibility="gone" />
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/date" />
+
+        <TextView
+            android:id="@+id/show_date_result_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:context=".DisplayMessageActivity" />
+    </LinearLayout>
+    
+
+
 
     <Button
-        android:id="@+id/start_existing_run_button"
+        android:id="@+id/delete_results_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/button_start_run"
-        android:visibility="gone" />
+        android:text="@string/delete_results" />
 
-    <Button
-        android:id="@+id/stop_existing_run_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/stop"
-        android:visibility="gone" />
-
-    <Button
-        android:id="@+id/show_result_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/show_result" 
-        android:visibility="gone"/>
+    
+  	 <!-- TODO up button -->
+    
 
 </LinearLayout>
