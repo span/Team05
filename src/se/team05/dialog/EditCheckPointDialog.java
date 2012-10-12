@@ -18,22 +18,6 @@
 */
 package se.team05.dialog;
 
-/**
- This file is part of Personal Trainer.
-
- Personal Trainer is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- any later version.
-
- Personal Trainer is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
- */
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -84,6 +68,7 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 	private SoundManager soundManager;
 	private int mode;
 	private ArrayList<Track> selectedTracks;
+	private SeekBar seekBar;
 
 	/**
 	 * The constructor
@@ -124,12 +109,12 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 			deleteButton.setText("Cancel");
 		}
 
-		nameTextField = (TextView) findViewById(R.id.name);
+		nameTextField = ((TextView) findViewById(R.id.name));
 		nameTextField.setText(checkPoint.getName());
 
-		radiusTextField = (TextView) findViewById(R.id.radius_text);
+		radiusTextField = ((TextView) findViewById(R.id.radius_text));
 
-		SeekBar seekBar = (SeekBar) findViewById(R.id.seekBar1);
+		seekBar = ((SeekBar) findViewById(R.id.seekBar1));
 		seekBar.setOnSeekBarChangeListener(this);
 		seekBar.setProgress(checkPoint.getRadius());
 
@@ -241,5 +226,43 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 
 		super.onBackPressed();
 	}
+
+	/**
+	 * @return the nameTextField«s String value
+	 */
+	public String getNameText()
+	{
+		return nameTextField.getText().toString();
+	}
+
+	/**
+	 * @param nameTextField the nameTextField to set
+	 */
+	public void setNameText(String nameText)
+	{
+		this.nameTextField.setText(nameText);
+	}
+
+	/**
+	 * @return the radiusTextField String value
+	 */
+	public String getRadiusText()
+	{
+		return radiusTextField.getText().toString();
+	}
+
+	/**
+	 * Sets the radiusTextField and seekbar to String radiusText
+	 * @param radiusTextField the radiusText to set
+	 */
+	public void setRadiusTextField(String radiusText)
+	{
+		this.radiusTextField.setText(radiusText);
+		seekBar.setProgress(Integer.parseInt(radiusText));
+	}
+
+
+	
+	
 
 }

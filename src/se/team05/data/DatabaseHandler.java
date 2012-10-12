@@ -16,26 +16,10 @@
 
     (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
 */
-/**
-	This file is part of Personal Trainer.
 
-    Personal Trainer is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    any later version.
-
-    Personal Trainer is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
- */
 package se.team05.data;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import se.team05.content.Result;
 import se.team05.content.Route;
@@ -472,17 +456,7 @@ public class DatabaseHandler
 
 			while (!cursor.isAfterLast())
 			{
-				GeoPoint geoPoint = new GeoPoint(
-						cursor.getInt(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_LATITUDE)),
-						cursor.getInt(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_LONGITUDE))
-				);
-
-				CheckPoint checkPoint = new CheckPoint(geoPoint);
-				checkPoint.setRadius(cursor.getInt(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_RADIUS)));
-				checkPoint.setName(cursor.getString(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_NAME)));
-				checkPoint.setRid(cursor.getLong(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_RID)));
-				checkPoint.setId(cursor.getLong(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_ID)));
-
+				CheckPoint checkPoint = createCheckPointFromCursor(cursor);
 				checkPointList.add(checkPoint);
 				cursor.moveToNext();
 			}
@@ -518,5 +492,43 @@ public class DatabaseHandler
 		dbCheckPointAdapter.open();
 		dbCheckPointAdapter.updateCheckPointRid(rid);
 		dbCheckPointAdapter.close();
+	}
+	/**
+	 * Deletes all checkpoints in the database for a route with rid
+	 * @param rid
+	 */
+	public void deleteCheckPoints(long rid)
+	{
+		dbCheckPointAdapter.open();
+		dbCheckPointAdapter.deleteCheckPointByRid(rid);
+		dbCheckPointAdapter.close();
+	}
+	
+	public CheckPoint getCheckPoint(long id)
+	{
+		dbCheckPointAdapter.open();
+		CheckPoint checkPoint = null;
+		Cursor cursor = dbCheckPointAdapter.fetchCheckPointById(id);
+		if(cursor!=null&&cursor.getCount()==1)
+		{
+			cursor.moveToFirst();
+			checkPoint = createCheckPointFromCursor(cursor);
+		}
+		dbCheckPointAdapter.close();
+		return checkPoint;
+	}
+	
+	private CheckPoint createCheckPointFromCursor(Cursor cursor)
+	{
+		GeoPoint geoPoint = new GeoPoint(
+				cursor.getInt(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_LATITUDE)),
+				cursor.getInt(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_LONGITUDE))
+		);
+		CheckPoint checkPoint = new CheckPoint(geoPoint);
+		checkPoint.setRadius(cursor.getInt(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_RADIUS)));
+		checkPoint.setName(cursor.getString(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_NAME)));
+		checkPoint.setRid(cursor.getLong(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_RID)));
+		checkPoint.setId(cursor.getLong(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_ID)));
+		return checkPoint;
 	}
 }
