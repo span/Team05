@@ -1,21 +1,22 @@
-package se.team05.dialog;
-
 /**
- This file is part of Personal Trainer.
+	This file is part of Personal Trainer.
 
- Personal Trainer is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- any later version.
+    Personal Trainer is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
 
- Personal Trainer is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+    Personal Trainer is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
 
- You should have received a copy of the GNU General Public License
- along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
- */
+    You should have received a copy of the GNU General Public License
+    along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
+
+    (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
+*/
+package se.team05.dialog;
 
 import se.team05.R;
 import se.team05.content.Result;
@@ -29,6 +30,7 @@ import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * This Dialog class is shown to the user when the user has recorded a new route
@@ -52,6 +54,8 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 		public void onSaveRoute(String name, String description, boolean saveResult);
 
 		public void onDismissRoute();
+		
+		public void onResumeTimer();
 	}
 
 	private Context context;
@@ -101,18 +105,28 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 
 		int routeDistance = result.getDistance();
 		String distanceText = String.valueOf(routeDistance);
-		distanceTextView.setText(distanceText + " km");
+		distanceTextView.setText(distanceText + context.getString(R.string.km));
 
 		int time = result.getTime();
 		int min = time / 60;
 		int sec = time % 60;
 
-		String resultat = String.format(" %02d:%02d", min, sec);
+		String resultat = String.format("%02d:%02d", min, sec);
 		timeTextView.setText(resultat);
 
 		double speed = (routeDistance / time) * 3.6;
 		String speedText = String.valueOf(speed);
-		speedTextView.setText(speedText + " km/h");
+		speedTextView.setText(speedText + context.getString(R.string.km) + "/" + context.getString(R.string.h));
+		setCanceledOnTouchOutside(false);
+		//Make the check box toggle on click.
+		CheckedTextView checkBox = (CheckedTextView) findViewById(R.id.save_result);
+	    checkBox.setOnClickListener(new View.OnClickListener()
+	    {
+	        public void onClick(View v)
+	        {
+	            ((CheckedTextView) v).toggle();
+	        }
+	    });		
 
 	}
 
@@ -129,8 +143,8 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 		switch (v.getId())
 		{
 			case R.id.discard_button:
-				AlertDialog alertDialog = new AlertDialog.Builder(context).setTitle("Discard route?")
-						.setMessage("Do you really want to discard your route?")
+				AlertDialog alertDialog = new AlertDialog.Builder(context).setTitle(R.string.discard_route_)
+						.setMessage(R.string.do_you_really_want_to_discard_your_route_)
 						.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
 						{
 							public void onClick(DialogInterface dialog, int id)
@@ -149,13 +163,47 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 				break;
 			case R.id.save_button:
 				String name = ((EditText) findViewById(R.id.name)).getText().toString();
-				String description = ((EditText) findViewById(R.id.description)).getText().toString();
-				boolean saveResult = ((CheckedTextView) findViewById(R.id.save_result)).isChecked();
-				callbacks.onSaveRoute(name, description, saveResult);
-				dismiss();
+				
+				if(testStringForName(name))
+				{
+					String description = ((EditText) findViewById(R.id.description)).getText().toString();
+					boolean saveResult = ((CheckedTextView) findViewById(R.id.save_result)).isChecked();
+					callbacks.onSaveRoute(name, description, saveResult);
+					dismiss();
+				}
+				
 				break;
 			default:
 				break;
 		}
+	}
+	
+	/**
+	 * Help method for testing that a string is neither empty nor null. In case the string is empty
+	 * a toast message will appear prompting the user to choose a name.
+	 * 
+	 * @param name the string to be tested
+	 * @return true if string has some character in it, otherwise false
+	 */
+	public boolean testStringForName(String name)
+	{
+		if(name.equals("") || name == null)
+		{
+			CharSequence text = getContext().getString(R.string.must_use_a_valid_name);
+			int duration = Toast.LENGTH_SHORT;
+
+			Toast toast = Toast.makeText(context, text, duration);
+			toast.show();
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+	@Override
+	public void onBackPressed()
+	{
+		callbacks.onResumeTimer();
 	}
 }

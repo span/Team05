@@ -13,7 +13,10 @@
 
     You should have received a copy of the GNU General Public License
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
- */
+
+    (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
+*/
+
 package se.team05.service;
 
 import java.io.IOException;
@@ -116,9 +119,9 @@ public class MediaService extends Service implements OnCompletionListener, OnPre
 	/**
 	 * Initiates a notification with the application launcher icon as a graphic
 	 * and custom messages for the ticker, title and text.
-	 * 
-	 * NOTE: USE TRACK INFORMATION HERE!
+	 * 	 
 	 */
+	// TODO USE TRACK INFORMATION HERE!
 	private void initNotification()
 	{
 		Context context = getApplicationContext();

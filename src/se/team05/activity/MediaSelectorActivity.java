@@ -1,5 +1,5 @@
 /**
- 	This file is part of Personal Trainer.
+	This file is part of Personal Trainer.
 
     Personal Trainer is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -13,7 +13,10 @@
 
     You should have received a copy of the GNU General Public License
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
- */
+
+    (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
+*/
+
 package se.team05.activity;
 
 import java.util.ArrayList;
@@ -106,6 +109,7 @@ public class MediaSelectorActivity extends Activity implements LoaderCallbacks<C
 	 * user selection either the selected tracks are passed back to the calling
 	 * activity or a new query is made to the media store to sort on either
 	 * artist, album or title.
+	 * TODO How format XML-string
 	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
