@@ -109,7 +109,7 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 		int min = time / 60;
 		int sec = time % 60;
 
-		String resultat = String.format(" %02d:%02d", min, sec);
+		String resultat = String.format("%02d:%02d", min, sec);
 		timeTextView.setText(resultat);
 
 		double speed = (routeDistance / time) * 3.6;
