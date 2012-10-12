@@ -13,6 +13,24 @@
 
     You should have received a copy of the GNU General Public License
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
+
+    (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
+*/
+/**
+	This file is part of Personal Trainer.
+
+    Personal Trainer is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    Personal Trainer is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
  */
 package se.team05.activity;
 
@@ -27,7 +45,6 @@ import se.team05.content.Track;
 import se.team05.data.DatabaseHandler;
 import se.team05.dialog.EditCheckPointDialog;
 import se.team05.dialog.SaveRouteDialog;
-import se.team05.listener.MainActivityButtonListener;
 import se.team05.listener.MapLocationListener;
 import se.team05.listener.MapOnGestureListener;
 import se.team05.overlay.CheckPoint;
@@ -53,6 +70,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -117,7 +135,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	private TextView speedView;
 	private TextView distanceView;
 	private Intent serviceIntent;
-	private String formattedTimeString;;
+	private String formattedTimeString;
 
 
 	/**
@@ -332,16 +350,21 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 						if (checkPoint != currentCheckPoint)
 						{
 							stopService(serviceIntent);
-							serviceIntent.putExtra(MediaService.DATA_PLAYLIST, checkPoint.getTracks());
-							serviceIntent.setAction(MediaService.ACTION_PLAY);
-							try
+							ArrayList<Track> playList = checkPoint.getTracks();
+							if(playList.size() > 0)
 							{
-								startService(serviceIntent);
+								serviceIntent.putExtra(MediaService.DATA_PLAYLIST, playList);
+								serviceIntent.setAction(MediaService.ACTION_PLAY);
+								try
+								{
+									startService(serviceIntent);
+								}
+								catch (Exception e)
+								{
+									Log.e(TAG, getString(R.string.could_not_start_media_service_) + e.getMessage());
+								}
 							}
-							catch (Exception e)
-							{
-								Log.e(TAG, getString(R.string.could_not_start_media_service_) + e.getMessage());
-							}
+							
 							currentCheckPoint = checkPoint;
 						}
 
@@ -406,6 +429,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 			handler.removeCallbacks(runnable);
 			routeResults = new Result(-1, -1, timePassed, (int) totalDistance,
 					0);
+			
 			SaveRouteDialog saveRouteDialog = new SaveRouteDialog(this, this,
 					routeResults);
 			saveRouteDialog.show();
@@ -453,6 +477,8 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 						public void onClick(DialogInterface dialog, int id)
 						{
 							databaseHandler.saveResult(routeResults);
+							informResultSaveToast(route.getName());
+
 						}
 					}).setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
 					{
@@ -471,6 +497,21 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 			break;
 
 		}
+	}
+	
+	/**
+	 * Separate method for sending a toast message informing the user that a result was saved on
+	 * a previously saved route by displaying the route's name.
+	 * 
+	 * @param name the named route to which the result gets saved
+	 */
+	private void informResultSaveToast(String name)
+	{
+		CharSequence text = getString(R.string.result_saved);
+		int duration = Toast.LENGTH_SHORT;
+
+		Toast toast = Toast.makeText(this, text + " " + name, duration);
+		toast.show();
 	}
 
 	/**
@@ -498,8 +539,9 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	private void timerTick() {
 		int seconds = timePassed % 60;
 		int minutes = timePassed / 60;
+
 		TextView timeView = (TextView) findViewById(R.id.show_time_textview);
-		formattedTimeString = String.format(" %02d:%02d", minutes, seconds);
+		formattedTimeString = String.format("%02d:%02d", minutes, seconds);
 		timeView.setText(formattedTimeString);
 		timePassed++;
 	}

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
     This file is part of Personal Trainer.
 
@@ -13,6 +14,8 @@
 
     You should have received a copy of the GNU General Public License
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
+    
+    (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
 -->
 <resources>
 
@@ -37,14 +40,14 @@
     <string name="button_start_run">Start Run</string>
     <string name="button_addcheckpoint">Add CP</string>
     <string name="select_media">Select media</string>
-    <string name="speed_of_run">Your Speed: </string>
+    <string name="speed_of_run">"Your Speed: "</string>
     <string name="time_">"Time: "</string>
     <string name="distance_">Distance:</string>
     <string name="speed_">Speed:</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
-	<string name="distance_of_run">Total Distance: </string>
-	<string name="time_of_run">Time: </string>
+	<string name="distance_of_run">"Total Distance: "</string>
+	<string name="time_of_run">"Time: "</string>
 	<string name="name">Name</string>
 	<string name="save_results">Save results</string>
 	<string name="results">Results</string>
@@ -57,7 +60,7 @@
 	<string name="please_add_a_route">Please add a route</string>
 	<string name="click_to_add_a_route">Click to add a route</string>
 	<string name="result_list">Results</string>
-	<string name="km">Km</string>
+	<string name="km">" Km"</string>
 	<string name="_metres">" metres"</string>
 	<string name="_0_00">0.00</string>
 	<string name="h">h</string>
@@ -83,5 +86,8 @@
 	<string name="save_result_">Save result?</string>
 	<string name="do_you_want_to_save_this_result_">Do you want to save this result?</string>
 	<string name="no_results_registerd">No results registerd</string>
-	
+	<string name="result_saved">Result saved: </string>
+	<string name="must_use_a_valid_name">Must use a valid name</string>
+	<string name="discard_route_">Discard route?</string>
+	<string name="do_you_really_want_to_discard_your_route_">Do you really want to discard your route?</string>
 </resources>
