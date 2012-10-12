@@ -21,8 +21,10 @@ package se.team05.activity;
 import se.team05.R;
 import se.team05.listener.MainActivityButtonListener;
 import android.app.Activity;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.ImageView;
 
 /**
  * This is the launching point of the application. The main activity simply
@@ -35,6 +37,9 @@ import android.widget.Button;
  */
 public class MainActivity extends Activity
 {
+	ImageView newRouteButton;
+	ImageView useExistingButton;
+	
 	/**
 	 * The onCreate method of the class starts off by setting the XML file which
 	 * has the View content. It then picks up references to the buttons that are
@@ -48,11 +53,25 @@ public class MainActivity extends Activity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
-		Button newRouteButton = (Button) findViewById(R.id.new_route_button);
+		
+		newRouteButton = (ImageView) findViewById(R.id.image_new_route);
 		newRouteButton.setOnClickListener(new MainActivityButtonListener(this));
 
-		Button useExistingButton = (Button) findViewById(R.id.use_existing_button);
-		useExistingButton.setOnClickListener(new MainActivityButtonListener(this));
+		useExistingButton = (ImageView) findViewById(R.id.image_existing_route);
+		useExistingButton.setOnClickListener(new MainActivityButtonListener(this)); 
+		
+	}
+	
+	/**
+	 * For when method resumes and we want the buttons to return to their original colours.
+	 */
+	@Override
+	public void onResume()
+	{
+		super.onResume();
+		
+		newRouteButton.setColorFilter(0x0000000);
+		useExistingButton.setColorFilter(0x0000000); 
+		
 	}
 }

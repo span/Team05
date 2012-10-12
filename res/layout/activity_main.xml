@@ -13,34 +13,87 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
-    
-    (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
+    along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.    
+    (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
 -->
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:padding="8dp" >
+
+    <TextView
+        android:id="@+id/welcome_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:paddingTop="8dp"
+        android:text="@string/welcome_to_personal_trainer"
+        android:textSize="18sp" />
+
+    <RelativeLayout
+        android:id="@+id/mid_wrapper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" >
+
+        <ImageView
+            android:id="@+id/image_new_route"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="32dp"
+            android:src="@drawable/btn_add_route" />
+
+        <ImageView
+            android:id="@+id/image_existing_route"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/image_new_route"
+            android:paddingTop="32dp"
+            android:src="@drawable/btn_use_route" />
+    </RelativeLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/bottom_wrapper"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:orientation="vertical" >
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:paddingBottom="16dp" >
 
-        <Button
-            android:id="@+id/new_route_button"
-            android:layout_width="match_parent"
+        <TextView
+            style="@style/footerTextStyle"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="New route" />
+            android:text="@string/click_"
+             />
 
-        <Button
-            android:id="@+id/use_existing_button"
-            android:layout_width="match_parent"
+        <TextView
+            style="@style/footerTextStyle"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Use existing route" />
+            android:text="+"
+            android:textColor="#1388fc"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/instruction_text"
+            style="@style/footerTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/_to_add_a_route_and"
+             />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            style="@style/footerTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/to_use_an_old_route" />
     </LinearLayout>
 
 </RelativeLayout>
