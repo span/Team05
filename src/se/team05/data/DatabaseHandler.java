@@ -453,17 +453,7 @@ public class DatabaseHandler
 
 			while (!cursor.isAfterLast())
 			{
-				GeoPoint geoPoint = new GeoPoint(
-						cursor.getInt(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_LATITUDE)),
-						cursor.getInt(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_LONGITUDE))
-				);
-
-				CheckPoint checkPoint = new CheckPoint(geoPoint);
-				checkPoint.setRadius(cursor.getInt(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_RADIUS)));
-				checkPoint.setName(cursor.getString(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_NAME)));
-				checkPoint.setRid(cursor.getLong(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_RID)));
-				checkPoint.setId(cursor.getLong(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_ID)));
-
+				CheckPoint checkPoint = createCheckPointFromCursor(cursor);
 				checkPointList.add(checkPoint);
 				cursor.moveToNext();
 			}
@@ -500,11 +490,42 @@ public class DatabaseHandler
 		dbCheckPointAdapter.updateCheckPointRid(rid);
 		dbCheckPointAdapter.close();
 	}
-
+	/**
+	 * Deletes all checkpoints in the database for a route with rid
+	 * @param rid
+	 */
 	public void deleteCheckPoints(long rid)
 	{
 		dbCheckPointAdapter.open();
 		dbCheckPointAdapter.deleteCheckPointByRid(rid);
 		dbCheckPointAdapter.close();
+	}
+	
+	public CheckPoint getCheckPoint(long id)
+	{
+		dbCheckPointAdapter.open();
+		CheckPoint checkPoint = null;
+		Cursor cursor = dbCheckPointAdapter.fetchCheckPointById(id);
+		if(cursor!=null&&cursor.getCount()==1)
+		{
+			cursor.moveToFirst();
+			checkPoint = createCheckPointFromCursor(cursor);
+		}
+		dbCheckPointAdapter.close();
+		return checkPoint;
+	}
+	
+	private CheckPoint createCheckPointFromCursor(Cursor cursor)
+	{
+		GeoPoint geoPoint = new GeoPoint(
+				cursor.getInt(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_LATITUDE)),
+				cursor.getInt(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_LONGITUDE))
+		);
+		CheckPoint checkPoint = new CheckPoint(geoPoint);
+		checkPoint.setRadius(cursor.getInt(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_RADIUS)));
+		checkPoint.setName(cursor.getString(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_NAME)));
+		checkPoint.setRid(cursor.getLong(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_RID)));
+		checkPoint.setId(cursor.getLong(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_ID)));
+		return checkPoint;
 	}
 }
