@@ -88,6 +88,7 @@ public class AddCheckPointUITest extends ActivityInstrumentationTestCase2<MainAc
 		solo.clickOnScreen(400, 600);
 		assertTrue("Could not find the dialog!", solo.searchText("Edit CheckPoint"));
 		String cancel = routeActivity.getString(se.team05.R.string.cancel);
+	
 		solo.clickOnButton(cancel);
 		assertFalse("Could find the dialog!", solo.searchText("Edit CheckPoint"));
 		solo.clickOnScreen(400, 600);
@@ -133,7 +134,7 @@ public class AddCheckPointUITest extends ActivityInstrumentationTestCase2<MainAc
 		solo.clickOnActionBarItem(R.id.done);
 
 		String save = routeActivity.getString(se.team05.R.string.save);
-		solo.clickOnText(save);
+		solo.clickOnButton(save);
 		assertFalse("Could find the dialog!", solo.searchText("Edit CheckPoint"));
 
 		solo.clickOnScreen(400, 600);
