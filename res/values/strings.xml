@@ -93,6 +93,6 @@
 	<string name="welcome_to_personal_trainer">Welcome to Personal Trainer</string>
 	<string name="start_screen_instructions">Press play to run a new route or the notepad to check out your saved stats and routes</string>
 	<string name="click_">"Click "</string>
-	<string name="_to_add_a_route_and">" to add a route and"</string>
-	<string name="to_use_an_old_route">to use an old route</string>
+	<string name="_to_add_a_route_and">" to add a route and "</string>
+	<string name="to_use_an_old_route">" to use an old route"</string>
 </resources>

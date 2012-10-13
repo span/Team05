@@ -28,9 +28,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:paddingTop="8dp"
+        android:paddingTop="32dp"
         android:text="@string/welcome_to_personal_trainer"
-        android:textSize="18sp" />
+        android:textColor="#999999"
+        android:textSize="22sp" />
 
     <RelativeLayout
         android:id="@+id/mid_wrapper"
@@ -66,8 +67,7 @@
             style="@style/footerTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/click_"
-             />
+            android:text="@string/click_" />
 
         <TextView
             style="@style/footerTextStyle"
@@ -82,12 +82,12 @@
             style="@style/footerTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/_to_add_a_route_and"
-             />
+            android:text="@string/_to_add_a_route_and" />
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:src="@drawable/btn_use_route" />
 
         <TextView
             style="@style/footerTextStyle"
