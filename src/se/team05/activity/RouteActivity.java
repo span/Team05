@@ -181,7 +181,12 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 		}
 		mapView.postInvalidate();
 	}
-	
+	/**
+	 * This method restores the Instance after a configuration change has happen. Important data
+	 * is saved in the OnSavedInstanceState and contains more data if a dialog is shown.
+	 * 
+	 * @param savedInstanceState
+	 */
 	private void restoreInstance(Bundle savedInstanceState)
 	{
 		totalDistance = savedInstanceState.getFloat("totalDistance");
@@ -227,7 +232,11 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 		}
 
 	}
-
+	/**
+	 * Starts a new alert dialog which shows the distance and time and asks the user 
+	 * if the results should be saved or not.
+	 * @param rid
+	 */
 	private void showSaveResultDialog(long rid)
 	{
 		routeResults = new Result(rid,
@@ -322,7 +331,10 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	}
 
 	/**
-	 * Sets up the buttons in the view.
+	 * Sets up the buttons in the view. If it is a new route the Start and stopAndSaved 
+	 * buttons are initialized with listeners and if it is a existing route the start and 
+	 * stopAndSaved buttons are hidden and the buttons Run and stop are initialized with
+	 * listeners and visible.
 	 */
 	private void setupButtons() {
 		Button addCheckPointButton = (Button) findViewById(R.id.add_checkpoint);
@@ -549,6 +561,9 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 			break;
 		}
 	}
+	/**
+	 * Starts the timer for a existing route and change the button Run to Stop
+	 */
 	private void startExistingRoute()
 	{
 		acquireWakeLock();
@@ -557,6 +572,9 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 		stopExistingRunButton.setVisibility(View.VISIBLE);
 		startTimer();
 	}
+	/**
+	 * Starts the timer for a new route and change the button Start to StopAndSave
+	 */
 	private void startNewRoute()
 	{
 		acquireWakeLock();
@@ -566,6 +584,9 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 		startTimer();
 	}
 	
+	/**
+	 * creates a new result and initates the saveRouteDialog
+	 */
 	private void showSaveRouteDialog()
 	{
 		routeResults = new Result(-1, -1, timePassed, (int) totalDistance,0);
@@ -808,6 +829,11 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 			wakeLock = null;
 		}
 	}
+	/**
+	 * Saves all important data to be able to handle configuration changes.
+	 * if a dialog is shown it saves some extra fields to be able to restore 
+	 * the dialog with its properties and fields
+	 */
 	@Override
     protected void onSaveInstanceState(final Bundle outState) {
         outState.putBoolean("started", started);
@@ -834,13 +860,19 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
         	outState.putBoolean("isSaveResultChecked", saveRouteDialog.isSaveResultChecked());
         }
     }
-
+	/**
+	 * Callback method which starts the timer again after backbutton is pressed when a dialog is shown
+	 */
 	@Override
 	public void onResumeTimer()
 	{
 		startTimer();
 	}
-	
+	/**
+	 * shows a Alertdialog when back button is pressed to confirm that the user wants to 
+	 * discard the route. This is implemented to prevent the user to hit the backbutton by 
+	 * misstake and quit the workout.
+	 */
 	@Override
 	public void onBackPressed()
 	{
