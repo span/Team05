@@ -20,12 +20,10 @@ package se.team05.dialog;
 
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import se.team05.R;
 import se.team05.activity.MediaSelectorActivity;
 import se.team05.content.SoundManager;
-import se.team05.content.Track;
 import se.team05.overlay.CheckPoint;
 import android.app.Activity;
 import android.app.Dialog;
@@ -67,7 +65,6 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 	private Activity parentActivity;
 	private SoundManager soundManager;
 	private int mode;
-	private ArrayList<Track> selectedTracks;
 	private SeekBar seekBar;
 
 	/**
@@ -85,7 +82,6 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 		this.parentActivity = (Activity) context;
 		this.soundManager = new SoundManager(context);
 		this.mode = mode;
-		this.selectedTracks = checkPoint.getTracks();
 		setCanceledOnTouchOutside(false);
 	}
 
@@ -140,7 +136,7 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 				break;
 			case R.id.select_button:
 				Intent intent = new Intent(parentActivity, MediaSelectorActivity.class);
-				intent.putParcelableArrayListExtra(MediaSelectorActivity.EXTRA_SELECTED_ITEMS, selectedTracks);
+				intent.putParcelableArrayListExtra(MediaSelectorActivity.EXTRA_SELECTED_ITEMS, checkPoint.getTracks());
 				parentActivity.startActivityForResult(intent, MediaSelectorActivity.REQUEST_MEDIA);
 				break;
 			case R.id.delete_button:
@@ -260,6 +256,7 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 		this.radiusTextField.setText(radiusText);
 		seekBar.setProgress(Integer.parseInt(radiusText));
 	}
+
 
 
 	
