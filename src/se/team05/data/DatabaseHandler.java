@@ -21,6 +21,7 @@ package se.team05.data;
 
 import java.util.ArrayList;
 
+import se.team05.content.ParcelableGeoPoint;
 import se.team05.content.Result;
 import se.team05.content.Route;
 import se.team05.content.Track;
@@ -394,7 +395,7 @@ public class DatabaseHandler
 	 * @param geoPointList
 	 *            the list of geopoints that have been recorded
 	 */
-	public void saveGeoPoints(long rid, ArrayList<GeoPoint> geoPointList)
+	public void saveGeoPoints(long rid, ArrayList<ParcelableGeoPoint> geoPointList)
 	{
 		dbGeoPointAdapter.open();
 		dbGeoPointAdapter.insertGeoPoints(rid, geoPointList);
@@ -408,20 +409,20 @@ public class DatabaseHandler
 	 *            the route id to match
 	 * @return a list of geo points
 	 */
-	public ArrayList<GeoPoint> getGeoPoints(long rid)
+	public ArrayList<ParcelableGeoPoint> getGeoPoints(long rid)
 	{
 		dbGeoPointAdapter.open();
 		Cursor cursor = dbGeoPointAdapter.fetchGeoPointByRid(rid);
-		ArrayList<GeoPoint> geoPointList = null;
+		ArrayList<ParcelableGeoPoint> geoPointList = null;
 
 		if (cursor != null && cursor.getCount() != 0)
 		{
-			geoPointList = new ArrayList<GeoPoint>();
+			geoPointList = new ArrayList<ParcelableGeoPoint>();
 			cursor.moveToFirst();
 
 			while (!cursor.isAfterLast())
 			{
-				GeoPoint geoPoint = new GeoPoint(
+				ParcelableGeoPoint geoPoint = new ParcelableGeoPoint(
 						cursor.getInt(
 								cursor.getColumnIndex(DBGeoPointAdapter.COLUMN_LATITUDE)),
 								cursor.getInt(cursor.getColumnIndex(DBGeoPointAdapter.COLUMN_LONGITUDE))

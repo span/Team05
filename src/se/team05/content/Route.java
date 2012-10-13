@@ -22,8 +22,6 @@ import java.util.ArrayList;
 
 import se.team05.overlay.CheckPoint;
 
-import com.google.android.maps.GeoPoint;
-
 /**
  * An activity that will present the user with the option to choose and old
  * route. As of now it is just a button but a future release will include a
@@ -44,7 +42,7 @@ public class Route
 	int timecoach;
 	int lengthcoach;
 
-	private ArrayList<GeoPoint> geoPoints;
+	private ArrayList<ParcelableGeoPoint> geoPoints;
 	private ArrayList<CheckPoint> checkPoints;
 
 	/**
@@ -90,7 +88,7 @@ public class Route
 		this.type = type;
 		this.timecoach = timecoach;
 		this.lengthcoach = lengthcoach;
-		this.geoPoints = new ArrayList<GeoPoint>();
+		this.geoPoints = new ArrayList<ParcelableGeoPoint>();
 		this.checkPoints = new ArrayList<CheckPoint>();
 	}
 
@@ -162,11 +160,11 @@ public class Route
 	/**
 	 * Sets the geo points that are related to this route.
 	 * 
-	 * @param geoPoints
+	 * @param geoPoints2
 	 */
-	public void setGeoPoints(ArrayList<GeoPoint> geoPoints)
+	public void setGeoPoints(ArrayList<ParcelableGeoPoint> geoPoints2)
 	{
-		this.geoPoints = geoPoints;
+		this.geoPoints = geoPoints2;
 	}
 
 	/**
@@ -174,7 +172,7 @@ public class Route
 	 * 
 	 * @return a list of geo points
 	 */
-	public ArrayList<GeoPoint> getGeoPoints()
+	public ArrayList<ParcelableGeoPoint> getGeoPoints()
 	{
 		return geoPoints;
 	}

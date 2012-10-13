@@ -21,6 +21,7 @@ package se.team05.data;
 
 import java.util.ArrayList;
 
+import se.team05.content.ParcelableGeoPoint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -65,7 +66,7 @@ public class DBGeoPointAdapter extends DBAdapter
 	 * @param rid
 	 * @param geoPointList
 	 */
-	public void insertGeoPoints(long rid, ArrayList<GeoPoint> geoPointList)
+	public void insertGeoPoints(long rid, ArrayList<ParcelableGeoPoint> geoPointList)
 	{
 		ContentValues values = new ContentValues();
 		db.beginTransaction();
