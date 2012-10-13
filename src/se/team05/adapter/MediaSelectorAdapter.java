@@ -20,16 +20,21 @@
 package se.team05.adapter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import se.team05.R;
 import se.team05.content.Track;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
 
 /**
@@ -50,6 +55,8 @@ public class MediaSelectorAdapter extends SimpleCursorAdapter
 {
 	private Context context;
 	private ArrayList<Track> selectedItems;
+	private HashMap<Long, Bitmap> albumArtMap;
+	private Bitmap defaultBitmap;
 
 	/**
 	 * The constructor takes the same parameters as an ordinary simple cursor
@@ -70,13 +77,16 @@ public class MediaSelectorAdapter extends SimpleCursorAdapter
 	 * @param flags
 	 *            any special flags that can be used to determine the behaviour
 	 *            of the super class adapter
+	 * @param albumArtMap 
 	 * @param selectedItems2 
 	 */
-	public MediaSelectorAdapter(Context context, int layout, Cursor cursor, String[] from, int[] to, int flags, ArrayList<Track> selectedItems)
+	public MediaSelectorAdapter(Context context, int layout, Cursor cursor, String[] from, int[] to, int flags, ArrayList<Track> selectedItems, HashMap<Long, Bitmap> albumArtMap)
 	{
 		super(context, layout, cursor, from, to, flags);
 		this.context = context;
 		this.selectedItems = selectedItems;
+		this.albumArtMap = albumArtMap;
+		this.defaultBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_disc);
 	}
 
 	/**
@@ -99,6 +109,7 @@ public class MediaSelectorAdapter extends SimpleCursorAdapter
 			LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			convertView = inflater.inflate(R.layout.row_media_selector, null);
 		}
+		
 		final CheckBox checkBox = (CheckBox) convertView.findViewById(R.id.checkbox);
 		checkBox.setOnClickListener(new OnClickListener()
 		{
@@ -115,8 +126,22 @@ public class MediaSelectorAdapter extends SimpleCursorAdapter
 				}
 			}
 		});
+		
 		// If the selected items contains the current item, set the checkbox to be checked
 		checkBox.setChecked(selectedItems.contains(track));
+		
+		ImageView imageView = (ImageView) convertView.findViewById(R.id.icon);
+		long albumId = Long.parseLong(c.getString(c.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)));
+		Bitmap bitmap = albumArtMap.get(albumId);
+		if(bitmap != null)
+		{
+			imageView.setImageBitmap(bitmap);
+		}
+		else
+		{
+			imageView.setImageBitmap(defaultBitmap);
+		}
+		
 		return super.getView(position, convertView, parent);
 	}
 

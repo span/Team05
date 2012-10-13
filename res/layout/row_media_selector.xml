@@ -26,11 +26,11 @@
 
     <ImageView
         android:id="@+id/icon"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:scaleType="fitCenter"
         android:layout_marginRight="6dp"
-        android:gravity="center_vertical"
-        android:src="@drawable/ic_launcher" />
+        android:gravity="center_vertical" />
 
     <CheckBox
         android:id="@+id/checkbox"

@@ -20,12 +20,10 @@ package se.team05.dialog;
 
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import se.team05.R;
 import se.team05.activity.MediaSelectorActivity;
 import se.team05.content.SoundManager;
-import se.team05.content.Track;
 import se.team05.overlay.CheckPoint;
 import android.app.Activity;
 import android.app.Dialog;
@@ -33,6 +31,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -67,7 +66,6 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 	private Activity parentActivity;
 	private SoundManager soundManager;
 	private int mode;
-	private ArrayList<Track> selectedTracks;
 	private SeekBar seekBar;
 
 	/**
@@ -85,7 +83,6 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 		this.parentActivity = (Activity) context;
 		this.soundManager = new SoundManager(context);
 		this.mode = mode;
-		this.selectedTracks = checkPoint.getTracks();
 		setCanceledOnTouchOutside(false);
 	}
 
@@ -99,7 +96,8 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.dialog_edit_checkpoint);
 		setTitle("Edit CheckPoint");
-
+		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN); 
+		
 		Button deleteButton = (Button) findViewById(R.id.delete_button);
 		deleteButton.setOnClickListener(this);
 		findViewById(R.id.save_button).setOnClickListener(this);
@@ -140,7 +138,7 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 				break;
 			case R.id.select_button:
 				Intent intent = new Intent(parentActivity, MediaSelectorActivity.class);
-				intent.putParcelableArrayListExtra(MediaSelectorActivity.EXTRA_SELECTED_ITEMS, selectedTracks);
+				intent.putParcelableArrayListExtra(MediaSelectorActivity.EXTRA_SELECTED_ITEMS, checkPoint.getTracks());
 				parentActivity.startActivityForResult(intent, MediaSelectorActivity.REQUEST_MEDIA);
 				break;
 			case R.id.delete_button:
@@ -260,6 +258,7 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 		this.radiusTextField.setText(radiusText);
 		seekBar.setProgress(Integer.parseInt(radiusText));
 	}
+
 
 
 	
