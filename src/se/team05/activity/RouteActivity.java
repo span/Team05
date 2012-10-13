@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import se.team05.R;
+import se.team05.content.ParcelableGeoPoint;
 import se.team05.content.Result;
 import se.team05.content.Route;
 import se.team05.content.Track;
@@ -86,7 +87,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 		MapLocationListener.Callbacks {
 
 	private static final String TAG = "Personal trainer";
-	private ArrayList<GeoPoint> geoPointList = new ArrayList<GeoPoint>();
+	private ArrayList<ParcelableGeoPoint> geoPointList = new ArrayList<ParcelableGeoPoint>();
 	private LocationManager locationManager;
 	private String providerName;
 	private EditRouteMapView mapView;
@@ -169,7 +170,14 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 		
 		if (started)
 		{
-			onClick(findViewById(R.id.start_run_button));
+			if (rid!=-1)
+			{
+				startExistingRoute();
+			}
+			else
+			{
+				startNewRoute();
+			}
 		}
 		mapView.postInvalidate();
 	}
@@ -183,6 +191,10 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 		newRoute = savedInstanceState.getBoolean("newRoute", newRoute);
 		dialogShown = savedInstanceState.getInt("dialogShown");
 		formattedTimeString = savedInstanceState.getString("formattedTimeString");
+		geoPointList = savedInstanceState.getParcelableArrayList("geoPointList");
+		RouteOverlay routeOverlay = new RouteOverlay(geoPointList, 78, true);
+		overlays.add(routeOverlay);
+
 		if (rid==-1)
 		{
 			addSavedCheckPoints(rid);
@@ -198,8 +210,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 				 String nameText = savedInstanceState.getString("nameText");
 				 String radiusText = savedInstanceState.getString("radiusText");
 				 checkPointDialog.setNameText(nameText);
-				 checkPointDialog.setRadiusTextField(radiusText);
-				 
+				 checkPointDialog.setRadiusTextField(radiusText);				 
 				break;
 			case SAVEROUTEDIALOGSHOW:
 				showSaveRouteDialog();
@@ -268,7 +279,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 		mapView.setOnGestureListener(new MapOnGestureListener(this));
 
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000,
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
 				0, new MapLocationListener(this));
 
 		Criteria criteria = new Criteria();
@@ -347,7 +358,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	 * @param id the route id          
 	 */
 	private void initRoute(long id) {
-		ArrayList<GeoPoint> geoPoints = databaseHandler.getGeoPoints(id);
+		ArrayList<ParcelableGeoPoint> geoPoints = databaseHandler.getGeoPoints(id);
 		route = databaseHandler.getRoute(id);
 		route.setGeoPoints(geoPoints);
 
@@ -404,11 +415,11 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	public void updateLocation(Location location)
 	{
 		GeoPoint geoPoint;
-		GeoPoint currentGeoPoint;
+		ParcelableGeoPoint currentGeoPoint;
 		if (started)
 		{
 
-			currentGeoPoint = new GeoPoint((int) (location.getLatitude() * 1E6), (int) (location.getLongitude() * 1E6));
+			currentGeoPoint = new ParcelableGeoPoint((int) (location.getLatitude() * 1E6), (int) (location.getLongitude() * 1E6));
 			geoPointList.add(currentGeoPoint);
 			userSpeed = (3.6 * location.getSpeed()) + getString(R.string.km) + "/" + getString(R.string.h);
 
@@ -502,11 +513,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.start_run_button:
-			acquireWakeLock();
-			started = true;
-			startRunButton.setVisibility(View.GONE);
-			stopAndSaveButton.setVisibility(View.VISIBLE);
-			startTimer();
+			startNewRoute();
 			break;
 		case R.id.stop_and_save_button:
 			handler.removeCallbacks(runnable);
@@ -523,12 +530,8 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 			}
 			break;
 		case R.id.start_existing_run_button:
-			acquireWakeLock();
-			started = true;
-			startExistingRunButton.setVisibility(View.GONE);
-			stopExistingRunButton.setVisibility(View.VISIBLE);
 			timePassed = 0;
-			startTimer();
+			startExistingRoute();
 			break;
 		case R.id.show_result_button:
 			Context context = this;
@@ -545,6 +548,22 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 			stopService(serviceIntent);
 			break;
 		}
+	}
+	private void startExistingRoute()
+	{
+		acquireWakeLock();
+		started = true;
+		startExistingRunButton.setVisibility(View.GONE);
+		stopExistingRunButton.setVisibility(View.VISIBLE);
+		startTimer();
+	}
+	private void startNewRoute()
+	{
+		acquireWakeLock();
+		started = true;
+		startRunButton.setVisibility(View.GONE);
+		stopAndSaveButton.setVisibility(View.VISIBLE);
+		startTimer();
 	}
 	
 	private void showSaveRouteDialog()
@@ -798,6 +817,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
         outState.putInt("dialogShown", dialogShown);
         outState.putBoolean("newRoute", newRoute);
         outState.putString("formattedTimeString", formattedTimeString);
+        outState.putParcelableArrayList("geoPointList", geoPointList);
         if(dialogShown == CHECKPOINTDIALOG)
         {
         	onSaveCheckPoint(currentCheckPoint);
