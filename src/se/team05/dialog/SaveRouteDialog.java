@@ -15,7 +15,7 @@
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
 
     (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
-*/
+ */
 package se.team05.dialog;
 
 import se.team05.R;
@@ -54,13 +54,16 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 		public void onSaveRoute(String name, String description, boolean saveResult);
 
 		public void onDismissRoute();
-		
+
 		public void onResumeTimer();
 	}
 
 	private Context context;
 	private Callbacks callbacks;
 	private Result result;
+	private EditText nameOfEditText;
+	private EditText descriptionOfEditText;
+	private CheckedTextView checkedSaveResult;
 
 	/**
 	 * The constructor of the dialog takes a Context and a Callbacks as a
@@ -103,6 +106,10 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 		TextView distanceTextView = (TextView) findViewById(R.id.runneddistance);
 		TextView speedTextView = (TextView) findViewById(R.id.speed);
 
+		nameOfEditText = ((EditText) findViewById(R.id.name));
+		descriptionOfEditText = ((EditText) findViewById(R.id.description));
+		checkedSaveResult = (CheckedTextView) findViewById(R.id.save_result);
+
 		int routeDistance = result.getDistance();
 		String distanceText = String.valueOf(routeDistance);
 		distanceTextView.setText(distanceText + context.getString(R.string.km));
@@ -118,15 +125,15 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 		String speedText = String.valueOf(speed);
 		speedTextView.setText(speedText + context.getString(R.string.km) + "/" + context.getString(R.string.h));
 		setCanceledOnTouchOutside(false);
-		//Make the check box toggle on click.
+		// Make the check box toggle on click.
 		CheckedTextView checkBox = (CheckedTextView) findViewById(R.id.save_result);
-	    checkBox.setOnClickListener(new View.OnClickListener()
-	    {
-	        public void onClick(View v)
-	        {
-	            ((CheckedTextView) v).toggle();
-	        }
-	    });		
+		checkBox.setOnClickListener(new View.OnClickListener()
+		{
+			public void onClick(View v)
+			{
+				((CheckedTextView) v).toggle();
+			}
+		});
 
 	}
 
@@ -162,32 +169,34 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 				alertDialog.show();
 				break;
 			case R.id.save_button:
-				String name = ((EditText) findViewById(R.id.name)).getText().toString();
-				
-				if(testStringForName(name))
+				String name = getNameOfEditText();
+
+				if (testStringForName(name))
 				{
-					String description = ((EditText) findViewById(R.id.description)).getText().toString();
-					boolean saveResult = ((CheckedTextView) findViewById(R.id.save_result)).isChecked();
+					String description = getDescriptionOfEditText();
+					boolean saveResult = isSaveResultChecked();
 					callbacks.onSaveRoute(name, description, saveResult);
 					dismiss();
 				}
-				
+
 				break;
 			default:
 				break;
 		}
 	}
-	
+
 	/**
-	 * Help method for testing that a string is neither empty nor null. In case the string is empty
-	 * a toast message will appear prompting the user to choose a name.
+	 * Help method for testing that a string is neither empty nor null. In case
+	 * the string is empty a toast message will appear prompting the user to
+	 * choose a name.
 	 * 
-	 * @param name the string to be tested
+	 * @param name
+	 *            the string to be tested
 	 * @return true if string has some character in it, otherwise false
 	 */
 	public boolean testStringForName(String name)
 	{
-		if(name.equals("") || name == null)
+		if (name.equals("") || name == null)
 		{
 			CharSequence text = getContext().getString(R.string.must_use_a_valid_name);
 			int duration = Toast.LENGTH_SHORT;
@@ -195,15 +204,66 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 			Toast toast = Toast.makeText(context, text, duration);
 			toast.show();
 			return false;
-		}
-		else
+		} else
 		{
 			return true;
 		}
 	}
+
 	@Override
 	public void onBackPressed()
 	{
 		callbacks.onResumeTimer();
 	}
+
+	/**
+	 * @return the text in nameOfEditText
+	 */
+	public String getNameOfEditText()
+	{
+		return nameOfEditText.getText().toString();
+	}
+
+	/**
+	 * @param nameText
+	 *            the nameText to set in nameOfEditText
+	 */
+	public void setNameOfEditText(String nameText)
+	{
+		this.nameOfEditText.setText(nameText);
+	}
+
+	/**
+	 * @return the descriptionText
+	 */
+	public String getDescriptionOfEditText()
+	{
+		return descriptionOfEditText.getText().toString();
+	}
+
+	/**
+	 * @param descriptionText
+	 *            the descriptionText to set in descriptionOfEditText
+	 */
+	public void setDescriptionOfEditText(String descriptionText)
+	{
+		this.descriptionOfEditText.setText(descriptionText);
+	}
+	/**
+	 * 
+	 * @return true if saveResult checkbox is checked
+	 */
+	public boolean isSaveResultChecked()
+	{
+		return checkedSaveResult.isChecked();
+	}
+	/**
+	 * 
+	 * @param check sets the checkbox to true or false
+	 */
+	public void setSaveResultChecked(boolean check)
+	{
+		checkedSaveResult.setChecked(check);
+	}
+
 }

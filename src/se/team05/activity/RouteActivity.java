@@ -124,10 +124,11 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	
 	
 	private final int NONEDIALOG = -1;
-	private final int SAVEROUTEDIALOG = 0;
+	private final int SAVEROUTEDIALOGSHOW = 0;
 	private final int SAVERESULTDIALOG = 1;
 	private final int CHECKPOINTDIALOG = 2;
 	private int dialogShown = NONEDIALOG;
+	private SaveRouteDialog saveRouteDialog;
 	/**
 	 * Will present a map to the user and will also display a dot representing
 	 * the user's location. Also contains three buttons of which one
@@ -198,8 +199,14 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 				 checkPointDialog.setRadiusTextField(radiusText);
 				 
 				break;
-			case SAVEROUTEDIALOG:
+			case SAVEROUTEDIALOGSHOW:
 				showSaveRouteDialog();
+				String nameOfEditText = savedInstanceState.getString("nameOfEditText");
+				String descriptionOfEditText = savedInstanceState.getString("descriptionOfEditText");
+				boolean isSavedResultChecked = savedInstanceState.getBoolean("isSaveResultChecked");
+				saveRouteDialog.setNameOfEditText(nameOfEditText);
+				saveRouteDialog.setDescriptionOfEditText(descriptionOfEditText);
+				saveRouteDialog.setSaveResultChecked(isSavedResultChecked);
 				break;
 			case SAVERESULTDIALOG:
 				showSaveResultDialog(rid);
@@ -541,9 +548,9 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	private void showSaveRouteDialog()
 	{
 		routeResults = new Result(-1, -1, timePassed, (int) totalDistance,0);
-		SaveRouteDialog saveRouteDialog = new SaveRouteDialog(this, this, routeResults);
+		saveRouteDialog = new SaveRouteDialog(this, this, routeResults);
 		saveRouteDialog.show();
-		dialogShown = SAVEROUTEDIALOG;
+		dialogShown = SAVEROUTEDIALOGSHOW;
 	}
 	/**
 	 * Separate method for sending a toast message informing the user that a result was saved on
@@ -795,7 +802,12 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
         	outState.putLong("currentCheckPoint", currentCheckPoint.getId());
         	outState.putString("nameText", checkPointDialog.getNameText());
         	outState.putString("radiusText", checkPointDialog.getRadiusText());
-        	
+        }
+        else if (dialogShown == SAVEROUTEDIALOGSHOW)
+        {
+        	outState.putString("nameOfEditText", saveRouteDialog.getNameOfEditText());
+        	outState.putString("descriptionOfEditText", saveRouteDialog.getDescriptionOfEditText());
+        	outState.putBoolean("isSaveResultChecked", saveRouteDialog.isSaveResultChecked());
         }
     }
 
