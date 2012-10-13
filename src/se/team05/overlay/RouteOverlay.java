@@ -30,6 +30,7 @@ package se.team05.overlay;
 
 import java.util.List;
 
+import se.team05.content.ParcelableGeoPoint;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -46,15 +47,15 @@ public class RouteOverlay extends Overlay
 {
 
 	private int color;
-	private final List<GeoPoint> geoPoints;
+	private final List<ParcelableGeoPoint> geoPoints;
 	private boolean drawEndPoints;
 
-	public RouteOverlay(List<GeoPoint> points)
+	public RouteOverlay(List<ParcelableGeoPoint> points)
 	{
 		this(points, Color.RED, true);
 	}
 
-	public RouteOverlay(List<GeoPoint> points, int color, boolean drawEndPoints)
+	public RouteOverlay(List<ParcelableGeoPoint> points, int color, boolean drawEndPoints)
 	{
 		this.color = color;
 		this.geoPoints = points;
