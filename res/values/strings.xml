@@ -95,4 +95,6 @@
 	<string name="click_">"Click "</string>
 	<string name="_to_add_a_route_and">" to add a route and "</string>
 	<string name="to_use_an_old_route">" to use an old route"</string>
+	<string name="click_to_add_route">Click to add route</string>
+	<string name="click_to_use_an_existing_route">Click to use an existing route</string>
 </resources>
