@@ -21,6 +21,7 @@ package se.team05.listener;
 import se.team05.R;
 import se.team05.activity.ListExistingRoutesActivity;
 import se.team05.activity.RouteActivity;
+import se.team05.activity.SettingsActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
@@ -80,6 +81,9 @@ public class MainActivityButtonListener implements OnClickListener
 				intent = new Intent(context, ListExistingRoutesActivity.class);
 				imageViewButton = (ImageView) v.findViewById(R.id.image_existing_route);
 				imageViewButton.setColorFilter(0x60EDEDED, PorterDuff.Mode.MULTIPLY);
+				break;
+			case R.id.settings:
+				intent = new Intent(context, SettingsActivity.class);
 				break;
 			default:
 				return;
