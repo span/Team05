@@ -25,6 +25,7 @@ import se.team05.R;
 import se.team05.activity.ListExistingRoutesActivity;
 import se.team05.activity.MainActivity;
 import se.team05.activity.RouteActivity;
+import se.team05.content.ParcelableGeoPoint;
 import se.team05.content.Route;
 import se.team05.content.Track;
 import se.team05.data.DBCheckPointAdapter;
@@ -98,9 +99,9 @@ public class UseRouteTest extends ActivityInstrumentationTestCase2<MainActivity>
 		Route route = new Route("name", "description");
 		long rid = databaseHandler.saveRoute(route);
 		
-		ArrayList<GeoPoint> geoPointList = new ArrayList<GeoPoint>();
-		GeoPoint gpA = new GeoPoint((int)(47.975 * 1E6), (int)(17.056 * 1E6));
-		GeoPoint gpB = new GeoPoint((int)(48.975 * 1E6), (int)(17.056 * 1E6));
+		ArrayList<ParcelableGeoPoint> geoPointList = new ArrayList<ParcelableGeoPoint>();
+		ParcelableGeoPoint gpA = new ParcelableGeoPoint((int)(47.975 * 1E6), (int)(17.056 * 1E6));
+		ParcelableGeoPoint gpB = new ParcelableGeoPoint((int)(48.975 * 1E6), (int)(17.056 * 1E6));
 		geoPointList.add(gpA);
 		geoPointList.add(gpB);
 		databaseHandler.saveGeoPoints(rid, geoPointList);
