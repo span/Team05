@@ -24,8 +24,8 @@ import se.team05.activity.RouteActivity;
 import android.app.Activity;
 import android.test.ActivityInstrumentationTestCase2;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.jayway.android.robotium.solo.Solo;
@@ -43,7 +43,7 @@ public class AddCheckPointUITest extends ActivityInstrumentationTestCase2<MainAc
 {
 	private MainActivity activity;
 	private Activity routeActivity;
-	private Button newRouteButton;
+	private ImageView newRouteButton;
 	private Solo solo;
 
 	public AddCheckPointUITest()
@@ -66,7 +66,7 @@ public class AddCheckPointUITest extends ActivityInstrumentationTestCase2<MainAc
 		solo = new Solo(this.getInstrumentation(), getActivity());
 		activity = this.getActivity();
 
-		newRouteButton = (Button) activity.findViewById(se.team05.R.id.new_route_button);
+		newRouteButton = (ImageView) activity.findViewById(se.team05.R.id.image_new_route);
 
 		solo.clickOnView(newRouteButton);
 		solo.assertCurrentActivity("wrong class", RouteActivity.class);

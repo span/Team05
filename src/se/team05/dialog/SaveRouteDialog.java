@@ -18,23 +18,6 @@
 */
 package se.team05.dialog;
 
-/**
- This file is part of Personal Trainer.
-
- Personal Trainer is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- any later version.
-
- Personal Trainer is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 import se.team05.R;
 import se.team05.content.Result;
 import android.app.AlertDialog;
@@ -71,6 +54,8 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 		public void onSaveRoute(String name, String description, boolean saveResult);
 
 		public void onDismissRoute();
+		
+		public void onResumeTimer();
 	}
 
 	private Context context;
@@ -120,7 +105,6 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 
 		int routeDistance = result.getDistance();
 		String distanceText = String.valueOf(routeDistance);
-		System.out.println("HAR:" + distanceText);
 		distanceTextView.setText(distanceText + context.getString(R.string.km));
 
 		int time = result.getTime();
@@ -133,6 +117,16 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 		double speed = (routeDistance / time) * 3.6;
 		String speedText = String.valueOf(speed);
 		speedTextView.setText(speedText + context.getString(R.string.km) + "/" + context.getString(R.string.h));
+		setCanceledOnTouchOutside(false);
+		//Make the check box toggle on click.
+		CheckedTextView checkBox = (CheckedTextView) findViewById(R.id.save_result);
+	    checkBox.setOnClickListener(new View.OnClickListener()
+	    {
+	        public void onClick(View v)
+	        {
+	            ((CheckedTextView) v).toggle();
+	        }
+	    });		
 
 	}
 
@@ -206,5 +200,10 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 		{
 			return true;
 		}
+	}
+	@Override
+	public void onBackPressed()
+	{
+		callbacks.onResumeTimer();
 	}
 }

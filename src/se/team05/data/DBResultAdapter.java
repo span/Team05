@@ -16,22 +16,7 @@
 
     (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
 */
-/**
-	This file is part of Personal Trainer.
 
-    Personal Trainer is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    any later version.
-
-    Personal Trainer is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
- */
 package se.team05.data;
 
 import android.content.ContentValues;
@@ -91,11 +76,11 @@ public class DBResultAdapter extends DBAdapter {
 	 * 			calories used while carrying out the route
 	 * @return the id given to the result in the database
 	 */
-	public long instertResult(long rid, int date, int time, int distance, int calories)
+	public long instertResult(long rid, long timestamp, int time, int distance, int calories)
 	{
 		ContentValues values = new ContentValues();
 		values.put(COLUMN_RID, rid);
-		values.put(COLUMN_TIMESTAMP, date);
+		values.put(COLUMN_TIMESTAMP, timestamp);
 		values.put(COLUMN_TIME, time);
 		values.put(COLUMN_DISTANCE, distance);
 		values.put(COLUMN_CALORIES, calories);
@@ -109,7 +94,7 @@ public class DBResultAdapter extends DBAdapter {
 	 * 		database id of the result
 	 * @return Cursor to the result
 	 */
-	public Cursor fetchResultById(int id)
+	public Cursor fetchResultById(long id)
 	{
 		return db.query(TABLE_RESULT, null, COLUMN_ID + "=" + id, null, null, null, null);
 	}
@@ -133,7 +118,7 @@ public class DBResultAdapter extends DBAdapter {
 	 * 		the id of the specific result to be deleted
 	 * @return the number of rows affected
 	 */
-	public int deleteResultById(int id)
+	public long deleteResultById(long id)
 	{
 		return db.delete(TABLE_RESULT, COLUMN_ID + "=" + id, null);
 	}
@@ -145,7 +130,7 @@ public class DBResultAdapter extends DBAdapter {
 	 *            the rout id whose results shall be deleted
 	 * @return the number of rows affected
 	 */
-	public int deleteResultByRid(int rid)
+	public long deleteResultByRid(long rid)
 	{
 		return db.delete(TABLE_RESULT, COLUMN_RID + "=" + rid, null);
 	}

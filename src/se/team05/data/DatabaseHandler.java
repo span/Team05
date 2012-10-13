@@ -16,26 +16,10 @@
 
     (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
 */
-/**
-	This file is part of Personal Trainer.
 
-    Personal Trainer is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    any later version.
-
-    Personal Trainer is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
- */
 package se.team05.data;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import se.team05.content.Result;
 import se.team05.content.Route;
@@ -168,9 +152,6 @@ public class DatabaseHandler
 				cursor.moveToNext();
 			}
 		}
-		// TODO
-		// dbResultAdapter.close(); ??? /guswer
-		//
 		return routeList;
 	}
 
@@ -238,14 +219,14 @@ public class DatabaseHandler
 	 *            id tells which row to get from database.
 	 * @return result
 	 */
-	public Result getResultById(int id)
+	public Result getResultById(long id)
 	{
 		Result result;
 
 		dbResultAdapter.open();
 		Cursor cursor = dbResultAdapter.fetchResultById(id);
 		result = createResultFromCursor(cursor);
-		dbResultAdapter.close();
+//		dbResultAdapter.close();
 
 		return result;
 	}
@@ -304,13 +285,19 @@ public class DatabaseHandler
 	 */
 	private Result createResultFromCursor(Cursor cursor)
 	{
+		cursor.moveToFirst();
 		Result result = new Result(
 				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_ID)),
-				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_TIMESTAMP)),
+				cursor.getLong(cursor.getColumnIndex(DBResultAdapter.COLUMN_RID)),
+				cursor.getLong(cursor.getColumnIndex(DBResultAdapter.COLUMN_TIMESTAMP)),
 				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_TIME)),
 				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_DISTANCE)),
 				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_CALORIES))
 		);
+		
+		//Temporary during development
+		Result result2 = new Result(10,20L,1261440000L,3600,6000,60);
+		
 		return result;
 	}
 
@@ -334,7 +321,7 @@ public class DatabaseHandler
 	 * @param id
 	 *            id of result to be deleted.
 	 */
-	public void deleteResultById(int id)
+	public void deleteResultById(long id)
 	{
 		dbResultAdapter.open();
 		dbResultAdapter.deleteResultById(id);
@@ -347,7 +334,7 @@ public class DatabaseHandler
 	 * @param rid
 	 *            the rout id
 	 */
-	public void deleteAllResultsByRid(int rid)
+	public void deleteAllResultsByRid(long rid)
 	{
 		dbResultAdapter.open();
 		dbResultAdapter.deleteResultByRid(rid);
@@ -469,17 +456,7 @@ public class DatabaseHandler
 
 			while (!cursor.isAfterLast())
 			{
-				GeoPoint geoPoint = new GeoPoint(
-						cursor.getInt(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_LATITUDE)),
-						cursor.getInt(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_LONGITUDE))
-				);
-
-				CheckPoint checkPoint = new CheckPoint(geoPoint);
-				checkPoint.setRadius(cursor.getInt(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_RADIUS)));
-				checkPoint.setName(cursor.getString(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_NAME)));
-				checkPoint.setRid(cursor.getLong(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_RID)));
-				checkPoint.setId(cursor.getLong(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_ID)));
-
+				CheckPoint checkPoint = createCheckPointFromCursor(cursor);
 				checkPointList.add(checkPoint);
 				cursor.moveToNext();
 			}
@@ -515,5 +492,43 @@ public class DatabaseHandler
 		dbCheckPointAdapter.open();
 		dbCheckPointAdapter.updateCheckPointRid(rid);
 		dbCheckPointAdapter.close();
+	}
+	/**
+	 * Deletes all checkpoints in the database for a route with rid
+	 * @param rid
+	 */
+	public void deleteCheckPoints(long rid)
+	{
+		dbCheckPointAdapter.open();
+		dbCheckPointAdapter.deleteCheckPointByRid(rid);
+		dbCheckPointAdapter.close();
+	}
+	
+	public CheckPoint getCheckPoint(long id)
+	{
+		dbCheckPointAdapter.open();
+		CheckPoint checkPoint = null;
+		Cursor cursor = dbCheckPointAdapter.fetchCheckPointById(id);
+		if(cursor!=null&&cursor.getCount()==1)
+		{
+			cursor.moveToFirst();
+			checkPoint = createCheckPointFromCursor(cursor);
+		}
+		dbCheckPointAdapter.close();
+		return checkPoint;
+	}
+	
+	private CheckPoint createCheckPointFromCursor(Cursor cursor)
+	{
+		GeoPoint geoPoint = new GeoPoint(
+				cursor.getInt(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_LATITUDE)),
+				cursor.getInt(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_LONGITUDE))
+		);
+		CheckPoint checkPoint = new CheckPoint(geoPoint);
+		checkPoint.setRadius(cursor.getInt(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_RADIUS)));
+		checkPoint.setName(cursor.getString(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_NAME)));
+		checkPoint.setRid(cursor.getLong(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_RID)));
+		checkPoint.setId(cursor.getLong(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_ID)));
+		return checkPoint;
 	}
 }
