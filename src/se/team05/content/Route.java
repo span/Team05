@@ -15,7 +15,7 @@
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
 
     (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
-*/
+ */
 package se.team05.content;
 
 import java.util.ArrayList;
@@ -35,12 +35,14 @@ public class Route
 {
 	public static String EXTRA_ID = "rid";
 
-	long _id;
-	String name;
-	String description;
-	int type;
-	int timecoach;
-	int lengthcoach;
+	private long _id;
+	private String name;
+	private String description;
+	private int type;
+	private int timecoach;
+	private int lengthcoach;
+	private int timePassed;
+	private float totalDistance;
 
 	private ArrayList<ParcelableGeoPoint> geoPoints;
 	private ArrayList<CheckPoint> checkPoints;
@@ -88,6 +90,8 @@ public class Route
 		this.type = type;
 		this.timecoach = timecoach;
 		this.lengthcoach = lengthcoach;
+		this.totalDistance = 0;
+		this.setTimePassed(0);
 		this.geoPoints = new ArrayList<ParcelableGeoPoint>();
 		this.checkPoints = new ArrayList<CheckPoint>();
 	}
@@ -185,5 +189,49 @@ public class Route
 	public ArrayList<CheckPoint> getCheckPoints()
 	{
 		return checkPoints;
+	}
+
+	/**
+	 * Sets the total distance of the route. This is updated continiously when a
+	 * new route is being recorded.
+	 * 
+	 * @param totalDistance
+	 *            the total distance to set
+	 */
+	public void setTotalDistance(float totalDistance)
+	{
+		this.totalDistance = totalDistance;
+	}
+
+	/**
+	 * Get the total distance
+	 * 
+	 * @return the total distance
+	 */
+	public float getTotalDistance()
+	{
+		return totalDistance;
+	}
+
+	/**
+	 * Sets the time passed of the route. This is updated continiously when a
+	 * new route is being recorded.
+	 * 
+	 * @param timePassed
+	 *            the time passed since starting the route
+	 */
+	public void setTimePassed(int timePassed)
+	{
+		this.timePassed = timePassed;
+	}
+
+	/**
+	 * Get the time passed.
+	 * 
+	 * @return the time passed since starting the route
+	 */
+	public int getTimePassed()
+	{
+		return timePassed;
 	}
 }

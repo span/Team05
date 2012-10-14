@@ -96,13 +96,11 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	private String userSpeed = "0";
 	private String userDistance = "0";
 	private Location lastLocation;
-	private float totalDistance = 0;
 
 	private CheckPointOverlay checkPointOverlay;
 	private EditCheckPointDialog checkPointDialog;
 	private Handler handler;
 	private Runnable runnable;
-	private int timePassed = 0;
 	private String nameOfExistingRoute;
 	private long rid;
 
@@ -189,8 +187,8 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	 */
 	private void restoreInstance(Bundle savedInstanceState)
 	{
-		totalDistance = savedInstanceState.getFloat("totalDistance");
-		timePassed = savedInstanceState.getInt("timePassed");
+		route.setTotalDistance(savedInstanceState.getFloat("totalDistance"));
+		route.setTimePassed(savedInstanceState.getInt("timePassed"));
 		rid = savedInstanceState.getLong("rid");
 		started = savedInstanceState.getBoolean("started");
 		newRoute = savedInstanceState.getBoolean("newRoute", newRoute);
@@ -240,8 +238,8 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	private void showSaveResultDialog(long rid)
 	{
 		routeResults = new Result(rid,
-				(int) System.currentTimeMillis() / 1000, timePassed,
-				(int) totalDistance, 0);
+				(int) System.currentTimeMillis() / 1000, route.getTimePassed(),
+				(int) route.getTotalDistance(), 0);
 		
 		String giveUserDistanceString = getString(R.string.distance_of_run) + userDistance + getString(R.string.km) + "\n";
 		String giveUserTimeString = getString(R.string.time_) + formattedTimeString + "\n\n";
@@ -437,11 +435,8 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 
 			if (lastLocation != null)
 			{
-				totalDistance += lastLocation.distanceTo(location);
-
-
-				userDistance = new DecimalFormat("#.##").format(totalDistance / 1000);
-
+				route.setTotalDistance(route.getTotalDistance() + lastLocation.distanceTo(location));
+				userDistance = new DecimalFormat("#.##").format(route.getTotalDistance() / 1000);
 			}
 
 			lastLocation = location;
@@ -542,7 +537,6 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 			}
 			break;
 		case R.id.start_existing_run_button:
-			timePassed = 0;
 			startExistingRoute();
 			break;
 		case R.id.show_result_button:
@@ -589,7 +583,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	 */
 	private void showSaveRouteDialog()
 	{
-		routeResults = new Result(-1, -1, timePassed, (int) totalDistance,0);
+		routeResults = new Result(-1, -1, route.getTimePassed(), (int) route.getTotalDistance(), 0);
 		saveRouteDialog = new SaveRouteDialog(this, this, routeResults);
 		saveRouteDialog.show();
 		dialogShown = SAVEROUTEDIALOGSHOW;
@@ -632,13 +626,14 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	 * pass that value to the database.
 	 */
 	private void timerTick() {
+		int timePassed = route.getTimePassed();
 		int seconds = timePassed % 60;
 		int minutes = timePassed / 60;
 
 		TextView timeView = (TextView) findViewById(R.id.show_time_textview);
 		formattedTimeString = String.format("%02d:%02d", minutes, seconds);
 		timeView.setText(formattedTimeString);
-		timePassed++;
+		route.setTimePassed(timePassed + 1);
 	}
 
 	/**
@@ -837,8 +832,8 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	@Override
     protected void onSaveInstanceState(final Bundle outState) {
         outState.putBoolean("started", started);
-        outState.putFloat("totalDistance", totalDistance);
-        outState.putInt("timePassed", timePassed);
+        outState.putFloat("totalDistance", route.getTotalDistance());
+        outState.putInt("timePassed", route.getTimePassed());
         outState.putLong("rid", rid);
         outState.putInt("dialogShown", dialogShown);
         outState.putBoolean("newRoute", newRoute);
