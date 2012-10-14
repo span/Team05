@@ -225,43 +225,10 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 		super.onBackPressed();
 	}
 
-	/**
-	 * @return the nameTextField«s String value
-	 */
-	public String getNameText()
+	public CheckPoint getCheckPoint()
 	{
-		return nameTextField.getText().toString();
+		checkPoint.setName(nameTextField.getText().toString());
+		checkPoint.setRadius(seekBar.getProgress());
+		return checkPoint;
 	}
-
-	/**
-	 * @param nameTextField the nameTextField to set
-	 */
-	public void setNameText(String nameText)
-	{
-		this.nameTextField.setText(nameText);
-	}
-
-	/**
-	 * @return the radiusTextField String value
-	 */
-	public String getRadiusText()
-	{
-		return radiusTextField.getText().toString();
-	}
-
-	/**
-	 * Sets the radiusTextField and seekbar to String radiusText
-	 * @param radiusTextField the radiusText to set
-	 */
-	public void setRadiusTextField(String radiusText)
-	{
-		this.radiusTextField.setText(radiusText);
-		seekBar.setProgress(Integer.parseInt(radiusText));
-	}
-
-
-
-	
-	
-
 }

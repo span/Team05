@@ -119,10 +119,6 @@ public class DatabaseHandler
 			
 			route.setGeoPoints(getGeoPoints(route.getId()));
 			route.setCheckPoints(getCheckPoints(route.getId()));
-			for (CheckPoint checkPoint : route.getCheckPoints())
-			{
-				checkPoint.addTracks(getTracks(checkPoint.getId()));
-			}
 		}
 		dBRouteAdapter.close();
 		return route;
@@ -516,7 +512,7 @@ public class DatabaseHandler
 		dbCheckPointAdapter.open();
 		CheckPoint checkPoint = null;
 		Cursor cursor = dbCheckPointAdapter.fetchCheckPointById(id);
-		if(cursor!=null&&cursor.getCount()==1)
+		if(cursor != null && cursor.getCount() == 1)
 		{
 			cursor.moveToFirst();
 			checkPoint = createCheckPointFromCursor(cursor);
@@ -536,6 +532,7 @@ public class DatabaseHandler
 		checkPoint.setName(cursor.getString(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_NAME)));
 		checkPoint.setRid(cursor.getLong(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_RID)));
 		checkPoint.setId(cursor.getLong(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_ID)));
+		checkPoint.addTracks(getTracks(checkPoint.getId()));
 		return checkPoint;
 	}
 }

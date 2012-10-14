@@ -136,8 +136,8 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 		serviceIntent = new Intent(this, MediaService.class);
 		route = new Route(getString(R.string.new_route), getString(R.string.this_is_a_new_route));
 		wakeLock = Utils.acquireWakeLock(this);
+		
 		setupMapAndLocation();
-
 		if (savedInstanceState != null)
 		{
 			restoreInstance(savedInstanceState);
@@ -158,12 +158,13 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 		{
 			startRoute();
 		}
+		
 		timeView = (TextView) findViewById(R.id.show_time_textview);
 		mapView.postInvalidate();
 	}
 
 	/**
-	 * This method restores the Instance after a configuration change has
+	 * This method restores the instance after a configuration change has
 	 * happen. Important data is saved in the OnSavedInstanceState and contains
 	 * more data if a dialog is shown.
 	 * 
@@ -194,8 +195,6 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 				ArrayList<Track> tracks = savedInstanceState.getParcelableArrayList("tracks");
 				currentCheckPoint.addTracks(tracks);
 				showCheckPointDialog(currentCheckPoint, EditCheckPointDialog.MODE_EDIT);
-				checkPointDialog.setNameText(savedInstanceState.getString("nameText"));
-				checkPointDialog.setRadiusTextField(savedInstanceState.getString("radiusText"));
 				break;
 			case DIALOG_SAVE_ROUTE:
 				showSaveRouteDialog();
@@ -710,11 +709,10 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 		outState.putParcelableArrayList("geoPointList", route.getGeoPoints());
 		if (activeDialog == DIALOG_CHECKPOINT)
 		{
+			currentCheckPoint = checkPointDialog.getCheckPoint();
 			onSaveCheckPoint(currentCheckPoint);
 			activeDialog = DIALOG_CHECKPOINT;
 			outState.putLong("currentCheckPoint", currentCheckPoint.getId());
-			outState.putString("nameText", checkPointDialog.getNameText());
-			outState.putString("radiusText", checkPointDialog.getRadiusText());
 			outState.putParcelableArrayList("tracks", currentCheckPoint.getTracks());
 		}
 		else if (activeDialog == DIALOG_SAVE_ROUTE)
