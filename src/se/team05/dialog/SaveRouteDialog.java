@@ -168,7 +168,7 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 				break;
 			case R.id.save_button:
 				String name = nameEditTextView.getText().toString();
-				if (testStringForName(name))
+				if (isValidName(name))
 				{
 					String description = descriptionEditTextView.getText().toString();
 					boolean saveResult = isSaveResultChecked();
@@ -191,7 +191,7 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 	 *            the string to be tested
 	 * @return true if string has some character in it, otherwise false
 	 */
-	public boolean testStringForName(String name)
+	private boolean isValidName(String name)
 	{
 		if (name.equals("") || name == null)
 		{
