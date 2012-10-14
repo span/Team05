@@ -41,7 +41,6 @@ import se.team05.service.MediaService;
 import se.team05.view.EditRouteMapView;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.location.Criteria;
@@ -894,7 +893,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	}
 
 	/**
-	 * Callback method which starts the timer again after backbutton is pressed
+	 * Callback method which starts the timer again after back button is pressed
 	 * when a dialog is shown
 	 */
 	@Override
@@ -904,28 +903,14 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	}
 
 	/**
-	 * shows a Alertdialog when back button is pressed to confirm that the user
+	 * Shows a alert dialog when back button is pressed to confirm that the user
 	 * wants to discard the route. This is implemented to prevent the user to
-	 * hit the backbutton by misstake and quit the workout.
+	 * hit the back button by mistake and quit the route.
 	 */
 	@Override
 	public void onBackPressed()
 	{
-		AlertDialog alertDialog = new AlertDialog.Builder(this).setTitle(R.string.discard_route_)
-				.setMessage(R.string.do_you_really_want_to_discard_your_route_)
-				.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
-				{
-					public void onClick(DialogInterface dialog, int id)
-					{
-						finish();
-					}
-				}).setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
-				{
-					public void onClick(DialogInterface dialog, int id)
-					{
-						dialog.cancel();
-					}
-				}).create();
+		AlertDialog alertDialog = AlertDialogFactory.newConfirmBackDialog(this);
 		alertDialog.show();
 	}
 }
