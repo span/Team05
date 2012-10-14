@@ -192,8 +192,6 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 			case DIALOG_CHECKPOINT:
 				long checkPointId = savedInstanceState.getLong("currentCheckPoint");
 				currentCheckPoint = databaseHandler.getCheckPoint(checkPointId);
-				ArrayList<Track> tracks = savedInstanceState.getParcelableArrayList("tracks");
-				currentCheckPoint.addTracks(tracks);
 				showCheckPointDialog(currentCheckPoint, EditCheckPointDialog.MODE_EDIT);
 				break;
 			case DIALOG_SAVE_ROUTE:
@@ -713,7 +711,6 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 			onSaveCheckPoint(currentCheckPoint);
 			activeDialog = DIALOG_CHECKPOINT;
 			outState.putLong("currentCheckPoint", currentCheckPoint.getId());
-			outState.putParcelableArrayList("tracks", currentCheckPoint.getTracks());
 		}
 		else if (activeDialog == DIALOG_SAVE_ROUTE)
 		{
