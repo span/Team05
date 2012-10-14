@@ -18,10 +18,9 @@
     (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
 -->
 <resources>
-
     <string name="app_name">Personal Trainer</string>
     <string name="menu_settings">Settings</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_main">Personal Trainer</string>
     <string name="new_route">New route</string>
     <string name="use_route">Use route</string>
     <string name="save">Save</string>
