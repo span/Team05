@@ -107,9 +107,9 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	private Result routeResults;
 	private List<Overlay> overlays;
 	private Button stopAndSaveButton;
-	private Button startRunButton;
-	private Button startExistingRunButton;
-	private Button stopExistingRunButton;
+	private Button startButton;
+//	private Button startExistingRunButton;
+//	private Button stopExistingRunButton;
 	private Route route;
 	private WakeLock wakeLock;
 	private TextView speedView;
@@ -162,14 +162,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 
 		if (route.isStarted())
 		{
-			if (!route.isNewRoute())
-			{
-				startExistingRoute();
-			}
-			else
-			{
-				startNewRoute();
-			}
+			startRoute();
 		}
 
 		timeView = (TextView) findViewById(R.id.show_time_textview);
@@ -295,29 +288,18 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	{
 		Button addCheckPointButton = (Button) findViewById(R.id.add_checkpoint);
 		Button showResultButton = (Button) findViewById(R.id.show_result_button);
-
-		stopAndSaveButton = (Button) findViewById(R.id.stop_and_save_button);
-		startRunButton = (Button) findViewById(R.id.start_run_button);
-		startExistingRunButton = (Button) findViewById(R.id.start_existing_run_button);
-		stopExistingRunButton = (Button) findViewById(R.id.stop_existing_run_button);
-
+		stopAndSaveButton = (Button) findViewById(R.id.stop_button);
+		startButton = (Button) findViewById(R.id.start_button);
+		stopAndSaveButton.setOnClickListener(this);
+		startButton.setOnClickListener(this);
 		if (route.isNewRoute())
 		{
-			stopAndSaveButton.setOnClickListener(this);
-			startRunButton.setOnClickListener(this);
 			addCheckPointButton.setOnClickListener(this);
 		}
 		else
 		{
-			startExistingRunButton.setOnClickListener(this);
-			startExistingRunButton.setVisibility(View.VISIBLE);
-			stopExistingRunButton.setOnClickListener(this);
-
 			showResultButton.setOnClickListener(this);
 			showResultButton.setVisibility(View.VISIBLE);
-
-			stopAndSaveButton.setVisibility(View.GONE);
-			startRunButton.setVisibility(View.GONE);
 			addCheckPointButton.setVisibility(View.GONE);
 		}
 	}
@@ -482,13 +464,23 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	{
 		switch (v.getId())
 		{
-			case R.id.start_run_button:
-				startNewRoute();
+			case R.id.start_button:
+				startRoute();
 				break;
-			case R.id.stop_and_save_button:
+			case R.id.stop_button:
 				handler.removeCallbacks(runnable);
 				route.setStarted(false);
-				showSaveRouteDialog();
+				if(!route.isNewRoute())
+				{
+					showSaveResultDialog(route.getId());
+					stopService(serviceIntent);
+				}
+				else
+				{
+					showSaveRouteDialog();
+				}
+				startButton.setVisibility(View.VISIBLE);
+				stopAndSaveButton.setVisibility(View.GONE);
 				releaseWakeLock();
 				break;
 			case R.id.add_checkpoint:
@@ -501,9 +493,6 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 					}
 				}
 				break;
-			case R.id.start_existing_run_button:
-				startExistingRoute();
-				break;
 			case R.id.show_result_button:
 				Context context = this;
 				Intent intent;
@@ -511,37 +500,18 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 				intent.putExtra(Route.EXTRA_ID, route.getId());
 				context.startActivity(intent);
 				break;
-			case R.id.stop_existing_run_button:
-				handler.removeCallbacks(runnable);
-				showSaveResultDialog(route.getId());
-				stopExistingRunButton.setVisibility(View.GONE);
-				startExistingRunButton.setVisibility(View.VISIBLE);
-				stopService(serviceIntent);
-				break;
 		}
-	}
-
-	/**
-	 * Starts the timer for a existing route and change the button Run to Stop
-	 */
-	private void startExistingRoute()
-	{
-		acquireWakeLock();
-		route.setStarted(true);
-		startExistingRunButton.setVisibility(View.GONE);
-		stopExistingRunButton.setVisibility(View.VISIBLE);
-		startTimer();
 	}
 
 	/**
 	 * Starts the timer for a new route and change the button Start to
 	 * StopAndSave
 	 */
-	private void startNewRoute()
+	private void startRoute()
 	{
 		acquireWakeLock();
 		route.setStarted(true);
-		startRunButton.setVisibility(View.GONE);
+		startButton.setVisibility(View.GONE);
 		stopAndSaveButton.setVisibility(View.VISIBLE);
 		startTimer();
 	}
