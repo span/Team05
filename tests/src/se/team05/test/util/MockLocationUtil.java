@@ -19,23 +19,24 @@
 
 package se.team05.test.util;
 
+import java.util.ArrayList;
+
 import se.team05.activity.RouteActivity;
 import se.team05.listener.MapLocationListener;
+import se.team05.overlay.CheckPoint;
 import android.app.Service;
 import android.content.Context;
 import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
-import android.os.Bundle;
 
 public class MockLocationUtil
 {
 	public static final String PROVIDER_NAME = "testProvider";
 	public static final String TAG = "testProvider";
 
-	public static void publishMockLocation(double latitude, double longitude, Context context)
+	public static void publishMockLocation(double latitude, double longitude, Context context, ArrayList<CheckPoint> checkPoints)
 	{
 		LocationManager mLocationManager = (LocationManager) context.getSystemService(Service.LOCATION_SERVICE);
 		if (mLocationManager.getProvider(PROVIDER_NAME) != null)
@@ -57,7 +58,7 @@ public class MockLocationUtil
 
 		mLocationManager.setTestProviderEnabled(PROVIDER_NAME, true);
 		mLocationManager.setTestProviderStatus(PROVIDER_NAME, LocationProvider.AVAILABLE, null, System.currentTimeMillis());
-		mLocationManager.requestLocationUpdates(PROVIDER_NAME, 0, 0, new MapLocationListener((RouteActivity) context));
+		mLocationManager.requestLocationUpdates(PROVIDER_NAME, 0, 0, new MapLocationListener((RouteActivity) context, false, checkPoints));
 		mLocationManager.setTestProviderLocation(PROVIDER_NAME, newLocation);
 	}
 
@@ -83,25 +84,6 @@ public class MockLocationUtil
 		else
 		{
 			return realLoc;
-		}
-	}
-
-	private static class MockLocationListener implements LocationListener
-	{
-		public void onLocationChanged(Location location)
-		{
-		}
-
-		public void onProviderDisabled(String provider)
-		{
-		}
-
-		public void onProviderEnabled(String provider)
-		{
-		}
-
-		public void onStatusChanged(String provider, int status, Bundle extras)
-		{
 		}
 	}
 }

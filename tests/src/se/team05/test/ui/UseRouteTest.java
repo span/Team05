@@ -122,6 +122,8 @@ public class UseRouteTest extends ActivityInstrumentationTestCase2<MainActivity>
 			databaseHandler.saveTrack(cid, track);
 		}
 		
+		route.setCheckPoints(databaseHandler.getCheckPoints(route.getId()));
+		
 		solo.clickOnView(oldRouteImage);
 		solo.assertCurrentActivity("ListExistingRoutesActivity expected", ListExistingRoutesActivity.class);
 		solo.clickInList(0);
@@ -138,13 +140,13 @@ public class UseRouteTest extends ActivityInstrumentationTestCase2<MainActivity>
 		assertEquals(stopButton.getVisibility(), View.VISIBLE);
 
 		MockLocationUtil mockLocation = new MockLocationUtil();
-		MockLocationUtil.publishMockLocation(47.975, 17.056, routeActivity);
+		MockLocationUtil.publishMockLocation(47.975, 17.056, routeActivity, route.getCheckPoints());
 		Thread.sleep(1500);
 		Location locationA = mockLocation.getLastKnownLocationInApplication(routeActivity);
 		assertEquals(47.975, locationA.getLatitude());
 		assertEquals(17.056, locationA.getLongitude());
 		
-		MockLocationUtil.publishMockLocation(48.975, 17.056, routeActivity);
+		MockLocationUtil.publishMockLocation(48.975, 17.056, routeActivity, route.getCheckPoints());
 		Thread.sleep(1500);
 		final Location locationB = mockLocation.getLastKnownLocationInApplication(routeActivity);
 		assertEquals(48.975, locationB.getLatitude());
@@ -155,7 +157,8 @@ public class UseRouteTest extends ActivityInstrumentationTestCase2<MainActivity>
 			@Override
 			public void run()
 			{
-				routeActivity.updateLocation(locationB);
+				// TODO See if possible to run the listener instead
+				//routeActivity.updateLocation(locationB);
 			}
 		});
 		
