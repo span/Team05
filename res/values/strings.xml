@@ -112,7 +112,7 @@
     <string name="settings_saved">Settings saved</string>
     <string name="yards">Yards</string>
     <string name="kilometres">Kilometres</string>
-    <string name="length_representation_">"Lenght representation: "</string>
+    <string name="length_representation_">"Length representation: "</string>
     <string name="miles">" Miles"</string>
 
 </resources>
