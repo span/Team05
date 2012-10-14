@@ -4,7 +4,6 @@ import se.team05.R;
 import se.team05.content.Result;
 import se.team05.content.Route;
 import se.team05.data.DatabaseHandler;
-import se.team05.dialog.SaveRouteDialog.Callbacks;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -29,8 +28,7 @@ public class AlertDialogFactory
 		{
 			public void onClick(DialogInterface dialog, int id)
 			{
-				Callbacks callbacks = (Callbacks) context;
-				callbacks.onDismissRoute();
+				dialog.cancel();
 			}
 		}).create();
 	}

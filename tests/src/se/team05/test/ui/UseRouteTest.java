@@ -129,8 +129,8 @@ public class UseRouteTest extends ActivityInstrumentationTestCase2<MainActivity>
 		
 		final RouteActivity routeActivity = (RouteActivity) solo.getCurrentActivity();
 		
-		Button startButton = (Button) solo.getView(R.id.start_existing_run_button);
-		Button stopButton = (Button) solo.getView(R.id.stop_existing_run_button);
+		Button startButton = (Button) solo.getView(R.id.start_button);
+		Button stopButton = (Button) solo.getView(R.id.stop_button);
 		assertEquals(startButton.getVisibility(), View.VISIBLE);
 		assertEquals(stopButton.getVisibility(), View.GONE);
 		solo.clickOnView(startButton);
@@ -168,7 +168,6 @@ public class UseRouteTest extends ActivityInstrumentationTestCase2<MainActivity>
 		solo.clickOnView(startButton);
 		solo.clickOnView(stopButton);
 		solo.clickOnButton("No");
-		solo.assertCurrentActivity("Expected MainActivity", MainActivity.class);
 	}
 
 }
