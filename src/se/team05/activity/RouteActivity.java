@@ -101,7 +101,6 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	private Handler handler;
 	private Runnable runnable;
 	private String nameOfExistingRoute;
-	private long rid;
 
 	private ArrayList<Track> selectedTracks = new ArrayList<Track>();
 	private DatabaseHandler databaseHandler;
@@ -118,7 +117,6 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	private TextView distanceView;
 	private Intent serviceIntent;
 	private String formattedTimeString;
-	
 	
 	private final int NONEDIALOG = -1;
 	private final int SAVEROUTEDIALOGSHOW = 0;
@@ -151,20 +149,20 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 		}
 		else
 		{
-			rid = getIntent().getLongExtra(Route.EXTRA_ID, -1);
+			route.setId(getIntent().getLongExtra(Route.EXTRA_ID, -1));
 		}
 		
-		if (rid != -1)
+		if (!route.isNewRoute())
 		{
-			initRoute(rid);
+			initRoute(route.getId());
 			setTitle(getString(R.string.saved_route_) + nameOfExistingRoute);
-			addSavedCheckPoints(rid);
+			addSavedCheckPoints(route.getId());
 		}
 		setupButtons();
 		
 		if (route.isStarted())
 		{
-			if (rid != -1)
+			if (!route.isNewRoute())
 			{
 				startExistingRoute();
 			}
@@ -186,7 +184,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 		route.setTotalDistance(savedInstanceState.getFloat("totalDistance"));
 		route.setTimePassed(savedInstanceState.getInt("timePassed"));
 		route.setStarted(savedInstanceState.getBoolean("started"));
-		rid = savedInstanceState.getLong("rid");
+		route.setId(savedInstanceState.getLong("rid"));
 		
 		dialogShown = savedInstanceState.getInt("dialogShown");
 		formattedTimeString = savedInstanceState.getString("formattedTimeString");
@@ -194,9 +192,9 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 		RouteOverlay routeOverlay = new RouteOverlay(geoPointList, 78, true);
 		overlays.add(routeOverlay);
 
-		if (rid==-1)
+		if (route.isNewRoute())
 		{
-			addSavedCheckPoints(rid);
+			addSavedCheckPoints(route.getId());
 		}
 		switch (dialogShown)
 		{
@@ -221,7 +219,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 				saveRouteDialog.setSaveResultChecked(isSavedResultChecked);
 				break;
 			case SAVERESULTDIALOG:
-				showSaveResultDialog(rid);
+				showSaveResultDialog(route.getId());
 				break;
 		}
 
@@ -539,7 +537,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 			Context context = this;
 			Intent intent;
 			intent = new Intent(context, ListExistingResultsActivity.class);
-			intent.putExtra(Route.EXTRA_ID, rid);
+			intent.putExtra(Route.EXTRA_ID, route.getId());
 			context.startActivity(intent);
 			break;		
 		case R.id.stop_existing_run_button:
@@ -770,7 +768,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	 */
 	@Override
 	public void onDismissRoute() {
-		databaseHandler.deleteCheckPoints(rid);
+		databaseHandler.deleteCheckPoints(route.getId());
 		launchMainActivity();
 	}
 
@@ -830,7 +828,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
         outState.putBoolean("started", route.isStarted());
         outState.putFloat("totalDistance", route.getTotalDistance());
         outState.putInt("timePassed", route.getTimePassed());
-        outState.putLong("rid", rid);
+        outState.putLong("rid", route.getId());
         outState.putInt("dialogShown", dialogShown);
         outState.putString("formattedTimeString", formattedTimeString);
         outState.putParcelableArrayList("geoPointList", geoPointList);
