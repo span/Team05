@@ -103,7 +103,6 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	private Handler handler;
 	private Runnable runnable;
 
-	private ArrayList<Track> selectedTracks = new ArrayList<Track>();
 	private DatabaseHandler databaseHandler;
 	private CheckPoint currentCheckPoint;
 	private Result routeResults;
@@ -386,7 +385,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == MediaSelectorActivity.REQUEST_MEDIA && resultCode == RESULT_OK)
 		{
-			selectedTracks = data.getParcelableArrayListExtra(MediaSelectorActivity.EXTRA_SELECTED_ITEMS);
+			ArrayList<Track> selectedTracks = data.getParcelableArrayListExtra(MediaSelectorActivity.EXTRA_SELECTED_ITEMS);
 			currentCheckPoint.addTracks(selectedTracks);
 		}
 	}
@@ -660,11 +659,11 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 			cid = databaseHandler.saveCheckPoint(checkPoint);
 			checkPoint.setId(cid);
 		}
-		for (Track track : selectedTracks)
+		for (Track track : checkPoint.getTracks())
 		{
 			databaseHandler.saveTrack(cid, track);
 		}
-		selectedTracks.clear();
+		checkPoint.getTracks().clear();
 	}
 
 	/**
