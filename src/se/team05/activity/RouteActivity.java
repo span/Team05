@@ -88,7 +88,6 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 		SaveRouteDialog.Callbacks, CheckPointOverlay.Callbacks, MapOnGestureListener.Callbacks,
 		MapLocationListener.Callbacks
 {
-
 	private static final String TAG = "Personal trainer";
 	private LocationManager locationManager;
 	private String providerName;
@@ -156,9 +155,8 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 
 		if (!route.isNewRoute())
 		{
-			initRoute(route.getId());
+			initRouteAndCheckpoints();
 			setTitle(getString(R.string.saved_route_) + route.getName());
-			addSavedCheckPoints(route.getId());
 		}
 		setupButtons();
 
@@ -187,23 +185,21 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	 */
 	private void restoreInstance(Bundle savedInstanceState)
 	{
+		route.setId(savedInstanceState.getLong("rid"));
 		route.setTotalDistance(savedInstanceState.getFloat("totalDistance"));
 		route.setTimePassed(savedInstanceState.getInt("timePassed"));
 		route.setStarted(savedInstanceState.getBoolean("started"));
-		route.setId(savedInstanceState.getLong("rid"));
-
-		int activeDialog = savedInstanceState.getInt("dialogShown");
-
+		
 		ArrayList<ParcelableGeoPoint> geoPoints = savedInstanceState.getParcelableArrayList("geoPointList");
 		route.setGeoPoints(geoPoints);
-
 		RouteOverlay routeOverlay = new RouteOverlay(route.getGeoPoints(), 78, true);
 		overlays.add(routeOverlay);
-
 		if (route.isNewRoute())
 		{
-			addSavedCheckPoints(route.getId());
+			checkPointOverlay.setCheckPoints(route.getCheckPoints());
 		}
+		
+		int activeDialog = savedInstanceState.getInt("dialogShown");
 		switch (activeDialog)
 		{
 			case DIALOG_CHECKPOINT:
@@ -212,25 +208,19 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 				ArrayList<Track> tracks = savedInstanceState.getParcelableArrayList("tracks");
 				currentCheckPoint.addTracks(tracks);
 				showCheckPointDialog(currentCheckPoint, EditCheckPointDialog.MODE_EDIT);
-				String nameText = savedInstanceState.getString("nameText");
-				String radiusText = savedInstanceState.getString("radiusText");
-				checkPointDialog.setNameText(nameText);
-				checkPointDialog.setRadiusTextField(radiusText);
+				checkPointDialog.setNameText(savedInstanceState.getString("nameText"));
+				checkPointDialog.setRadiusTextField(savedInstanceState.getString("radiusText"));
 				break;
 			case DIALOG_SAVE_ROUTE:
 				showSaveRouteDialog();
-				String nameOfEditText = savedInstanceState.getString("nameOfEditText");
-				String descriptionOfEditText = savedInstanceState.getString("descriptionOfEditText");
-				boolean isSavedResultChecked = savedInstanceState.getBoolean("isSaveResultChecked");
-				saveRouteDialog.setNameOfEditText(nameOfEditText);
-				saveRouteDialog.setDescriptionOfEditText(descriptionOfEditText);
-				saveRouteDialog.setSaveResultChecked(isSavedResultChecked);
+				saveRouteDialog.setNameOfEditText(savedInstanceState.getString("nameOfEditText"));
+				saveRouteDialog.setDescriptionOfEditText(savedInstanceState.getString("descriptionOfEditText"));
+				saveRouteDialog.setSaveResultChecked(savedInstanceState.getBoolean("isSaveResultChecked"));
 				break;
 			case DIALOG_SAVE_RESULT:
 				showSaveResultDialog(route.getId());
 				break;
 		}
-
 	}
 
 	/**
@@ -296,24 +286,6 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	}
 
 	/**
-	 * Adds saved checkpoints to the route that has been drawn if the user is
-	 * using an previously saved map.
-	 * 
-	 * @param rid
-	 */
-	private void addSavedCheckPoints(long rid)
-	{
-		ArrayList<Track> trackList;
-		ArrayList<CheckPoint> checkPointList = databaseHandler.getCheckPoints(rid);
-		for (CheckPoint checkPoint : checkPointList)
-		{
-			trackList = databaseHandler.getTracks(checkPoint.getId());
-			checkPoint.addTracks(trackList);
-		}
-		checkPointOverlay.setCheckPoints(checkPointList);
-	}
-
-	/**
 	 * Sets up the buttons in the view. If it is a new route the Start and
 	 * stopAndSaved buttons are initialized with listeners and if it is a
 	 * existing route the start and stopAndSaved buttons are hidden and the
@@ -353,25 +325,17 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	/**
 	 * Gets route information from the database and draws an overlay on the map
 	 * view if the user is using a previously saved map.
+	 * @param geoPoints 
 	 * 
 	 * @param id
 	 *            the route id
 	 */
-	private void initRoute(long id)
+	private void initRouteAndCheckpoints()
 	{
-		ArrayList<ParcelableGeoPoint> geoPoints = databaseHandler.getGeoPoints(id);
-		route = databaseHandler.getRoute(id);
-		route.setGeoPoints(geoPoints);
-
-		ArrayList<CheckPoint> checkPoints = databaseHandler.getCheckPoints(id);
-
-		route.setCheckPoints(checkPoints);
-		for (CheckPoint checkPoint : checkPoints)
-		{
-			checkPoint.addTracks(databaseHandler.getTracks(checkPoint.getId()));
-		}
-		RouteOverlay routeOverlay = new RouteOverlay(geoPoints, 10, true);
+		route = databaseHandler.getRoute(route.getId());
+		RouteOverlay routeOverlay = new RouteOverlay(route.getGeoPoints(), 10, true);
 		overlays.add(routeOverlay);
+		checkPointOverlay.setCheckPoints(route.getCheckPoints());
 	}
 
 	/**

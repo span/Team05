@@ -116,8 +116,14 @@ public class DatabaseHandler
 					cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_LENGTHCOACH)));
 
 			cursor.close();
+			
+			route.setGeoPoints(getGeoPoints(route.getId()));
+			route.setCheckPoints(getCheckPoints(route.getId()));
+			for (CheckPoint checkPoint : route.getCheckPoints())
+			{
+				checkPoint.addTracks(getTracks(checkPoint.getId()));
+			}
 		}
-
 		dBRouteAdapter.close();
 		return route;
 	}
