@@ -764,7 +764,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 		Route route = new Route(name, description);
 		route.setId(databaseHandler.saveRoute(route));
 		if (saveResult) {
-			routeResults.setRouteId(route.getId());
+			routeResults.setRid(route.getId());
 			routeResults.setTimestamp((int) System.currentTimeMillis() / 1000);
 			databaseHandler.saveResult(routeResults);
 		}

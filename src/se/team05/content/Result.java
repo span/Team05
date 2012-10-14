@@ -32,8 +32,8 @@ public class Result {
 	
 	public static String RESULT_ID = "id";
 	
-	private int _id;
-	private long routId;
+	private long _id;
+	private long rid;
 	private long timestamp;
 	private int time;
 	private int calories;
@@ -45,12 +45,7 @@ public class Result {
 	 */
 	public Result()
 	{
-		this._id = 1;
-		this.routId = 1;
-		this.timestamp = 1349286608;	// Date: October 3 2012, Time: 18:50 ???
-		this.time = 300;  				// 5 minutes
-		this.calories = 1337;			// kcal
-		this.distance = 1337;
+		this(-1, -1, System.currentTimeMillis() / 1000, 0, 0, 0);
 	}
 
 	/**
@@ -58,10 +53,10 @@ public class Result {
 	 * 
 	 * @param _id
 	 * 		the id of this instance
-	 * @param routId
+	 * @param rid
 	 * 		id of the rout 
 	 * @param timestamp
-	 * 		time and date when the result is created in the format of nanoseconds passed since year 1970
+	 * 		time and date when the result is created in the format of seconds passed since year 1970
 	 * @param time
 	 * 		time (seconds) it took to end the route corresponding with this result
 	 * @param distance
@@ -69,10 +64,10 @@ public class Result {
 	 * @param calories
 	 * 		calories (kcal) used during route
 	 */
-	public Result(int _id, long routId, long timestamp, int time, int distance, int calories)
+	public Result(long _id, long rid, long timestamp, int time, int distance, int calories)
 	{
 		this._id = _id;
-		this.routId = routId;
+		this.rid = rid;
 		this.timestamp = timestamp;
 		this.time = time;
 		this.distance = distance;
@@ -83,10 +78,10 @@ public class Result {
 	 * Constructor that create an instance of the class.
 	 * The field _id is not set on creation.
 	 * All other fields are set on creation.
-	 * @param routId
+	 * @param rid
 	 * 		id of the rout 
 	 * @param timestamp
-	 * 		time and date when the result is created in the format of nanoseconds passed since year 1970
+	 * 		time and date when the result is created in the format of seconds passed since year 1970
 	 * @param time
 	 * 		time (seconds) it took to end the route corresponding with this result
 	 * @param distance
@@ -94,36 +89,32 @@ public class Result {
 	 * @param calories
 	 * 		calories (kcal) used during route
 	 */
-	public Result(long routId, long timestamp, int time, int distance, int calories)
+	public Result(long rid, long timestamp, int time, int distance, int calories)
 	{
-		this.routId = routId;
-		this.timestamp = timestamp;
-		this.time = time;
-		this.calories = calories;
-		this.distance = distance;
+		this(-1, rid, timestamp, time, distance, calories);
 	}
 
-	public int get_id() {
+	public long getId() {
 		return _id;
 	}
 
-	public void set_id(int _id) {
-		this._id = _id;
+	public void setId(long id) {
+		this._id = id;
 	}
 	
-	public long getRoutId() {
-		return routId;
+	public long getRid() {
+		return rid;
 	}
 
-	public void setRouteId(long l) {
-		this.routId = l;
+	public void setRid(long rid) {
+		this.rid = rid;
 	}
 
 	/**
 	 * Get timestamp.
 	 * 
 	 * @return time and date when the result was created 
-	 * 			in the format of nanoseconds passed since year 1970
+	 * 			in the format of seconds passed since year 1970
 	 */
 	public long getTimestamp() {
 		return timestamp;
@@ -133,7 +124,7 @@ public class Result {
 	 * 
 	 * @param timestamp
 	 * 		time and date when the result is created
-	 * 		in the format of nanoseconds passed since year 1970
+	 * 		in the format of seconds passed since year 1970
 	 */
 	public void setTimestamp(long timestamp) {
 		this.timestamp = timestamp;
