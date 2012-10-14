@@ -38,6 +38,7 @@ import se.team05.overlay.CheckPoint;
 import se.team05.overlay.CheckPointOverlay;
 import se.team05.overlay.RouteOverlay;
 import se.team05.service.MediaService;
+import se.team05.util.Utils;
 import se.team05.view.EditRouteMapView;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -47,8 +48,6 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
@@ -86,7 +85,7 @@ import com.google.android.maps.Overlay;
  */
 public class RouteActivity extends MapActivity implements View.OnClickListener, EditCheckPointDialog.Callbacks,
 		SaveRouteDialog.Callbacks, CheckPointOverlay.Callbacks, MapOnGestureListener.Callbacks,
-		MapLocationListener.Callbacks
+		MapLocationListener.Callbacks, Utils.Callbacks
 {
 	private static final String TAG = "Personal trainer";
 	private LocationManager locationManager;
@@ -96,20 +95,14 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	private String userSpeed = "0";
 	private String userDistance = "0";
 	private Location lastLocation;
-
 	private CheckPointOverlay checkPointOverlay;
 	private EditCheckPointDialog checkPointDialog;
-	private Handler handler;
-	private Runnable runnable;
-
 	private DatabaseHandler databaseHandler;
 	private CheckPoint currentCheckPoint;
 	private Result routeResults;
 	private List<Overlay> overlays;
 	private Button stopAndSaveButton;
 	private Button startButton;
-//	private Button startExistingRunButton;
-//	private Button stopExistingRunButton;
 	private Route route;
 	private WakeLock wakeLock;
 	private TextView speedView;
@@ -142,6 +135,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 		databaseHandler = new DatabaseHandler(this);
 		serviceIntent = new Intent(this, MediaService.class);
 		route = new Route(getString(R.string.new_route), getString(R.string.this_is_a_new_route));
+		wakeLock = Utils.acquireWakeLock(this);
 		setupMapAndLocation();
 
 		if (savedInstanceState != null)
@@ -235,7 +229,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 		saveResultDialog = AlertDialogFactory.newSaveResultDialog(this, giveUserResultData, route, routeResults);
 		saveResultDialog.show();
 		route.setStarted(false);
-		releaseWakeLock();
+		wakeLock = Utils.releaseWakeLock();
 	}
 
 	/**
@@ -468,7 +462,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 				startRoute();
 				break;
 			case R.id.stop_button:
-				handler.removeCallbacks(runnable);
+				Utils.stopTimer();
 				route.setStarted(false);
 				if(!route.isNewRoute())
 				{
@@ -481,7 +475,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 				}
 				startButton.setVisibility(View.VISIBLE);
 				stopAndSaveButton.setVisibility(View.GONE);
-				releaseWakeLock();
+				wakeLock = Utils.releaseWakeLock();
 				break;
 			case R.id.add_checkpoint:
 				if (myLocationOverlay.isMyLocationEnabled())
@@ -509,11 +503,11 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	 */
 	private void startRoute()
 	{
-		acquireWakeLock();
+		wakeLock = Utils.acquireWakeLock(this);
 		route.setStarted(true);
 		startButton.setVisibility(View.GONE);
 		stopAndSaveButton.setVisibility(View.VISIBLE);
-		startTimer();
+		Utils.startTimer(this);
 	}
 
 	/**
@@ -526,25 +520,25 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 		saveRouteDialog.show();
 	}
 
-	/**
-	 * Starts the timer that is used to let the user know for how long they have
-	 * been using the route. After initializing, this method will be called once
-	 * every second
-	 */
-	private void startTimer()
-	{
-		runnable = new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				timerTick();
-				handler.postDelayed(this, 1000);
-			}
-		};
-		handler = new Handler();
-		handler.postDelayed(runnable, 0);
-	}
+//	/**
+//	 * Starts the timer that is used to let the user know for how long they have
+//	 * been using the route. After initializing, this method will be called once
+//	 * every second
+//	 */
+//	private void startTimer()
+//	{
+//		runnable = new Runnable()
+//		{
+//			@Override
+//			public void run()
+//			{
+//				timerTick();
+//				handler.postDelayed(this, 1000);
+//			}
+//		};
+//		handler = new Handler();
+//		handler.postDelayed(runnable, 0);
+//	}
 
 	/**
 	 * Method that gets called to update the UI with how much time that has
@@ -552,7 +546,8 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	 * determine time while not altering the timePassed variable if we want to
 	 * pass that value to the database.
 	 */
-	private void timerTick()
+	@Override
+	public void onTimerTick()
 	{
 		timeView.setText(route.getTimePassedAsString());
 		route.setTimePassed(route.getTimePassed() + 1);
@@ -720,7 +715,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	@Override
 	public void onDestroy()
 	{
-		releaseWakeLock();
+		wakeLock = Utils.releaseWakeLock();
 		super.onDestroy();
 	}
 
@@ -731,42 +726,6 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	{
 		Intent intent = new Intent(this, MainActivity.class);
 		this.startActivity(intent);
-	}
-
-	/**
-	 * Acquires the wake lock from the system if it is available and not already
-	 * held.
-	 */
-	private void acquireWakeLock()
-	{
-		try
-		{
-			PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
-			if (wakeLock == null)
-			{
-				wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
-			}
-			if (!wakeLock.isHeld())
-			{
-				wakeLock.acquire();
-			}
-		}
-		catch (RuntimeException e)
-		{
-			Log.e(TAG, getString(R.string.could_not_acquire_wakelock_), e);
-		}
-	}
-
-	/**
-	 * Releases the wake lock if available and held
-	 */
-	private void releaseWakeLock()
-	{
-		if (wakeLock != null && wakeLock.isHeld())
-		{
-			wakeLock.release();
-			wakeLock = null;
-		}
 	}
 
 	/**
@@ -832,7 +791,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	@Override
 	public void onResumeTimer()
 	{
-		startTimer();
+		Utils.startTimer(this);
 	}
 
 	/**
