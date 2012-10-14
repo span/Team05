@@ -5,6 +5,7 @@ import se.team05.content.Result;
 import se.team05.content.Route;
 import se.team05.data.DatabaseHandler;
 import se.team05.dialog.SaveRouteDialog.Callbacks;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -30,6 +31,25 @@ public class AlertDialogFactory
 			{
 				Callbacks callbacks = (Callbacks) context;
 				callbacks.onDismissRoute();
+			}
+		}).create();
+	}
+	
+	public static AlertDialog newConfirmBackDialog(final Context context)
+	{
+		return new AlertDialog.Builder(context).setTitle(R.string.discard_route_)
+		.setMessage(R.string.do_you_really_want_to_discard_your_route_)
+		.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
+		{
+			public void onClick(DialogInterface dialog, int id)
+			{
+				((Activity) context).finish();
+			}
+		}).setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
+		{
+			public void onClick(DialogInterface dialog, int id)
+			{
+				dialog.cancel();
 			}
 		}).create();
 	}
