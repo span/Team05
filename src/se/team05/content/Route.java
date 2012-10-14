@@ -43,6 +43,7 @@ public class Route
 	private int lengthcoach;
 	private int timePassed;
 	private float totalDistance;
+	private boolean started;
 
 	private ArrayList<ParcelableGeoPoint> geoPoints;
 	private ArrayList<CheckPoint> checkPoints;
@@ -91,7 +92,8 @@ public class Route
 		this.timecoach = timecoach;
 		this.lengthcoach = lengthcoach;
 		this.totalDistance = 0;
-		this.setTimePassed(0);
+		this.timePassed = 0;
+		this.started = false;
 		this.geoPoints = new ArrayList<ParcelableGeoPoint>();
 		this.checkPoints = new ArrayList<CheckPoint>();
 	}
@@ -233,5 +235,36 @@ public class Route
 	public int getTimePassed()
 	{
 		return timePassed;
+	}
+
+	/**
+	 * Sets the started flag in the route so that we can keep track of when the
+	 * route is started
+	 * 
+	 * @param true if started
+	 */
+	public void setStarted(boolean started)
+	{
+		this.started = started;
+	}
+
+	/**
+	 * Checks to see if the route has been started or not
+	 * 
+	 * @return true if started
+	 */
+	public boolean isStarted()
+	{
+		return started;
+	}
+
+	/**
+	 * Checks if this is a new route that has not been saved yet.
+	 * 
+	 * @return true if it is a new route
+	 */
+	public boolean isNewRoute()
+	{
+		return getId() == -1;
 	}
 }

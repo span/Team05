@@ -91,7 +91,6 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	private LocationManager locationManager;
 	private String providerName;
 	private EditRouteMapView mapView;
-	private boolean started = false;
 	private MyLocationOverlay myLocationOverlay;
 	private String userSpeed = "0";
 	private String userDistance = "0";
@@ -108,7 +107,6 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	private DatabaseHandler databaseHandler;
 	private CheckPoint currentCheckPoint;
 	private Result routeResults;
-	private boolean newRoute;
 	private List<Overlay> overlays;
 	private Button stopAndSaveButton;
 	private Button startRunButton;
@@ -145,10 +143,9 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 		databaseHandler = new DatabaseHandler(this);
 		serviceIntent = new Intent(this, MediaService.class);
 		route = new Route(getString(R.string.new_route), getString(R.string.this_is_a_new_route));
-		newRoute = true;
 		setupMapAndLocation();
 		
-		if (savedInstanceState!=null)
+		if (savedInstanceState != null)
 		{
 			restoreInstance(savedInstanceState);
 		}
@@ -159,16 +156,15 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 		
 		if (rid != -1)
 		{
-			newRoute = false;
 			initRoute(rid);
 			setTitle(getString(R.string.saved_route_) + nameOfExistingRoute);
 			addSavedCheckPoints(rid);
 		}
 		setupButtons();
 		
-		if (started)
+		if (route.isStarted())
 		{
-			if (rid!=-1)
+			if (rid != -1)
 			{
 				startExistingRoute();
 			}
@@ -189,9 +185,9 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	{
 		route.setTotalDistance(savedInstanceState.getFloat("totalDistance"));
 		route.setTimePassed(savedInstanceState.getInt("timePassed"));
+		route.setStarted(savedInstanceState.getBoolean("started"));
 		rid = savedInstanceState.getLong("rid");
-		started = savedInstanceState.getBoolean("started");
-		newRoute = savedInstanceState.getBoolean("newRoute", newRoute);
+		
 		dialogShown = savedInstanceState.getInt("dialogShown");
 		formattedTimeString = savedInstanceState.getString("formattedTimeString");
 		geoPointList = savedInstanceState.getParcelableArrayList("geoPointList");
@@ -264,7 +260,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 					}
 				}).create();
 		alertDialog.show();
-		started = false;
+		route.setStarted(false);
 		dialogShown = SAVERESULTDIALOG;
 		
 		
@@ -343,7 +339,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 		startExistingRunButton = (Button) findViewById(R.id.start_existing_run_button);
 		stopExistingRunButton = (Button) findViewById(R.id.stop_existing_run_button);
 
-		if (newRoute) {
+		if (route.isNewRoute()) {
 			stopAndSaveButton.setOnClickListener(this);
 			startRunButton.setOnClickListener(this);
 			addCheckPointButton.setOnClickListener(this);
@@ -426,7 +422,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	{
 		GeoPoint geoPoint;
 		ParcelableGeoPoint currentGeoPoint;
-		if (started)
+		if (route.isStarted())
 		{
 
 			currentGeoPoint = new ParcelableGeoPoint((int) (location.getLatitude() * 1E6), (int) (location.getLongitude() * 1E6));
@@ -441,7 +437,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 
 			lastLocation = location;
 
-			if (!newRoute)
+			if (!route.isNewRoute())
 			{
 				for (CheckPoint checkPoint : route.getCheckPoints())
 				{
@@ -524,7 +520,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 			break;
 		case R.id.stop_and_save_button:
 			handler.removeCallbacks(runnable);
-			started = false;
+			route.setStarted(false);
 			showSaveRouteDialog();
 			releaseWakeLock();
 			break;
@@ -561,7 +557,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	private void startExistingRoute()
 	{
 		acquireWakeLock();
-		started = true;
+		route.setStarted(true);
 		startExistingRunButton.setVisibility(View.GONE);
 		stopExistingRunButton.setVisibility(View.VISIBLE);
 		startTimer();
@@ -572,7 +568,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	private void startNewRoute()
 	{
 		acquireWakeLock();
-		started = true;
+		route.setStarted(true);
 		startRunButton.setVisibility(View.GONE);
 		stopAndSaveButton.setVisibility(View.VISIBLE);
 		startTimer();
@@ -831,12 +827,11 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	 */
 	@Override
     protected void onSaveInstanceState(final Bundle outState) {
-        outState.putBoolean("started", started);
+        outState.putBoolean("started", route.isStarted());
         outState.putFloat("totalDistance", route.getTotalDistance());
         outState.putInt("timePassed", route.getTimePassed());
         outState.putLong("rid", rid);
         outState.putInt("dialogShown", dialogShown);
-        outState.putBoolean("newRoute", newRoute);
         outState.putString("formattedTimeString", formattedTimeString);
         outState.putParcelableArrayList("geoPointList", geoPointList);
         if(dialogShown == CHECKPOINTDIALOG)
