@@ -172,7 +172,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	 */
 	private void restoreInstance(Bundle savedInstanceState)
 	{
-		route.setId(savedInstanceState.getLong("rid"));
+		route = databaseHandler.getRoute(savedInstanceState.getLong("rid"));
 		route.setTotalDistance(savedInstanceState.getFloat("totalDistance"));
 		route.setTimePassed(savedInstanceState.getInt("timePassed"));
 		route.setStarted(savedInstanceState.getBoolean("started"));
@@ -196,8 +196,6 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 				break;
 			case DIALOG_SAVE_ROUTE:
 				showSaveRouteDialog();
-				saveRouteDialog.setNameOfEditText(savedInstanceState.getString("nameOfEditText"));
-				saveRouteDialog.setDescriptionOfEditText(savedInstanceState.getString("descriptionOfEditText"));
 				saveRouteDialog.setSaveResultChecked(savedInstanceState.getBoolean("isSaveResultChecked"));
 				break;
 			case DIALOG_SAVE_RESULT:
@@ -497,8 +495,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	 */
 	private void showSaveRouteDialog()
 	{
-		routeResults = new Result(-1, -1, route.getTimePassed(), (int) route.getTotalDistance(), 0);
-		saveRouteDialog = new SaveRouteDialog(this, this, routeResults);
+		saveRouteDialog = new SaveRouteDialog(this, this, route);
 		saveRouteDialog.show();
 	}
 
@@ -644,12 +641,12 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	 * that, the user is taken back to the main activity.
 	 */
 	@Override
-	public void onSaveRoute(String name, String description, boolean saveResult)
+	public void onSaveRoute(Route route, boolean saveResult)
 	{
-		Route route = new Route(name, description);
 		route.setId(databaseHandler.saveRoute(route));
 		if (saveResult)
 		{
+			routeResults = new Result(-1, -1, route.getTimePassed(), (int) route.getTotalDistance(), 0);
 			routeResults.setRid(route.getId());
 			routeResults.setTimestamp((int) System.currentTimeMillis() / 1000);
 			databaseHandler.saveResult(routeResults);
@@ -666,6 +663,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	@Override
 	public void onDismissRoute()
 	{
+		databaseHandler.deleteRoute(route);
 		databaseHandler.deleteCheckPoints(route.getId());
 		launchMainActivity();
 	}
@@ -702,20 +700,26 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 		outState.putBoolean("started", route.isStarted());
 		outState.putFloat("totalDistance", route.getTotalDistance());
 		outState.putInt("timePassed", route.getTimePassed());
-		outState.putLong("rid", route.getId());
 		outState.putInt("dialogShown", activeDialog);
 		outState.putParcelableArrayList("geoPointList", route.getGeoPoints());
 		if (activeDialog == DIALOG_CHECKPOINT)
 		{
 			currentCheckPoint = checkPointDialog.getCheckPoint();
 			onSaveCheckPoint(currentCheckPoint);
-			activeDialog = DIALOG_CHECKPOINT;
 			outState.putLong("currentCheckPoint", currentCheckPoint.getId());
 		}
 		else if (activeDialog == DIALOG_SAVE_ROUTE)
 		{
-			outState.putString("nameOfEditText", saveRouteDialog.getNameOfEditText());
-			outState.putString("descriptionOfEditText", saveRouteDialog.getDescriptionOfEditText());
+			route = saveRouteDialog.getRoute();
+			if(route.getId() == -1)
+			{
+				route.setId(databaseHandler.saveRoute(route));
+			}
+			else
+			{
+				databaseHandler.updateRoute(route);
+			}
+			outState.putLong("rid", route.getId());
 			outState.putBoolean("isSaveResultChecked", saveRouteDialog.isSaveResultChecked());
 		}
 	}

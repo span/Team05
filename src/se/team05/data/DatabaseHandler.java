@@ -77,6 +77,13 @@ public class DatabaseHandler
 		dBRouteAdapter.deleteRoute(route.getId());
 		dBRouteAdapter.close();
 	}
+	
+	public void updateRoute(Route route)
+	{
+		dBRouteAdapter.open();
+		dBRouteAdapter.updateRoute(route.getId(), route.getName(), route.getDescription(), route.getType(), 0, 0);
+		dBRouteAdapter.close();
+	}
 
 	/**
 	 * This method saves the route in the database.
