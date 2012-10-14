@@ -42,6 +42,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.location.Criteria;
 import android.location.Location;
@@ -122,7 +123,12 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	private TextView distanceView;
 	private Intent serviceIntent;
 	private String formattedTimeString;
-	
+	private SharedPreferences settings;
+	private boolean isSI;
+	private int yardsToMile = 1760;
+	private double yardsToMeter = 0.9144;
+	private double kmToMile = 1.609344;
+	private double metreToMile = 1609.344;
 	
 	private final int NONEDIALOG = -1;
 	private final int SAVEROUTEDIALOGSHOW = 0;
@@ -149,6 +155,8 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 		route = new Route(getString(R.string.new_route), getString(R.string.this_is_a_new_route));
 		newRoute = true;
 		setupMapAndLocation();
+		
+		checkUserSettings();
 		
 		if (savedInstanceState!=null)
 		{
@@ -180,6 +188,12 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 			}
 		}
 		mapView.postInvalidate();
+	}
+	
+	private void checkUserSettings()
+	{
+		settings = getSharedPreferences(SettingsActivity.PREFERENCES_NAME, 0);
+		isSI = settings.getBoolean(SettingsActivity.PREFERENCES_USER_UNIT, true);
 	}
 	/**
 	 * This method restores the Instance after a configuration change has happen. Important data
@@ -243,7 +257,17 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 				(int) System.currentTimeMillis() / 1000, timePassed,
 				(int) totalDistance, 0);
 		
-		String giveUserDistanceString = getString(R.string.distance_of_run) + userDistance + getString(R.string.km) + "\n";
+		String giveUserDistanceString;
+		
+		if(isSI)
+		{
+		 giveUserDistanceString = getString(R.string.distance_of_run) + userDistance + getString(R.string.km) + "\n";
+		}
+		else
+		{
+			double mile = totalDistance  * yardsToMeter;
+			giveUserDistanceString = getString(R.string.distance_of_run) + mile + getString(R.string.miles) + "\n";
+		}
 		String giveUserTimeString = getString(R.string.time_) + formattedTimeString + "\n\n";
 		String giveUserResultData = giveUserDistanceString + giveUserTimeString; 
 		
@@ -431,16 +455,43 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 		if (started)
 		{
 
+			if(isSI)
+			{
+				System.out.println("DET ÄR YARDS");	
+			}
+			else
+			{
+				System.out.println("DET ÄR KM");
+				
+			}
+			
 			currentGeoPoint = new ParcelableGeoPoint((int) (location.getLatitude() * 1E6), (int) (location.getLongitude() * 1E6));
 			geoPointList.add(currentGeoPoint);
+			
+			if(isSI)
+			{
 			userSpeed = (3.6 * location.getSpeed()) + getString(R.string.km) + "/" + getString(R.string.h);
+			}
+			else
+			{
+				//TODO CALCULATION
+				userSpeed = ((3.6 * location.getSpeed())/kmToMile) + getString(R.string.miles) + "/" + getString(R.string.h);
+			}
 
 			if (lastLocation != null)
 			{
 				totalDistance += lastLocation.distanceTo(location);
 
 
-				userDistance = new DecimalFormat("#.##").format(totalDistance / 1000);
+				if(isSI)
+				{
+					userDistance = new DecimalFormat("#.##").format(totalDistance / 1000);
+				}
+				else
+				{
+					float totaldistanceToYards = (float) (totalDistance*yardsToMeter);
+					userDistance = new DecimalFormat("#.##").format(totaldistanceToYards / yardsToMile);
+				}
 
 			}
 
@@ -481,7 +532,15 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 
 			lastLocation = location;
 			speedView.setText(userSpeed);
+			
+			if(isSI)
+			{
 			distanceView.setText(userDistance + getString(R.string.km));
+			}
+			else
+			{
+				distanceView.setText(userDistance + getString(R.string.miles));
+			}
 			mapView.postInvalidate();
 		}
 	}
@@ -489,9 +548,12 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	/**
 	 * When our activity resumes, we want to register for location updates.
 	 */
-	protected void onResume() {
+	protected void onResume() 
+	{
 		super.onResume();
 		myLocationOverlay.enableMyLocation();
+		isSI = settings.getBoolean(SettingsActivity.PREFERENCES_USER_UNIT, true);
+		//TODO KEEP WATCHING IF OTHER VALUES NEED BE CHANGED
 	}
 
 	/**

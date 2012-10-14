@@ -110,5 +110,9 @@
     <string name="please_review_your_values_before_submitting">Please review your values before submitting</string>
     <string name="ok">OK</string>
     <string name="settings_saved">Settings saved</string>
+    <string name="yards">Yards</string>
+    <string name="kilometres">Kilometres</string>
+    <string name="length_representation_">"Lenght representation: "</string>
+    <string name="miles">" Miles"</string>
 
 </resources>

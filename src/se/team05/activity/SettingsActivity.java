@@ -19,19 +19,23 @@ import android.support.v4.app.NavUtils;
 
 public class SettingsActivity extends Activity implements View.OnClickListener
 {
-	public static final String PREFERENCES_NAME = "PersonalTrainerSettings";
+	public static final String PREFERENCES_NAME = "se.team05.PersonalTrainerSettings";
 	public static final String PREFERENCES_USER_WEIGHT = "userWeight";
 	public static final String PREFERENCES_USER_NAME = "userName";
 	public static final String PREFERENCES_USER_SEX = "userSex";
+	public static final String PREFERENCES_USER_UNIT = "userUnit";
 	EditText nameEdit;
 	EditText weightEdit;
 	private String userName;
 	private String userWeightString;
 	private int userWeight;
 	private boolean isFemale;
+	private boolean isSI;
 	private Button saveSettings;
 	private RadioButton radioFemale;
 	private RadioButton radioMale;
+	private RadioButton radioSI;
+	private RadioButton radioEng;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) 
@@ -46,6 +50,7 @@ public class SettingsActivity extends Activity implements View.OnClickListener
         userName = settings.getString(PREFERENCES_USER_NAME, "BATMAN");
         userWeight = settings.getInt(PREFERENCES_USER_WEIGHT, 75);
         isFemale = settings.getBoolean(PREFERENCES_USER_SEX, true);
+        isSI = settings.getBoolean(PREFERENCES_USER_UNIT, true);
         userWeightString = "" + userWeight;
 
 
@@ -53,6 +58,12 @@ public class SettingsActivity extends Activity implements View.OnClickListener
         radioMale = (RadioButton) findViewById(R.id.radio_male);
     	radioFemale.setChecked(isFemale);
     	radioMale.setChecked(!isFemale);
+    	
+    	radioSI = (RadioButton) findViewById(R.id.radio_si);
+    	radioEng = (RadioButton) findViewById(R.id.radio_eng);
+    	radioSI.setChecked(isSI);
+    	radioEng.setChecked(!isSI);
+    	int aas = 2;
         nameEdit = (EditText) findViewById(R.id.edit_name);
         nameEdit.setText(userName);
         weightEdit = (EditText) findViewById(R.id.edit_weight);
@@ -79,7 +90,8 @@ public class SettingsActivity extends Activity implements View.OnClickListener
 		    editor.putString(PREFERENCES_USER_NAME, userName);
 		    editor.putInt(PREFERENCES_USER_WEIGHT, userWeight);
 		    editor.putBoolean(PREFERENCES_USER_SEX, isFemale);
-	
+		    editor.putBoolean(PREFERENCES_USER_UNIT, isSI);
+		    
 		    editor.commit();
 
 		    
@@ -104,7 +116,7 @@ public class SettingsActivity extends Activity implements View.OnClickListener
 						}
 					}).create();
 			alertDialog.show();
-			
+			int asd = 12;
 		}
 		
 	}
@@ -124,6 +136,15 @@ public class SettingsActivity extends Activity implements View.OnClickListener
 	            if (checked)
 	            	isFemale = false;
 	            break;
+	            
+	        case R.id.radio_si:
+	        	if(checked)
+	        		isSI = true;
+	        	break;
+	        case R.id.radio_eng:
+	        	if(checked)
+	        		isSI = false;
+	        	break;
 	    }
 	}
     
