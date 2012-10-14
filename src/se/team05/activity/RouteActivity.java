@@ -114,7 +114,6 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	private TextView speedView;
 	private TextView distanceView;
 	private Intent serviceIntent;
-	private String formattedTimeString;
 	
 	private final int NONEDIALOG = -1;
 	private final int SAVEROUTEDIALOGSHOW = 0;
@@ -122,6 +121,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	private final int CHECKPOINTDIALOG = 2;
 	private int dialogShown = NONEDIALOG;
 	private SaveRouteDialog saveRouteDialog;
+	private TextView timeView;
 	/**
 	 * Will present a map to the user and will also display a dot representing
 	 * the user's location. Also contains three buttons of which one
@@ -169,6 +169,8 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 				startNewRoute();
 			}
 		}
+		
+		timeView = (TextView) findViewById(R.id.show_time_textview);
 		mapView.postInvalidate();
 	}
 	/**
@@ -185,7 +187,6 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 		route.setId(savedInstanceState.getLong("rid"));
 		
 		dialogShown = savedInstanceState.getInt("dialogShown");
-		formattedTimeString = savedInstanceState.getString("formattedTimeString");
 		
 		ArrayList<ParcelableGeoPoint> geoPoints = savedInstanceState.getParcelableArrayList("geoPointList");
 		route.setGeoPoints(geoPoints);
@@ -237,7 +238,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 				(int) route.getTotalDistance(), 0);
 		
 		String giveUserDistanceString = getString(R.string.distance_of_run) + userDistance + getString(R.string.km) + "\n";
-		String giveUserTimeString = getString(R.string.time_) + formattedTimeString + "\n\n";
+		String giveUserTimeString = getString(R.string.time_) + route.getTimePassedAsString() + "\n\n";
 		String giveUserResultData = giveUserDistanceString + giveUserTimeString; 
 		
 		AlertDialog alertDialog = new AlertDialog.Builder(this).setTitle(R.string.save_result_)
@@ -619,15 +620,10 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	 * determine time while not altering the timePassed variable if we want to
 	 * pass that value to the database.
 	 */
-	private void timerTick() {
-		int timePassed = route.getTimePassed();
-		int seconds = timePassed % 60;
-		int minutes = timePassed / 60;
-
-		TextView timeView = (TextView) findViewById(R.id.show_time_textview);
-		formattedTimeString = String.format("%02d:%02d", minutes, seconds);
-		timeView.setText(formattedTimeString);
-		route.setTimePassed(timePassed + 1);
+	private void timerTick() 
+	{
+		timeView.setText(route.getTimePassedAsString());
+		route.setTimePassed(route.getTimePassed() + 1);
 	}
 
 	/**
@@ -830,7 +826,6 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
         outState.putInt("timePassed", route.getTimePassed());
         outState.putLong("rid", route.getId());
         outState.putInt("dialogShown", dialogShown);
-        outState.putString("formattedTimeString", formattedTimeString);
         outState.putParcelableArrayList("geoPointList", route.getGeoPoints());
         if(dialogShown == CHECKPOINTDIALOG)
         {

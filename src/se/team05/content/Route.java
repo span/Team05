@@ -238,6 +238,19 @@ public class Route
 	}
 
 	/**
+	 * Convert the minutes and seconds to a string
+	 * 
+	 * @return a string of the time passed formatted as MM:SS
+	 */
+	public String getTimePassedAsString()
+	{
+		int timePassed = getTimePassed();
+		int seconds = timePassed % 60;
+		int minutes = timePassed / 60;
+		return String.format("%02d:%02d", minutes, seconds);
+	}
+
+	/**
 	 * Sets the started flag in the route so that we can keep track of when the
 	 * route is started
 	 * 
