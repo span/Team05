@@ -158,7 +158,6 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 		{
 			startRoute();
 		}
-
 		timeView = (TextView) findViewById(R.id.show_time_textview);
 		mapView.postInvalidate();
 	}
@@ -220,12 +219,10 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	{
 		routeResults = new Result(rid, (int) System.currentTimeMillis() / 1000, route.getTimePassed(),
 				(int) route.getTotalDistance(), 0);
-
 		String giveUserDistanceString = getString(R.string.distance_of_run) + userDistance + getString(R.string.km)
 				+ "\n";
 		String giveUserTimeString = getString(R.string.time_) + route.getTimePassedAsString() + "\n\n";
 		String giveUserResultData = giveUserDistanceString + giveUserTimeString;
-
 		saveResultDialog = AlertDialogFactory.newSaveResultDialog(this, giveUserResultData, route, routeResults);
 		saveResultDialog.show();
 		route.setStarted(false);
@@ -248,13 +245,10 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, new MapLocationListener(this));
-
 		Criteria criteria = new Criteria();
 		criteria.setAccuracy(Criteria.ACCURACY_FINE);
 		criteria.setCostAllowed(false);
-
 		providerName = locationManager.getBestProvider(criteria, true);
-
 		if (providerName != null)
 		{
 			Log.d(TAG, getString(R.string.provider_) + providerName);
@@ -262,11 +256,9 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 
 		overlays = mapView.getOverlays();
 		Drawable drawable = getResources().getDrawable(R.drawable.ic_launcher);
-
 		RouteOverlay routeOverlay = new RouteOverlay(route.getGeoPoints(), 78, true);
 		myLocationOverlay = new MyLocationOverlay(this, mapView);
 		checkPointOverlay = new CheckPointOverlay(drawable, this);
-
 		overlays.add(routeOverlay);
 		overlays.add(myLocationOverlay);
 		overlays.add(checkPointOverlay);
@@ -363,20 +355,16 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 		ParcelableGeoPoint currentGeoPoint;
 		if (route.isStarted())
 		{
-
 			currentGeoPoint = new ParcelableGeoPoint((int) (location.getLatitude() * 1E6),
 					(int) (location.getLongitude() * 1E6));
 			route.getGeoPoints().add(currentGeoPoint);
 			userSpeed = (3.6 * location.getSpeed()) + getString(R.string.km) + "/" + getString(R.string.h);
-
 			if (lastLocation != null)
 			{
 				route.setTotalDistance(route.getTotalDistance() + lastLocation.distanceTo(location));
 				userDistance = new DecimalFormat("#.##").format(route.getTotalDistance() / 1000);
 			}
-
 			lastLocation = location;
-
 			if (!route.isNewRoute())
 			{
 				for (CheckPoint checkPoint : route.getCheckPoints())
@@ -401,15 +389,12 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 									Log.e(TAG, getString(R.string.could_not_start_media_service_) + e.getMessage());
 								}
 							}
-
 							currentCheckPoint = checkPoint;
 						}
-
 						break;
 					}
 				}
 			}
-
 			lastLocation = location;
 			speedView.setText(userSpeed);
 			distanceView.setText(userDistance + getString(R.string.km));
@@ -519,26 +504,6 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 		saveRouteDialog = new SaveRouteDialog(this, this, routeResults);
 		saveRouteDialog.show();
 	}
-
-//	/**
-//	 * Starts the timer that is used to let the user know for how long they have
-//	 * been using the route. After initializing, this method will be called once
-//	 * every second
-//	 */
-//	private void startTimer()
-//	{
-//		runnable = new Runnable()
-//		{
-//			@Override
-//			public void run()
-//			{
-//				timerTick();
-//				handler.postDelayed(this, 1000);
-//			}
-//		};
-//		handler = new Handler();
-//		handler.postDelayed(runnable, 0);
-//	}
 
 	/**
 	 * Method that gets called to update the UI with how much time that has
