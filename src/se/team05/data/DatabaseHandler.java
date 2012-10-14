@@ -311,7 +311,7 @@ public class DatabaseHandler
 	public void saveResult(Result result)
 	{
 		dbResultAdapter.open();
-		dbResultAdapter.instertResult(result.getRoutId(), result.getTimestamp(), result.getTime(),
+		dbResultAdapter.instertResult(result.getRid(), result.getTimestamp(), result.getTime(),
 				result.getDistance(), result.getCalories());
 		dbResultAdapter.close();
 	}
