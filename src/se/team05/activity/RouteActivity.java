@@ -87,7 +87,6 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 		MapLocationListener.Callbacks {
 
 	private static final String TAG = "Personal trainer";
-	private ArrayList<ParcelableGeoPoint> geoPointList = new ArrayList<ParcelableGeoPoint>();
 	private LocationManager locationManager;
 	private String providerName;
 	private EditRouteMapView mapView;
@@ -187,8 +186,11 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 		
 		dialogShown = savedInstanceState.getInt("dialogShown");
 		formattedTimeString = savedInstanceState.getString("formattedTimeString");
-		geoPointList = savedInstanceState.getParcelableArrayList("geoPointList");
-		RouteOverlay routeOverlay = new RouteOverlay(geoPointList, 78, true);
+		
+		ArrayList<ParcelableGeoPoint> geoPoints = savedInstanceState.getParcelableArrayList("geoPointList");
+		route.setGeoPoints(geoPoints);
+		
+		RouteOverlay routeOverlay = new RouteOverlay(route.getGeoPoints(), 78, true);
 		overlays.add(routeOverlay);
 
 		if (route.isNewRoute())
@@ -295,7 +297,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 		overlays = mapView.getOverlays();
 		Drawable drawable = getResources().getDrawable(R.drawable.ic_launcher);
 
-		RouteOverlay routeOverlay = new RouteOverlay(geoPointList, 78, true);
+		RouteOverlay routeOverlay = new RouteOverlay(route.getGeoPoints(), 78, true);
 		myLocationOverlay = new MyLocationOverlay(this, mapView);
 		checkPointOverlay = new CheckPointOverlay(drawable, this);
 
@@ -422,7 +424,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 		{
 
 			currentGeoPoint = new ParcelableGeoPoint((int) (location.getLatitude() * 1E6), (int) (location.getLongitude() * 1E6));
-			geoPointList.add(currentGeoPoint);
+			route.getGeoPoints().add(currentGeoPoint);
 			userSpeed = (3.6 * location.getSpeed()) + getString(R.string.km) + "/" + getString(R.string.h);
 
 			if (lastLocation != null)
@@ -755,7 +757,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 			routeResults.setTimestamp((int) System.currentTimeMillis() / 1000);
 			databaseHandler.saveResult(routeResults);
 		}
-		databaseHandler.saveGeoPoints(route.getId(), geoPointList);
+		databaseHandler.saveGeoPoints(route.getId(), route.getGeoPoints());
 		databaseHandler.updateCheckPointRid(route.getId());
 		launchMainActivity();
 	}
@@ -829,7 +831,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
         outState.putLong("rid", route.getId());
         outState.putInt("dialogShown", dialogShown);
         outState.putString("formattedTimeString", formattedTimeString);
-        outState.putParcelableArrayList("geoPointList", geoPointList);
+        outState.putParcelableArrayList("geoPointList", route.getGeoPoints());
         if(dialogShown == CHECKPOINTDIALOG)
         {
         	onSaveCheckPoint(currentCheckPoint);

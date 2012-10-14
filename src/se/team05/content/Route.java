@@ -168,9 +168,9 @@ public class Route
 	 * 
 	 * @param geoPoints2
 	 */
-	public void setGeoPoints(ArrayList<ParcelableGeoPoint> geoPoints2)
+	public void setGeoPoints(ArrayList<ParcelableGeoPoint> geoPoints)
 	{
-		this.geoPoints = geoPoints2;
+		this.geoPoints = geoPoints;
 	}
 
 	/**
