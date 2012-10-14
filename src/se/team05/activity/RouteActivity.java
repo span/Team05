@@ -100,7 +100,6 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 	private EditCheckPointDialog checkPointDialog;
 	private Handler handler;
 	private Runnable runnable;
-	private String nameOfExistingRoute;
 
 	private ArrayList<Track> selectedTracks = new ArrayList<Track>();
 	private DatabaseHandler databaseHandler;
@@ -155,7 +154,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 		if (!route.isNewRoute())
 		{
 			initRoute(route.getId());
-			setTitle(getString(R.string.saved_route_) + nameOfExistingRoute);
+			setTitle(getString(R.string.saved_route_) + route.getName());
 			addSavedCheckPoints(route.getId());
 		}
 		setupButtons();
@@ -374,7 +373,6 @@ public class RouteActivity extends MapActivity implements View.OnClickListener,
 			}
 		RouteOverlay routeOverlay = new RouteOverlay(geoPoints, 10, true);
 		overlays.add(routeOverlay);
-		nameOfExistingRoute = route.getName();
 	}
 
 	/**
