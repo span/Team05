@@ -15,7 +15,7 @@
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
 
     (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
-*/
+ */
 
 /**
 
@@ -43,25 +43,62 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.Projection;
 
+/**
+ * This overlay uses a list of geopoints to draw a path on a map view. At the
+ * start and end point an oval is also drawn to mark the start and finish of the
+ * route.
+ * 
+ * @author Daniel Kvist 
+ * 		   This class was inspired by a blog post that was found on
+ *         the web. Unfortunately I cannot find the blog post again and the URL
+ *         has been lost. The original code was free to use and has been
+ *         modified to suit our needs.
+ * 
+ */
 public class RouteOverlay extends Overlay
 {
 
 	private int color;
 	private final List<ParcelableGeoPoint> geoPoints;
-	private boolean drawEndPoints;
 
-	public RouteOverlay(List<ParcelableGeoPoint> points)
+	/**
+	 * Constructor which uses a default red color for the route and takes a list
+	 * of geopoints.
+	 * 
+	 * @param points
+	 *            the geo points to draw
+	 */
+	public RouteOverlay(List<ParcelableGeoPoint> geoPoints)
 	{
-		this(points, Color.RED, true);
+		this(geoPoints, Color.RED);
 	}
 
-	public RouteOverlay(List<ParcelableGeoPoint> points, int color, boolean drawEndPoints)
+	/**
+	 * Constructor which sets a default color for the route and takes a list of
+	 * geopoints.
+	 * 
+	 * @param points
+	 *            the geo points to draw
+	 * @param color
+	 *            the color of the path
+	 */
+	public RouteOverlay(List<ParcelableGeoPoint> points, int color)
 	{
 		this.color = color;
 		this.geoPoints = points;
-		this.drawEndPoints = drawEndPoints;
 	}
 
+	/**
+	 * Draws an oval with the radius of the at the specified point with the
+	 * specified color
+	 * 
+	 * @param canvas
+	 *            the canvas to draw on
+	 * @param paint
+	 *            the paint to drawn with
+	 * @param point
+	 *            the point to draw
+	 */
 	private void drawOval(Canvas canvas, Paint paint, Point point)
 	{
 		Paint ovalPaint = new Paint(paint);
@@ -74,6 +111,12 @@ public class RouteOverlay extends Overlay
 		canvas.drawOval(oval, ovalPaint);
 	}
 
+	/**
+	 * This method is called by the system when the overlay is abut to be drawn.
+	 * We start by looping through the geopoints to find start and end points.
+	 * We then set a paint object which will be used to draw with and then
+	 * execute the draw. The start and end points are drawn as ovals.
+	 */
 	@Override
 	public boolean draw(Canvas canvas, MapView mapView, boolean shadow, long when)
 	{

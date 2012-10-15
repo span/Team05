@@ -40,7 +40,7 @@ import com.google.android.maps.GeoPoint;
  * The MapLocationListener class is a LocationListener which uses callback to
  * update the location
  * 
- * @author Patrik Thituson
+ * @author Patrik Thituson, Daniel Kvist
  * 
  */
 public class MapLocationListener implements LocationListener
@@ -57,6 +57,7 @@ public class MapLocationListener implements LocationListener
 	private Intent serviceIntent;
 	private ArrayList<CheckPoint> checkPoints;
 	private CheckPoint currentCheckPoint;
+	private Location lastLocation;
 
 	/**
 	 * The Constructor
@@ -70,6 +71,7 @@ public class MapLocationListener implements LocationListener
 		this.newRoute = newRoute;
 		this.checkPoints = checkPoints;
 		this.serviceIntent = new Intent(context, MediaService.class);
+		lastLocation = null;
 	}
 
 	/**
@@ -104,7 +106,6 @@ public class MapLocationListener implements LocationListener
 	public void onLocationChanged(Location location)
 	{
 		GeoPoint geoPoint;
-		Location lastLocation = null;
 		float totalDistance= 0;
 		String userSpeed = "";
 		String userDistance = "";

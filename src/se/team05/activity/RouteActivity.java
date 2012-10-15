@@ -83,6 +83,8 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 		CheckPointOverlay.Callbacks, MapOnGestureListener.Callbacks, MapLocationListener.Callbacks, Utils.Callbacks,
 		RouteActivityButtonListener.Callbacks
 {
+	private static final int USER_ROUTE_COLOR = 78;
+	private static final int RECORDED_ROUTE_COLOR = 10;
 	private static final String TAG = "Personal trainer";
 	private static final String BUNDLE_RID = "rid";
 	private static final String BUNDLE_CID = "cid";
@@ -178,7 +180,7 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 		if (!route.isNewRoute())
 		{
 			route = databaseHandler.getRoute(route.getId());
-			RouteOverlay recordedRouteOverlay = new RouteOverlay(route.getGeoPoints(), 10, true);
+			RouteOverlay recordedRouteOverlay = new RouteOverlay(route.getGeoPoints(), RECORDED_ROUTE_COLOR);
 			overlays.add(recordedRouteOverlay);
 			checkPointOverlay.setCheckPoints(route.getCheckPoints());
 			setTitle(getString(R.string.saved_route_) + route.getName());
@@ -233,7 +235,7 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 		}
 		myLocationOverlay = new MyLocationOverlay(this, mapView);
 		overlays.add(myLocationOverlay);
-		RouteOverlay userRouteOverlay = new RouteOverlay(route.getGeoPoints(), 78, true);
+		RouteOverlay userRouteOverlay = new RouteOverlay(route.getGeoPoints(), USER_ROUTE_COLOR);
 		overlays.add(userRouteOverlay);
 	}
 
@@ -253,7 +255,7 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 
 		ArrayList<ParcelableGeoPoint> geoPoints = savedInstanceState.getParcelableArrayList(BUNDLE_GEOPOINT_LIST);
 		route.setGeoPoints(geoPoints);
-		RouteOverlay routeOverlay3 = new RouteOverlay(route.getGeoPoints(), 78, true);
+		RouteOverlay routeOverlay3 = new RouteOverlay(route.getGeoPoints(), USER_ROUTE_COLOR);
 		overlays.add(routeOverlay3);
 		if (route.isNewRoute())
 		{
