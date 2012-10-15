@@ -67,6 +67,7 @@ public class MediaSelectorUITest extends ActivityInstrumentationTestCase2<MediaS
 		activity = getActivity();
 		listView = (ListView) activity.findViewById(R.id.list);
 		solo.waitForView(listView);
+		Thread.sleep(2000);
 		adapter = (MediaSelectorAdapter) listView.getAdapter();
 	}
 
@@ -100,7 +101,7 @@ public class MediaSelectorUITest extends ActivityInstrumentationTestCase2<MediaS
 				null, MediaStore.Audio.Media.ARTIST);
 		testCursor.moveToFirst();
 		solo.clickOnMenuItem("Sort by artist");
-		Thread.sleep(1000);
+		Thread.sleep(2000);
 		Cursor cursor = adapter.getCursor();
 		cursor.moveToFirst();
 		String testData = testCursor.getString(testCursor.getColumnIndex(MediaStore.Audio.Media.DATA));
@@ -111,7 +112,7 @@ public class MediaSelectorUITest extends ActivityInstrumentationTestCase2<MediaS
 				MediaStore.Audio.Media.ALBUM);
 		testCursor.moveToFirst();
 		solo.clickOnMenuItem("Sort by album");
-		Thread.sleep(1000);
+		Thread.sleep(2000);
 		cursor = adapter.getCursor();
 		cursor.moveToFirst();
 		testData = testCursor.getString(testCursor.getColumnIndex(MediaStore.Audio.Media.DATA));
@@ -122,7 +123,7 @@ public class MediaSelectorUITest extends ActivityInstrumentationTestCase2<MediaS
 				MediaStore.Audio.Media.TITLE);
 		testCursor.moveToFirst();
 		solo.clickOnMenuItem("Sort by track");
-		Thread.sleep(1000);
+		Thread.sleep(2000);
 		cursor = adapter.getCursor();
 		cursor.moveToFirst();
 		testData = testCursor.getString(testCursor.getColumnIndex(MediaStore.Audio.Media.DATA));
