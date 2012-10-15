@@ -286,11 +286,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	{
 		Result result = new Result(rid, (int) System.currentTimeMillis() / 1000, route.getTimePassed(),
 				(int) route.getTotalDistance(), 0);
-		String giveUserDistanceString = getString(R.string.distance_of_run)
-				+ String.valueOf((int) route.getTotalDistance()) + getString(R.string.km) + "\n";
-		String giveUserTimeString = getString(R.string.time_) + route.getTimePassedAsString() + "\n\n";
-		String giveUserResultData = giveUserDistanceString + giveUserTimeString;
-		saveResultDialog = AlertDialogFactory.newSaveResultDialog(this, giveUserResultData, route, result);
+		saveResultDialog = AlertDialogFactory.newSaveResultDialog(this, route, result);
 		saveResultDialog.show();
 		route.setStarted(false);
 		wakeLock = Utils.releaseWakeLock();
