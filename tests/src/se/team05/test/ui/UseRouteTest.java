@@ -33,6 +33,7 @@ import se.team05.data.DBGeoPointAdapter;
 import se.team05.data.DBRouteAdapter;
 import se.team05.data.Database;
 import se.team05.data.DatabaseHandler;
+import se.team05.listener.MapLocationListener;
 import se.team05.overlay.CheckPoint;
 import se.team05.test.util.MockLocationUtil;
 import android.app.Activity;
@@ -97,17 +98,17 @@ public class UseRouteTest extends ActivityInstrumentationTestCase2<MainActivity>
 	{
 		DatabaseHandler databaseHandler = new DatabaseHandler(getActivity());
 		Route route = new Route("name", "description");
-		long rid = databaseHandler.saveRoute(route);
+		route.setId(databaseHandler.saveRoute(route));
 		
 		ArrayList<ParcelableGeoPoint> geoPointList = new ArrayList<ParcelableGeoPoint>();
 		ParcelableGeoPoint gpA = new ParcelableGeoPoint((int)(47.975 * 1E6), (int)(17.056 * 1E6));
 		ParcelableGeoPoint gpB = new ParcelableGeoPoint((int)(48.975 * 1E6), (int)(17.056 * 1E6));
 		geoPointList.add(gpA);
 		geoPointList.add(gpB);
-		databaseHandler.saveGeoPoints(rid, geoPointList);
+		databaseHandler.saveGeoPoints(route.getId(), geoPointList);
 		
 		CheckPoint checkPoint = new CheckPoint(new GeoPoint((int) (48.975 * 1E6), (int) (17.056 * 1E6)));
-		checkPoint.setRid(rid);
+		checkPoint.setRid(route.getId());
 		long cid = databaseHandler.saveCheckPoint(checkPoint);
 		
 		Cursor cursor = getActivity().getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, new String[] { MediaStore.Audio.Media.DATA }, null, null, null);
@@ -139,14 +140,15 @@ public class UseRouteTest extends ActivityInstrumentationTestCase2<MainActivity>
 		assertEquals(startButton.getVisibility(), View.GONE);
 		assertEquals(stopButton.getVisibility(), View.VISIBLE);
 
+		final MapLocationListener locationListener = new MapLocationListener(routeActivity, false, route.getCheckPoints());
 		MockLocationUtil mockLocation = new MockLocationUtil();
-		MockLocationUtil.publishMockLocation(47.975, 17.056, routeActivity, route.getCheckPoints());
+		MockLocationUtil.publishMockLocation(47.975, 17.056, routeActivity, route.getCheckPoints(), locationListener);
 		Thread.sleep(1500);
 		Location locationA = mockLocation.getLastKnownLocationInApplication(routeActivity);
 		assertEquals(47.975, locationA.getLatitude());
 		assertEquals(17.056, locationA.getLongitude());
 		
-		MockLocationUtil.publishMockLocation(48.975, 17.056, routeActivity, route.getCheckPoints());
+		MockLocationUtil.publishMockLocation(48.975, 17.056, routeActivity, route.getCheckPoints(), locationListener);
 		Thread.sleep(1500);
 		final Location locationB = mockLocation.getLastKnownLocationInApplication(routeActivity);
 		assertEquals(48.975, locationB.getLatitude());
@@ -157,8 +159,7 @@ public class UseRouteTest extends ActivityInstrumentationTestCase2<MainActivity>
 			@Override
 			public void run()
 			{
-				// TODO See if possible to run the listener instead
-				//routeActivity.updateLocation(locationB);
+				locationListener.onLocationChanged(locationB);
 			}
 		});
 		
