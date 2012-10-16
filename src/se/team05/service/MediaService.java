@@ -15,7 +15,7 @@
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
 
     (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
-*/
+ */
 
 package se.team05.service;
 
@@ -55,13 +55,9 @@ import android.telephony.TelephonyManager;
  * It requires a playlist to be passed in as a string array list extra with
  * information about where the media it is supposed to play is located.
  * 
- * NOTE: THIS NEEDS TO CHANGE INTO A LIST OF TRACKS INSTEAD!
- * 
  * @author Daniel Kvist
  * 
  */
-// TODO Handle Track's instead of Strings
-// TODO Handle whole playlist, not just one song
 public class MediaService extends Service implements OnCompletionListener, OnPreparedListener, OnErrorListener,
 		MediaServicePhoneStateListener.Callbacks
 {
@@ -119,15 +115,14 @@ public class MediaService extends Service implements OnCompletionListener, OnPre
 	/**
 	 * Initiates a notification with the application launcher icon as a graphic
 	 * and custom messages for the ticker, title and text.
-	 * 	 
+	 * 
 	 */
 	// TODO USE TRACK INFORMATION HERE!
 	private void initNotification()
 	{
 		Context context = getApplicationContext();
 		Intent notificationIntent = new Intent(context, ListExistingRoutesActivity.class);
-		PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent,
-				PendingIntent.FLAG_CANCEL_CURRENT);
+		PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
 		NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -136,8 +131,7 @@ public class MediaService extends Service implements OnCompletionListener, OnPre
 
 		builder.setContentIntent(contentIntent).setSmallIcon(R.drawable.ic_launcher)
 				.setLargeIcon(BitmapFactory.decodeResource(res, R.drawable.ic_launcher)).setTicker("My ticker string")
-				.setWhen(System.currentTimeMillis()).setOngoing(true).setContentTitle("My title")
-				.setContentText("My content text");
+				.setWhen(System.currentTimeMillis()).setOngoing(true).setContentTitle("My title").setContentText("My content text");
 		Notification n = builder.getNotification();
 
 		nm.notify(NOTIFICATION_ID, n);
@@ -225,7 +219,6 @@ public class MediaService extends Service implements OnCompletionListener, OnPre
 	public boolean onError(MediaPlayer mp, int what, int extra)
 	{
 		// TODO Handle error
-		// ... react appropriately ...
 		// The MediaPlayer has moved to the Error state, must be reset!
 		return false;
 	}

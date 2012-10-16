@@ -15,7 +15,7 @@
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
 
     (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
-*/
+ */
 
 package se.team05.data;
 
@@ -76,12 +76,7 @@ public class DBRouteAdapter extends DBAdapter
 	 */
 	public long insertRoute(String name, String description, int type, int timeCoach, int lengthCoach)
 	{
-		ContentValues values = new ContentValues();
-		values.put(COLUMN_NAME, name);
-		values.put(COLUMN_DESCRIPTION, description);
-		values.put(COLUMN_TYPE, type);
-		values.put(COLUMN_TIMECOACH, timeCoach);
-		values.put(COLUMN_LENGTHCOACH, lengthCoach);
+		ContentValues values = buildValues(name, description, type, timeCoach, lengthCoach);
 		return db.insert(TABLE_ROUTES, null, values);
 	}
 
@@ -119,5 +114,46 @@ public class DBRouteAdapter extends DBAdapter
 	public Cursor fetchRoute(long id)
 	{
 		return db.query(TABLE_ROUTES, null, COLUMN_ID + "=" + id, null, null, null, null);
+	}
+
+	/**
+	 * Updates the route given by the id
+	 * 
+	 * @param id
+	 *            the id of the route
+	 * @param name
+	 *            the name of the route
+	 * @param description
+	 *            the description of the route
+	 * @param type
+	 *            the type of the route
+	 * @param timeCoach
+	 * @param lengthCoach
+	 */
+	public void updateRoute(long id, String name, String description, int type, int timeCoach, int lengthCoach)
+	{
+		ContentValues values = buildValues(name, description, type, timeCoach, lengthCoach);
+		db.update(TABLE_ROUTES, values, COLUMN_ID + "=?" + id, null);
+	}
+
+	/**
+	 * Helper method to build the content values object
+	 * 
+	 * @param name
+	 * @param description
+	 * @param type
+	 * @param timeCoach
+	 * @param lengthCoach
+	 * @return a content values key value pair
+	 */
+	private ContentValues buildValues(String name, String description, int type, int timeCoach, int lengthCoach)
+	{
+		ContentValues values = new ContentValues();
+		values.put(COLUMN_NAME, name);
+		values.put(COLUMN_DESCRIPTION, description);
+		values.put(COLUMN_TYPE, type);
+		values.put(COLUMN_TIMECOACH, timeCoach);
+		values.put(COLUMN_LENGTHCOACH, lengthCoach);
+		return values;
 	}
 }

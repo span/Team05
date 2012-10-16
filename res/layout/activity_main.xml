@@ -55,6 +55,7 @@
             android:contentDescription="@string/click_to_use_an_existing_route"
             android:paddingTop="32dp"
             android:src="@drawable/btn_use_route" />
+
     </RelativeLayout>
 
     <LinearLayout

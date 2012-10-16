@@ -28,7 +28,7 @@ import se.team05.overlay.CheckPoint;
  * ListView representing the older routes saved in the database that the user
  * can choose from. TODO Change comments accordingly
  * 
- * @author Henrik Hugo
+ * @author Henrik Hugo, Daniel Kvist
  * 
  */
 public class Route
@@ -183,11 +183,22 @@ public class Route
 		return geoPoints;
 	}
 
+	/**
+	 * Sets the checkpoint list of a route
+	 * 
+	 * @param checkPoints
+	 *            the checkpoints to relate to the route
+	 */
 	public void setCheckPoints(ArrayList<CheckPoint> checkPoints)
 	{
 		this.checkPoints = checkPoints;
 	}
 
+	/**
+	 * Gets the checkpoints of this route
+	 * 
+	 * @return a list of checkpoints
+	 */
 	public ArrayList<CheckPoint> getCheckPoints()
 	{
 		return checkPoints;

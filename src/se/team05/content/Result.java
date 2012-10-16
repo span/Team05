@@ -136,6 +136,10 @@ public class Result {
 	 * @return time (seconds) it took to complete route
 	 */
 	public int getTime() {
+		if(time == 0)
+		{
+			setTime(1);
+		}
 		return time;
 	}
 
