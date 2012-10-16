@@ -47,6 +47,9 @@ import android.widget.Toast;
  * This class manages playing of sounds from a sound pool and recording of new
  * sounds. This class should only be used for sounds that are less then 1MB in
  * size, for playing music the media player or a media service should be used.
+ * The sounds it creates are stored in ./Music/personal-trainer/ and each sound
+ * also has an album art image in this directory which is created by the
+ * launcher icon on first run.
  * 
  * @author Daniel Kvist
  * 
@@ -66,7 +69,8 @@ public class SoundManager
 
 	/**
 	 * Simple constructor which just takes a context as a parameter. It can be
-	 * used when all you want to do is to record a new sound.
+	 * used when all you want to do is to record a new sound. The album art is
+	 * created automatically.
 	 * 
 	 * @param context
 	 *            the context which to operate in
