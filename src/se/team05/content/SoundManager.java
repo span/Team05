@@ -20,6 +20,8 @@
 package se.team05.content;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -29,6 +31,9 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.MediaRecorder;
 import android.media.SoundPool;
 import android.net.Uri;
@@ -48,7 +53,9 @@ import android.widget.Toast;
 public class SoundManager
 {
 	private static final String TAG = "SoundManager";
+	private static final String ALBUM_ART_FILENAME = "album-art.png";
 
+	private File storageDirectory;
 	private SoundPool soundPool;
 	private Context context;
 	private MediaRecorder mediaRecorder;
@@ -65,13 +72,14 @@ public class SoundManager
 	 */
 	public SoundManager(Context context)
 	{
-		this.context = context;
+		this(context, null, -1);
 	}
 
 	/**
 	 * A constructor that is used when you want to play sounds from a sound
 	 * pool. It stores the parameters as instance variables which are used in
-	 * other methods.
+	 * other methods and then goes on to create the default directory and album
+	 * art.
 	 * 
 	 * @param context
 	 *            the context which to operate in
@@ -85,6 +93,51 @@ public class SoundManager
 		this.context = context;
 		this.soundPool = soundPool;
 		this.soundID = soundID;
+		createFolder();
+		createAlbumArt();
+	}
+
+	/**
+	 * Creates the default directory to save all recordings in
+	 */
+	private void createFolder()
+	{
+		storageDirectory = new File(Environment.getExternalStorageDirectory(), "/Music/personal-trainer/");
+		if (!storageDirectory.exists())
+		{
+			storageDirectory.mkdirs();
+		}
+	}
+
+	/**
+	 * Creates album art image from the launcher icon and saves it in the
+	 * default directory
+	 */
+	private void createAlbumArt()
+	{
+		if (storageDirectory.exists())
+		{
+			File file = new File(storageDirectory, ALBUM_ART_FILENAME);
+			if (!file.exists())
+			{
+				Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher);
+				try
+				{
+					FileOutputStream outputStream = new FileOutputStream(file);
+					bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+					outputStream.flush();
+					outputStream.close();
+				}
+				catch (FileNotFoundException e)
+				{
+					e.printStackTrace();
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 	/**
@@ -130,12 +183,6 @@ public class SoundManager
 	public void startRecording() throws IOException
 	{
 		recording = true;
-
-		File storageDirectory = new File(Environment.getExternalStorageDirectory(), "/Music/personal-trainer/");
-		if (!storageDirectory.exists())
-		{
-			storageDirectory.mkdirs();
-		}
 		if (storageDirectory.exists())
 		{
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -181,7 +228,7 @@ public class SoundManager
 	 */
 	private void saveToLibrary()
 	{
-		ContentValues values = new ContentValues(4);
+		ContentValues values = new ContentValues(7);
 		values.put(MediaStore.Audio.Media.TITLE, soundFile.getName());
 		values.put(MediaStore.Audio.Media.DATE_ADDED, (int) (System.currentTimeMillis() / 1000));
 		values.put(MediaStore.Audio.Media.MIME_TYPE, "audio/mp3");
@@ -193,73 +240,21 @@ public class SoundManager
 		ContentResolver contentResolver = context.getContentResolver();
 		Uri mediaStoreUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 		Uri newUri = contentResolver.insert(mediaStoreUri, values);
+
+		Cursor c = contentResolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+				new String[] { MediaStore.Audio.Media.ALBUM_ID }, MediaStore.Audio.Media.ALBUM + "="
+						+ "'Personal Trainer Recordings'", null, null);
+		c.moveToFirst();
+		int albumId = c.getInt(c.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
+
+		final Uri artworkUri = Uri.parse("content://media/external/audio/albumart");
+		values = new ContentValues(2);
+		values.put(MediaStore.Audio.Albums.ALBUM_ID, albumId);
+		values.put(MediaStore.Audio.Albums.ALBUM_ART, soundFile.getParent() + ALBUM_ART_FILENAME);
+		contentResolver.insert(artworkUri, values);
+		
 		context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, newUri));
 		Toast.makeText(context, context.getString(R.string.added_new_recording_) + soundFile.getAbsolutePath(),
 				Toast.LENGTH_LONG).show();
 	}
-
-	// private void insertAlbumArt()
-	// {
-	// final Uri sArtworkUri =
-	// Uri.parse("content://media/external/audio/albumart");
-	// Bitmap bm = getArtworkFromFile(context, null, album_id);
-	// if (bm != null)
-	// {
-	// // Put the newly found artwork in the database.
-	// // Note that this shouldn't be done for the "unknown" album,
-	// // but if this method is called correctly, that won't
-	// // happen.
-	//
-	// // first write it somewhere
-	// String file = Environment.getExternalStorageDirectory() + "/albumthumbs/"
-	// + String.valueOf(System.currentTimeMillis());
-	// try
-	// {
-	// OutputStream outstream = new FileOutputStream(file);
-	// if (bm.getConfig() == null)
-	// {
-	// bm = bm.copy(Bitmap.Config.RGB_565, false);
-	// if (bm == null)
-	// {
-	// return getDefaultArtwork(context);
-	// }
-	// }
-	// boolean success = bm.compress(Bitmap.CompressFormat.JPEG, 75, outstream);
-	// outstream.close();
-	// if (success)
-	// {
-	// ContentValues values = new ContentValues();
-	// values.put("album_id", album_id);
-	// values.put("_data", file);
-	// Uri newuri = res.insert(sArtworkUri, values);
-	// if (newuri == null)
-	// {
-	// // Failed to insert in to the database. The most likely cause of this is
-	// that the item already existed in the database, and the most likely cause
-	// of
-	// // that is that the album was scanned before, but the user deleted the
-	// album art from the sd card. We can ignore that case here, since the
-	// // media provider will regenerate the album art for those entries whenit
-	// detects this.
-	// success = false;
-	// }
-	// }
-	// if (!success)
-	// {
-	// File f = new File(file);
-	// f.delete();
-	// }
-	// }
-	// catch (FileNotFoundException e)
-	// {
-	// Log.e(TAG, "error creating file", e);
-	// }
-	// catch (IOException e)
-	// {
-	// Log.e(TAG, "error creating file", e);
-	// }
-	// }
-	//
-	// }
-
 }
