@@ -37,6 +37,7 @@ import android.graphics.BitmapFactory;
 import android.media.MediaRecorder;
 import android.media.SoundPool;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -117,26 +118,8 @@ public class SoundManager
 	{
 		if (storageDirectory.exists())
 		{
-			File file = new File(storageDirectory, ALBUM_ART_FILENAME);
-			if (!file.exists())
-			{
-				Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher);
-				try
-				{
-					FileOutputStream outputStream = new FileOutputStream(file);
-					bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-					outputStream.flush();
-					outputStream.close();
-				}
-				catch (FileNotFoundException e)
-				{
-					e.printStackTrace();
-				}
-				catch (IOException e)
-				{
-					e.printStackTrace();
-				}
-			}
+			AsyncTask<Void, Void, Void> bdt = new BitmapDecoderTask();
+			bdt.execute();
 		}
 	}
 
@@ -252,9 +235,42 @@ public class SoundManager
 		values.put(MediaStore.Audio.Albums.ALBUM_ID, albumId);
 		values.put(MediaStore.Audio.Albums.ALBUM_ART, soundFile.getParent() + ALBUM_ART_FILENAME);
 		contentResolver.insert(artworkUri, values);
-		
+
 		context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, newUri));
 		Toast.makeText(context, context.getString(R.string.added_new_recording_) + soundFile.getAbsolutePath(),
 				Toast.LENGTH_LONG).show();
+	}
+
+	/**
+	 * Private class to execute the bitmap decoding when first creating the
+	 * album art.
+	 */
+	private class BitmapDecoderTask extends AsyncTask<Void, Void, Void>
+	{
+		@Override
+		protected Void doInBackground(Void... params)
+		{
+			File file = new File(storageDirectory, ALBUM_ART_FILENAME);
+			if (!file.exists())
+			{
+				Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher);
+				try
+				{
+					FileOutputStream outputStream = new FileOutputStream(file);
+					bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+					outputStream.flush();
+					outputStream.close();
+				}
+				catch (FileNotFoundException e)
+				{
+					e.printStackTrace();
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+				}
+			}
+			return null;
+		}
 	}
 }
