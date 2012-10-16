@@ -20,6 +20,8 @@ package se.team05.content;
 
 import java.util.ArrayList;
 
+import android.content.Context;
+
 import se.team05.overlay.CheckPoint;
 
 /**
@@ -42,11 +44,14 @@ public class Route
 	private int timecoach;
 	private int lengthcoach;
 	private int timePassed;
+	private int calories;
 	private float totalDistance;
 	private boolean started;
+	private Context context;
 
 	private ArrayList<ParcelableGeoPoint> geoPoints;
 	private ArrayList<CheckPoint> checkPoints;
+	private CalorieCounter calorieCounter;
 
 	/**
 	 * Constructor for a route
@@ -54,9 +59,11 @@ public class Route
 	 * @param name
 	 * @param description
 	 */
-	public Route(String name, String description)
+	public Route(String name, String description, Context context)
 	{
 		this(name, description, 0, -1, -1);
+		this.context = context;
+		calorieCounter = new CalorieCounter(context);
 	}
 
 	/**
@@ -96,6 +103,7 @@ public class Route
 		this.started = false;
 		this.geoPoints = new ArrayList<ParcelableGeoPoint>();
 		this.checkPoints = new ArrayList<CheckPoint>();
+		this.calorieCounter = new CalorieCounter();
 	}
 
 	public String toString()
@@ -214,6 +222,7 @@ public class Route
 	public void setTotalDistance(float totalDistance)
 	{
 		this.totalDistance = totalDistance;
+		calories = calorieCounter.updateCalories(totalDistance);
 	}
 
 	/**
@@ -291,4 +300,10 @@ public class Route
 	{
 		return getId() == -1;
 	}
+
+	public int getCalories()
+	{
+		return calories;
+	}
+
 }

@@ -1,5 +1,6 @@
 package se.team05.content;
 
+import se.team05.R;
 import se.team05.activity.RouteActivity;
 import se.team05.activity.SettingsActivity;
 import android.content.Context;
@@ -7,22 +8,24 @@ import android.content.SharedPreferences;
 
 public class CalorieCounter
 {
-	private int weight;
-	private int distance;
+	private int weight = 75;
+	private boolean isActivityWalking = true;
 	private double calorieBurnedFactorWalking = 0.0004108;
 	private double calorieBurnedFactorRunning = 0.00086283;
-	private boolean isActivityWalking;
-	private int totalCalsBurned = 0;
+	private Settings settings;
 
-	public CalorieCounter(int weight, int distance, boolean isActivityWalking)
+	public CalorieCounter()
 	{
-		this.distance = distance;
-		this.isActivityWalking = isActivityWalking;
 	}
 	
 	public CalorieCounter(Context context)
 	{
-		Settings set = new Settings(context);
+		settings = new Settings(context);
+	}
+	
+	public int updateCalories(float distance)
+	{
+		return caloriesBurned(distance);
 	}
 	
 
@@ -32,20 +35,17 @@ public class CalorieCounter
 	 * 
 	 * @return calories burned represented by a double
 	 */
-	private void caloriesBurned()
+	private int caloriesBurned(float distance)
 	{
-		if(isActivityWalking)
+		if(settings.isPrefActivityRunning())
 		{
-			totalCalsBurned = (int) (calorieBurnedFactorWalking * weight * distance);
-		}
-		else if(!isActivityWalking)
-		{
-			totalCalsBurned = (int) (calorieBurnedFactorRunning * weight * distance);
+			return (int) (calorieBurnedFactorRunning * settings.getUserWeight() * distance);
 		}
 		else
 		{
-			totalCalsBurned = 0;
+			return (int) (calorieBurnedFactorWalking * settings.getUserWeight() * distance);
 		}
+
 	}
 
 }

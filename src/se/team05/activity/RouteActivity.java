@@ -117,6 +117,7 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 	private TextView speedView;
 	private TextView distanceView;
 	private TextView timeView;
+	private TextView calorieView;
 
 	/**
 	 * Will present a map to the user and will also display a dot representing
@@ -134,7 +135,7 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 		setContentView(R.layout.activity_route);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		databaseHandler = new DatabaseHandler(this);
-		route = new Route(getString(R.string.new_route), getString(R.string.this_is_a_new_route));
+		route = new Route(getString(R.string.new_route), getString(R.string.this_is_a_new_route), this);
 		wakeLock = Utils.acquireWakeLock(this);
 
 		setupMapView();
@@ -198,6 +199,7 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 		distanceView = (TextView) findViewById(R.id.show_distance_textview);
 		speedView = (TextView) findViewById(R.id.show_speed_textview);
 		timeView = (TextView) findViewById(R.id.show_time_textview);
+		calorieView = (TextView) findViewById(R.id.show_calorie_textview);
 		Button addCheckPointButton = (Button) findViewById(R.id.add_checkpoint);
 		Button showResultButton = (Button) findViewById(R.id.show_result_button);
 		stopAndSaveButton = (Button) findViewById(R.id.stop_button);
@@ -346,6 +348,7 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 			route.setTotalDistance(totalDistance);
 			speedView.setText(userSpeed);
 			distanceView.setText(userDistance + getString(R.string.km));
+			calorieView.setText(String.valueOf(route.getCalories()));
 			mapView.postInvalidate();
 		}
 	}

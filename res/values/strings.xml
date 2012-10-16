@@ -111,4 +111,5 @@
     <string name="weight_representation_">"Weight representation: "</string>
     <string name="kilograms">Kilograms</string>
     <string name="pounds">Pounds</string>
+    <string name="calories_burned_">"Calories: "</string>
 </resources>
