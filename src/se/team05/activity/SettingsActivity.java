@@ -3,6 +3,8 @@ package se.team05.activity;
 import se.team05.R;
 import se.team05.R.layout;
 import se.team05.R.menu;
+import se.team05.content.CalorieCounter;
+import se.team05.content.Settings;
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -19,23 +21,24 @@ import android.support.v4.app.NavUtils;
 
 public class SettingsActivity extends Activity implements View.OnClickListener
 {
-	public static final String PREFERENCES_NAME = "se.team05.PersonalTrainerSettings";
-	public static final String PREFERENCES_USER_WEIGHT = "userWeight";
-	public static final String PREFERENCES_USER_NAME = "userName";
-	public static final String PREFERENCES_USER_SEX = "userSex";
-	public static final String PREFERENCES_USER_UNIT = "userUnit";
 	EditText nameEdit;
 	EditText weightEdit;
 	private String userName;
 	private String userWeightString;
 	private int userWeight;
-	private boolean isFemale;
-	private boolean isSI;
+	private boolean isLengthSi;
+	private boolean isWeightSi;
+	private boolean preferredActivityRunning;
 	private Button saveSettings;
-	private RadioButton radioFemale;
-	private RadioButton radioMale;
-	private RadioButton radioSI;
-	private RadioButton radioEng;
+	private RadioButton radioWalking;
+	private RadioButton radioRunning;
+	private RadioButton radioLengthSI;
+	private RadioButton radioLengthEng;
+	private RadioButton radioWeightSI;
+	private RadioButton radioWeightEng;
+	
+	static SharedPreferences sharedPreferences;
+	private Settings settings;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) 
@@ -43,65 +46,83 @@ public class SettingsActivity extends Activity implements View.OnClickListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         getActionBar().setDisplayHomeAsUpEnabled(true);
+        settings = new Settings(this);
         
+        userName = settings.getUserName();
+        userWeight = settings.getUserWeight();
+        isLengthSi = settings.isSILength();
+        isWeightSi = settings.isSIWeight();
+        System.out.println("ONCREATE VIKT: " + settings.isSIWeight());
+        preferredActivityRunning = settings.isPrefActivityRunning();
 
-               
-        SharedPreferences settings = getSharedPreferences(PREFERENCES_NAME, 0);
-        userName = settings.getString(PREFERENCES_USER_NAME, "BATMAN");
-        userWeight = settings.getInt(PREFERENCES_USER_WEIGHT, 75);
-        isFemale = settings.getBoolean(PREFERENCES_USER_SEX, true);
-        isSI = settings.getBoolean(PREFERENCES_USER_UNIT, true);
         userWeightString = "" + userWeight;
 
-
-        radioFemale = (RadioButton) findViewById(R.id.radio_female);
-        radioMale = (RadioButton) findViewById(R.id.radio_male);
-    	radioFemale.setChecked(isFemale);
-    	radioMale.setChecked(!isFemale);
+        setUpButtons();
+        
+    }
+    
+    public void onResume(Bundle savedInstanceState)
+    {
+		super.onResume();
+		
+        userName = settings.getUserName();
+        userWeight = settings.getUserWeight();
+        isLengthSi = settings.isSILength();
+        System.out.println("ONRESUME VIKT: " + settings.isSIWeight());
+        isWeightSi = settings.isSIWeight();
+        userWeightString = "" + userWeight;
+    }
+    
+    private void setUpButtons()
+    {
+    	radioWalking = (RadioButton) findViewById(R.id.radio_walking);
+        radioRunning = (RadioButton) findViewById(R.id.radio_running);
+     	radioWalking.setChecked(!preferredActivityRunning);
+     	radioRunning.setChecked(preferredActivityRunning);
+     	
+    	radioLengthSI = (RadioButton) findViewById(R.id.radio_length_si);
+    	radioLengthEng = (RadioButton) findViewById(R.id.radio_length_eng);
+    	radioLengthSI.setChecked(isLengthSi);
+    	radioLengthEng.setChecked(!isLengthSi);
     	
-    	radioSI = (RadioButton) findViewById(R.id.radio_si);
-    	radioEng = (RadioButton) findViewById(R.id.radio_eng);
-    	radioSI.setChecked(isSI);
-    	radioEng.setChecked(!isSI);
-    	int aas = 2;
-        nameEdit = (EditText) findViewById(R.id.edit_name);
+    	radioWeightSI = (RadioButton) findViewById(R.id.radio_weight_si);
+    	radioWeightEng = (RadioButton) findViewById(R.id.radio_weight_eng);
+    	radioWeightSI.setChecked(isWeightSi);
+    	radioWeightEng.setChecked(!isWeightSi);
+    	
+    	nameEdit = (EditText) findViewById(R.id.edit_name);
         nameEdit.setText(userName);
         weightEdit = (EditText) findViewById(R.id.edit_weight);
         weightEdit.setText(userWeightString);
+        
         saveSettings = (Button) findViewById(R.id.save_settings);
         saveSettings.setOnClickListener(this);
-        int y = 3;
-        
     }
 
     
 	@Override
 	public void onClick(View arg0) 
 	{
+		
 		userWeightString = weightEdit.getText().toString();
 		
 		if(testValues())
 		{
-			SharedPreferences settings = getSharedPreferences(PREFERENCES_NAME, 0);
-		    SharedPreferences.Editor editor = settings.edit();
-		      
-		    userName = nameEdit.getText().toString();
-		    
-		    editor.putString(PREFERENCES_USER_NAME, userName);
-		    editor.putInt(PREFERENCES_USER_WEIGHT, userWeight);
-		    editor.putBoolean(PREFERENCES_USER_SEX, isFemale);
-		    editor.putBoolean(PREFERENCES_USER_UNIT, isSI);
-		    
-		    editor.commit();
 
-		    
+		    userName = nameEdit.getText().toString();
+			settings.setUserName(userName);
+			settings.setUserWeight(userWeight);
+			settings.setPrefActivityRunning(preferredActivityRunning);
+			settings.setSILength(isLengthSi);
+			settings.setSIWeight(isWeightSi);
+			settings.commitChanges();
+
 			CharSequence text = getString(R.string.settings_saved);
 			int duration = Toast.LENGTH_SHORT;
 
 			Toast toast = Toast.makeText(this, text, duration);
 			toast.show();
-		    
-		    
+
 		    
 		}
 		else
@@ -116,9 +137,8 @@ public class SettingsActivity extends Activity implements View.OnClickListener
 						}
 					}).create();
 			alertDialog.show();
-			int asd = 12;
 		}
-		
+		System.out.println("FÄRDIG I KNAPPEN");
 	}
 	
 	
@@ -128,22 +148,37 @@ public class SettingsActivity extends Activity implements View.OnClickListener
 	
 	    switch(view.getId()) 
 	    {
-	        case R.id.radio_female:
+	        case R.id.radio_running:
 	            if (checked)
-	                isFemale = true;
+	                preferredActivityRunning = true;
+	            System.out.println("RUNNING JA");
 	            break;
-	        case R.id.radio_male:
+	        case R.id.radio_walking:
 	            if (checked)
-	            	isFemale = false;
+	            	preferredActivityRunning = false;
+	            System.out.println("RUNNING NEJ");
 	            break;
 	            
-	        case R.id.radio_si:
+	        case R.id.radio_length_si:
 	        	if(checked)
-	        		isSI = true;
+	        		isLengthSi = true;
+	        	 System.out.println("KM");
 	        	break;
-	        case R.id.radio_eng:
+	        case R.id.radio_length_eng:
 	        	if(checked)
-	        		isSI = false;
+	        		isLengthSi = false;
+	        	 System.out.println("MILES");
+	        	break;
+	        	
+	        case R.id.radio_weight_si:
+	        	if(checked)
+	        		isWeightSi = true;
+	        	 System.out.println("kg");
+	        	break;
+	        case R.id.radio_weight_eng:
+	        	if(checked)
+	        		isWeightSi = false;
+	        	 System.out.println("POUNDS");
 	        	break;
 	    }
 	}
@@ -162,13 +197,6 @@ public class SettingsActivity extends Activity implements View.OnClickListener
 
     	return true;
     }
-    
-    
-    
-    
-    
-    
-    
     
     
     @Override

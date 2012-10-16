@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import se.team05.R;
+import se.team05.content.CalorieCounter;
 import se.team05.content.ParcelableGeoPoint;
 import se.team05.content.Result;
 import se.team05.content.Route;
@@ -144,6 +145,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 		route = new Route(getString(R.string.new_route), getString(R.string.this_is_a_new_route));
 		setupMapAndLocation();
 
+		
 		if (savedInstanceState != null)
 		{
 			restoreInstance(savedInstanceState);

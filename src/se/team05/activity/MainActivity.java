@@ -39,7 +39,7 @@ public class MainActivity extends Activity
 {
 	ImageView newRouteButton;
 	ImageView useExistingButton;
-	Button settingsButton;
+	ImageView settingsButton;
 	
 	/**
 	 * The onCreate method of the class starts off by setting the XML file which
@@ -61,7 +61,7 @@ public class MainActivity extends Activity
 		useExistingButton = (ImageView) findViewById(R.id.image_existing_route);
 		useExistingButton.setOnClickListener(new MainActivityButtonListener(this));
 		
-		settingsButton = (Button) findViewById(R.id.settings);
+		settingsButton = (ImageView) findViewById(R.id.image_settings);
 		settingsButton.setOnClickListener(new MainActivityButtonListener(this));
 	}
 	
@@ -75,6 +75,7 @@ public class MainActivity extends Activity
 		
 		newRouteButton.setColorFilter(0x0000000);
 		useExistingButton.setColorFilter(0x0000000); 
+		settingsButton.setColorFilter(0x0000000); 
 		
 	}
 }

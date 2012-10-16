@@ -113,6 +113,12 @@
     <string name="yards">Yards</string>
     <string name="kilometres">Kilometres</string>
     <string name="length_representation_">"Length representation: "</string>
-    <string name="miles">" Miles"</string>
+    <string name="miles">Miles</string>
+    <string name="running">Running</string>
+    <string name="walking">Walking</string>
+    <string name="your_preferred_activity_">Your preferred activity:</string>
+    <string name="weight_representation_">"Weight representation: "</string>
+    <string name="kilograms">Kilograms</string>
+    <string name="pounds">Pounds</string>
 
 </resources>

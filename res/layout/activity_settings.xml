@@ -58,7 +58,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/your_sex_" />
+                android:text="@string/your_preferred_activity_" />
 
             <RadioGroup
                 android:layout_width="fill_parent"
@@ -66,18 +66,18 @@
                 android:orientation="horizontal" >
 
                 <RadioButton
-                    android:id="@+id/radio_female"
+                    android:id="@+id/radio_running"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:onClick="onRadioButtonClicked"
-                    android:text="@string/female" />
+                    android:text="@string/running" />
 
                 <RadioButton
-                    android:id="@+id/radio_male"
+                    android:id="@+id/radio_walking"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:onClick="onRadioButtonClicked"
-                    android:text="@string/male" />
+                    android:text="@string/walking" />
             </RadioGroup>
         </LinearLayout>
 
@@ -97,18 +97,49 @@
                 android:orientation="horizontal" >
 
                 <RadioButton
-                    android:id="@+id/radio_si"
+                    android:id="@+id/radio_length_si"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:onClick="onRadioButtonClicked"
                     android:text="@string/kilometres" />
 
                 <RadioButton
-                    android:id="@+id/radio_eng"
+                    android:id="@+id/radio_length_eng"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:onClick="onRadioButtonClicked"
-                    android:text="@string/yards" />
+                    android:text="@string/miles" />
+            </RadioGroup>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/weight_representation_" />
+
+            <RadioGroup
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <RadioButton
+                    android:id="@+id/radio_weight_si"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="@string/kilograms" />
+
+                <RadioButton
+                    android:id="@+id/radio_weight_eng"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="@string/pounds" />
             </RadioGroup>
         </LinearLayout>
 

@@ -82,8 +82,10 @@ public class MainActivityButtonListener implements OnClickListener
 				imageViewButton = (ImageView) v.findViewById(R.id.image_existing_route);
 				imageViewButton.setColorFilter(0x60EDEDED, PorterDuff.Mode.MULTIPLY);
 				break;
-			case R.id.settings:
+			case R.id.image_settings:
 				intent = new Intent(context, SettingsActivity.class);
+				imageViewButton = (ImageView) v.findViewById(R.id.image_settings);
+				imageViewButton.setColorFilter(0x60EDEDED, PorterDuff.Mode.MULTIPLY);
 				break;
 			default:
 				return;
