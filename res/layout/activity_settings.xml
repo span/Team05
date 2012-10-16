@@ -3,14 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <!-- <TextView -->
-    <!-- android:layout_width="wrap_content" -->
-    <!-- android:layout_height="wrap_content" -->
-    <!-- android:layout_centerHorizontal="true" -->
-    <!-- android:layout_centerVertical="true" -->
-    <!-- android:text="@string/hello_world" -->
-    <!-- tools:context=".SettingsActivity" /> -->
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,7 +11,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:orientation="horizontal" 
+            android:padding="8dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -36,7 +29,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:orientation="horizontal" 
+            android:padding="8dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -53,7 +47,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical" 
+            android:padding="8dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -63,7 +58,8 @@
             <RadioGroup
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+                android:orientation="horizontal" 
+                android:padding="2dp">
 
                 <RadioButton
                     android:id="@+id/radio_running"
@@ -81,67 +77,71 @@
             </RadioGroup>
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
+<!--         <LinearLayout -->
+<!--             android:layout_width="match_parent" -->
+<!--             android:layout_height="wrap_content" -->
+<!--             android:orientation="vertical"  -->
+<!--             android:padding="8dp"> -->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/length_representation_" />
+<!--             <TextView -->
+<!--                 android:layout_width="wrap_content" -->
+<!--                 android:layout_height="wrap_content" -->
+<!--                 android:text="@string/length_representation_" /> -->
 
-            <RadioGroup
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+<!--             <RadioGroup -->
+<!--                 android:layout_width="fill_parent" -->
+<!--                 android:layout_height="wrap_content" -->
+<!--                 android:orientation="horizontal"  -->
+<!--                 android:padding="8dp"> -->
 
-                <RadioButton
-                    android:id="@+id/radio_length_si"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="onRadioButtonClicked"
-                    android:text="@string/kilometres" />
+<!--                 <RadioButton -->
+<!--                     android:id="@+id/radio_length_si" -->
+<!--                     android:layout_width="wrap_content" -->
+<!--                     android:layout_height="wrap_content" -->
+<!--                     android:onClick="onRadioButtonClicked" -->
+<!--                     android:text="@string/kilometres" /> -->
 
-                <RadioButton
-                    android:id="@+id/radio_length_eng"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="onRadioButtonClicked"
-                    android:text="@string/miles" />
-            </RadioGroup>
-        </LinearLayout>
+<!--                 <RadioButton -->
+<!--                     android:id="@+id/radio_length_eng" -->
+<!--                     android:layout_width="wrap_content" -->
+<!--                     android:layout_height="wrap_content" -->
+<!--                     android:onClick="onRadioButtonClicked" -->
+<!--                     android:text="@string/miles" /> -->
+<!--             </RadioGroup> -->
+<!--         </LinearLayout> -->
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
+<!--         <LinearLayout -->
+<!--             android:layout_width="match_parent" -->
+<!--             android:layout_height="wrap_content" -->
+<!--             android:orientation="vertical"  -->
+<!--             android:padding="8dp"> -->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/weight_representation_" />
+<!--             <TextView -->
+<!--                 android:layout_width="wrap_content" -->
+<!--                 android:layout_height="wrap_content" -->
+<!--                 android:text="@string/weight_representation_" /> -->
 
-            <RadioGroup
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+<!--             <RadioGroup -->
+<!--                 android:layout_width="fill_parent" -->
+<!--                 android:layout_height="wrap_content" -->
+<!--                 android:orientation="horizontal"  -->
+<!--                 android:padding="8dp"> -->
 
-                <RadioButton
-                    android:id="@+id/radio_weight_si"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="onRadioButtonClicked"
-                    android:text="@string/kilograms" />
+<!--                 <RadioButton -->
+<!--                     android:id="@+id/radio_weight_si" -->
+<!--                     android:layout_width="wrap_content" -->
+<!--                     android:layout_height="wrap_content" -->
+<!--                     android:onClick="onRadioButtonClicked" -->
+<!--                     android:text="@string/kilograms" /> -->
 
-                <RadioButton
-                    android:id="@+id/radio_weight_eng"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="onRadioButtonClicked"
-                    android:text="@string/pounds" />
-            </RadioGroup>
-        </LinearLayout>
+<!--                 <RadioButton -->
+<!--                     android:id="@+id/radio_weight_eng" -->
+<!--                     android:layout_width="wrap_content" -->
+<!--                     android:layout_height="wrap_content" -->
+<!--                     android:onClick="onRadioButtonClicked" -->
+<!--                     android:text="@string/pounds" /> -->
+<!--             </RadioGroup> -->
+<!--         </LinearLayout> -->
 
         <Button
             android:id="@+id/save_settings"
