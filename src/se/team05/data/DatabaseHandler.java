@@ -15,7 +15,7 @@
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
 
     (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
-*/
+ */
 
 package se.team05.data;
 
@@ -48,6 +48,7 @@ public class DatabaseHandler
 	private DBResultAdapter dbResultAdapter;
 	private DBCheckPointAdapter dbCheckPointAdapter;
 	private DBGeoPointAdapter dbGeoPointAdapter;
+	private Context context;
 
 	/**
 	 * Constructor of the class which takes a context to operate in as a
@@ -58,6 +59,7 @@ public class DatabaseHandler
 	 */
 	public DatabaseHandler(Context context)
 	{
+		this.context = context;
 		dBRouteAdapter = new DBRouteAdapter(context);
 		dbTrackAdapter = new DBTrackAdapter(context);
 		dbResultAdapter = new DBResultAdapter(context);
@@ -75,6 +77,13 @@ public class DatabaseHandler
 	{
 		dBRouteAdapter.open();
 		dBRouteAdapter.deleteRoute(route.getId());
+		dBRouteAdapter.close();
+	}
+	
+	public void updateRoute(Route route)
+	{
+		dBRouteAdapter.open();
+		dBRouteAdapter.updateRoute(route.getId(), route.getName(), route.getDescription(), route.getType(), 0, 0);
 		dBRouteAdapter.close();
 	}
 
@@ -107,20 +116,16 @@ public class DatabaseHandler
 		if (cursor != null && cursor.getCount() != 0)
 		{
 			cursor.moveToFirst();
-			route = new Route(
-					cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_ID)),
-					cursor.getString(cursor.getColumnIndex(DBRouteAdapter.COLUMN_NAME)),
-					cursor.getString(cursor.getColumnIndex(DBRouteAdapter.COLUMN_DESCRIPTION)),
-					cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_TYPE)),
-					cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_TIMECOACH)),
-					cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_LENGTHCOACH)));
+			route = createRouteFromCursor(cursor);
 
 			cursor.close();
-		}
 
+			route.setGeoPoints(getGeoPoints(route.getId()));
+			route.setCheckPoints(getCheckPoints(route.getId()));
+		}
 		dBRouteAdapter.close();
 		return route;
-	}
+	}	
 
 	/**
 	 * Get all routes from the database.
@@ -140,15 +145,7 @@ public class DatabaseHandler
 
 			while (!cursor.isAfterLast())
 			{
-				route = new Route(cursor.getInt(
-						cursor.getColumnIndex(DBRouteAdapter.COLUMN_ID)),
-						cursor.getString(cursor.getColumnIndex(DBRouteAdapter.COLUMN_NAME)),
-						cursor.getString(cursor.getColumnIndex(DBRouteAdapter.COLUMN_DESCRIPTION)),
-						cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_TYPE)),
-						cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_TIMECOACH)),
-						cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_LENGTHCOACH))
-				);
-
+				route = createRouteFromCursor(cursor);
 				routeList.add(route);
 				cursor.moveToNext();
 			}
@@ -199,14 +196,13 @@ public class DatabaseHandler
 		Cursor cursor = dbTrackAdapter.fetchTrackByCid(cid);
 		while (cursor.moveToNext())
 		{
-			tracks.add(new Track(
-					cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_ID)),
-					cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_ARTIST)),
-					cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_ALBUM)),
-					cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_TITLE)),
-					cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_DATA)),
-					cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_DISPLAY_NAME)),
-					cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_DURATION))));
+			tracks.add(new Track(cursor.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_ID)), cursor
+					.getString(cursor.getColumnIndex(DBTrackAdapter.COLUMN_ARTIST)), cursor.getString(cursor
+					.getColumnIndex(DBTrackAdapter.COLUMN_ALBUM)), cursor.getString(cursor
+					.getColumnIndex(DBTrackAdapter.COLUMN_TITLE)), cursor.getString(cursor
+					.getColumnIndex(DBTrackAdapter.COLUMN_DATA)), cursor.getString(cursor
+					.getColumnIndex(DBTrackAdapter.COLUMN_DISPLAY_NAME)), cursor.getString(cursor
+					.getColumnIndex(DBTrackAdapter.COLUMN_DURATION))));
 		}
 		dbTrackAdapter.close();
 		return tracks;
@@ -231,18 +227,19 @@ public class DatabaseHandler
 		cursor.close();
 		dbResultAdapter.close();
 
+
 		return result;
 	}
-	
+
 	public Cursor getAllResultsCursorByRid(long rid)
 	{
 
 		dbResultAdapter.open();
 		Cursor cursor = dbResultAdapter.fetchResultByRid(rid);
-		
+
 		return cursor;
 	}
-	
+
 	/**
 	 * This method returns an ArrayList of results (instances of class Result)
 	 * retrieved from database via a database adapter.
@@ -271,8 +268,7 @@ public class DatabaseHandler
 		}
 		cursor.close();
 		dbResultAdapter.close();
-		
-		//return (Result[]) resultList.toArray();
+
 		return resultList;
 	}
 
@@ -295,7 +291,6 @@ public class DatabaseHandler
 				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_DISTANCE)),
 				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_CALORIES))
 		);
-		
 		return result;
 	}
 
@@ -308,8 +303,8 @@ public class DatabaseHandler
 	public void saveResult(Result result)
 	{
 		dbResultAdapter.open();
-		dbResultAdapter.instertResult(result.getRoutId(), result.getTimestamp(), result.getTime(),
-				result.getDistance(), result.getCalories());
+		dbResultAdapter.instertResult(result.getRid(), result.getTimestamp(), result.getTime(), result.getDistance(),
+				result.getCalories());
 		dbResultAdapter.close();
 	}
 
@@ -349,9 +344,9 @@ public class DatabaseHandler
 	public long saveCheckPoint(CheckPoint checkPoint)
 	{
 		dbCheckPointAdapter.open();
-		
+
 		long id = dbCheckPointAdapter.insertCheckpoint(checkPoint.getRid(), checkPoint.getRadius(),
-					checkPoint.getName(), checkPoint.getLatuitude(), checkPoint.getLongitude());
+				checkPoint.getName(), checkPoint.getLatuitude(), checkPoint.getLongitude());
 		dbCheckPointAdapter.close();
 		return id;
 	}
@@ -419,11 +414,9 @@ public class DatabaseHandler
 
 			while (!cursor.isAfterLast())
 			{
-				ParcelableGeoPoint geoPoint = new ParcelableGeoPoint(
-						cursor.getInt(
-								cursor.getColumnIndex(DBGeoPointAdapter.COLUMN_LATITUDE)),
-								cursor.getInt(cursor.getColumnIndex(DBGeoPointAdapter.COLUMN_LONGITUDE))
-						);
+				ParcelableGeoPoint geoPoint = new ParcelableGeoPoint(cursor.getInt(cursor
+						.getColumnIndex(DBGeoPointAdapter.COLUMN_LATITUDE)), cursor.getInt(cursor
+						.getColumnIndex(DBGeoPointAdapter.COLUMN_LONGITUDE)));
 				geoPointList.add(geoPoint);
 				cursor.moveToNext();
 			}
@@ -464,12 +457,12 @@ public class DatabaseHandler
 
 		return checkPointList;
 	}
-	
+
 	/**
 	 * Updates a checkpoint information in the database.
 	 * 
-	 * @param checkPoint 
-	 * 				the new checkpoint
+	 * @param checkPoint
+	 *            the new checkpoint
 	 */
 	public void updateCheckPoint(CheckPoint checkPoint)
 	{
@@ -491,8 +484,10 @@ public class DatabaseHandler
 		dbCheckPointAdapter.updateCheckPointRid(rid);
 		dbCheckPointAdapter.close();
 	}
+
 	/**
 	 * Deletes all checkpoints in the database for a route with rid
+	 * 
 	 * @param rid
 	 */
 	public void deleteCheckPoints(long rid)
@@ -501,13 +496,20 @@ public class DatabaseHandler
 		dbCheckPointAdapter.deleteCheckPointByRid(rid);
 		dbCheckPointAdapter.close();
 	}
-	
+
+	/**
+	 * Get a checkpoint with the corresponding id
+	 * 
+	 * @param id
+	 *            the id of the checkpoint
+	 * @return the checkpoint
+	 */
 	public CheckPoint getCheckPoint(long id)
 	{
 		dbCheckPointAdapter.open();
 		CheckPoint checkPoint = null;
 		Cursor cursor = dbCheckPointAdapter.fetchCheckPointById(id);
-		if(cursor!=null&&cursor.getCount()==1)
+		if (cursor != null && cursor.getCount() == 1)
 		{
 			cursor.moveToFirst();
 			checkPoint = createCheckPointFromCursor(cursor);
@@ -515,18 +517,43 @@ public class DatabaseHandler
 		dbCheckPointAdapter.close();
 		return checkPoint;
 	}
-	
+
+	/**
+	 * Helper method to create a checkpoint from a cursor. Also loads all tracks
+	 * into the checkpoint as a list.
+	 * 
+	 * @param cursor
+	 *            the cursor which point to the db row containing a checkpoing
+	 * @return a checkpoint
+	 */
 	private CheckPoint createCheckPointFromCursor(Cursor cursor)
 	{
-		GeoPoint geoPoint = new GeoPoint(
-				cursor.getInt(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_LATITUDE)),
-				cursor.getInt(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_LONGITUDE))
-		);
+		GeoPoint geoPoint = new GeoPoint(cursor.getInt(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_LATITUDE)),
+				cursor.getInt(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_LONGITUDE)));
 		CheckPoint checkPoint = new CheckPoint(geoPoint);
 		checkPoint.setRadius(cursor.getInt(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_RADIUS)));
 		checkPoint.setName(cursor.getString(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_NAME)));
 		checkPoint.setRid(cursor.getLong(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_RID)));
 		checkPoint.setId(cursor.getLong(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_ID)));
+		checkPoint.addTracks(getTracks(checkPoint.getId()));
 		return checkPoint;
+	}
+	
+	/**
+	 * Creates a route object from the passed in cursor.
+	 * 
+	 * @param cursor the cursor pointing to the row
+	 * @return a new route
+	 */
+	private Route createRouteFromCursor(Cursor cursor)
+	{
+		return new Route(
+				cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_ID)), 
+				cursor.getString(cursor.getColumnIndex(DBRouteAdapter.COLUMN_NAME)), 
+				cursor.getString(cursor.getColumnIndex(DBRouteAdapter.COLUMN_DESCRIPTION)), 
+				cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_TYPE)), 
+				cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_TIMECOACH)), 
+				cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_LENGTHCOACH)),
+				context);
 	}
 }

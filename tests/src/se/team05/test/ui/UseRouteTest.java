@@ -19,33 +19,26 @@
 
 package se.team05.test.ui;
 
-import java.util.ArrayList;
-
 import se.team05.R;
 import se.team05.activity.ListExistingRoutesActivity;
 import se.team05.activity.MainActivity;
 import se.team05.activity.RouteActivity;
-import se.team05.content.ParcelableGeoPoint;
 import se.team05.content.Route;
-import se.team05.content.Track;
 import se.team05.data.DBCheckPointAdapter;
 import se.team05.data.DBGeoPointAdapter;
 import se.team05.data.DBRouteAdapter;
 import se.team05.data.Database;
-import se.team05.data.DatabaseHandler;
-import se.team05.overlay.CheckPoint;
+import se.team05.listener.MapLocationListener;
+import se.team05.test.util.MockDatabase;
 import se.team05.test.util.MockLocationUtil;
 import android.app.Activity;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
-import android.provider.MediaStore;
 import android.test.ActivityInstrumentationTestCase2;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.google.android.maps.GeoPoint;
 import com.jayway.android.robotium.solo.Solo;
 
 public class UseRouteTest extends ActivityInstrumentationTestCase2<MainActivity>
@@ -95,32 +88,7 @@ public class UseRouteTest extends ActivityInstrumentationTestCase2<MainActivity>
 	
 	public void testUseExistingRoute() throws Throwable
 	{
-		DatabaseHandler databaseHandler = new DatabaseHandler(getActivity());
-		Route route = new Route("name", "description");
-		long rid = databaseHandler.saveRoute(route);
-		
-		ArrayList<ParcelableGeoPoint> geoPointList = new ArrayList<ParcelableGeoPoint>();
-		ParcelableGeoPoint gpA = new ParcelableGeoPoint((int)(47.975 * 1E6), (int)(17.056 * 1E6));
-		ParcelableGeoPoint gpB = new ParcelableGeoPoint((int)(48.975 * 1E6), (int)(17.056 * 1E6));
-		geoPointList.add(gpA);
-		geoPointList.add(gpB);
-		databaseHandler.saveGeoPoints(rid, geoPointList);
-		
-		CheckPoint checkPoint = new CheckPoint(new GeoPoint((int) (48.975 * 1E6), (int) (17.056 * 1E6)));
-		checkPoint.setRid(rid);
-		long cid = databaseHandler.saveCheckPoint(checkPoint);
-		
-		Cursor cursor = getActivity().getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, new String[] { MediaStore.Audio.Media.DATA }, null, null, null);
-		cursor.moveToFirst();
-		if(cursor.getCount() < 1)
-		{
-			fail("Could not find media in the media store, please add media to your device and reboot before testing again.");
-		}
-		else
-		{
-			Track track = new Track("id", "artist", "album", "title", cursor.getString(0), "displayName", "duration");
-			databaseHandler.saveTrack(cid, track);
-		}
+		Route route = MockDatabase.getRoute(this, getActivity());
 		
 		solo.clickOnView(oldRouteImage);
 		solo.assertCurrentActivity("ListExistingRoutesActivity expected", ListExistingRoutesActivity.class);
@@ -129,22 +97,23 @@ public class UseRouteTest extends ActivityInstrumentationTestCase2<MainActivity>
 		
 		final RouteActivity routeActivity = (RouteActivity) solo.getCurrentActivity();
 		
-		Button startButton = (Button) solo.getView(R.id.start_existing_run_button);
-		Button stopButton = (Button) solo.getView(R.id.stop_existing_run_button);
+		Button startButton = (Button) solo.getView(R.id.start_button);
+		Button stopButton = (Button) solo.getView(R.id.stop_button);
 		assertEquals(startButton.getVisibility(), View.VISIBLE);
 		assertEquals(stopButton.getVisibility(), View.GONE);
 		solo.clickOnView(startButton);
 		assertEquals(startButton.getVisibility(), View.GONE);
 		assertEquals(stopButton.getVisibility(), View.VISIBLE);
 
+		final MapLocationListener locationListener = new MapLocationListener(routeActivity, false, route.getCheckPoints());
 		MockLocationUtil mockLocation = new MockLocationUtil();
-		MockLocationUtil.publishMockLocation(47.975, 17.056, routeActivity);
+		MockLocationUtil.publishMockLocation(47.975, 17.056, routeActivity, route.getCheckPoints(), locationListener);
 		Thread.sleep(1500);
 		Location locationA = mockLocation.getLastKnownLocationInApplication(routeActivity);
 		assertEquals(47.975, locationA.getLatitude());
 		assertEquals(17.056, locationA.getLongitude());
 		
-		MockLocationUtil.publishMockLocation(48.975, 17.056, routeActivity);
+		MockLocationUtil.publishMockLocation(48.975, 17.056, routeActivity, route.getCheckPoints(), locationListener);
 		Thread.sleep(1500);
 		final Location locationB = mockLocation.getLastKnownLocationInApplication(routeActivity);
 		assertEquals(48.975, locationB.getLatitude());
@@ -155,7 +124,7 @@ public class UseRouteTest extends ActivityInstrumentationTestCase2<MainActivity>
 			@Override
 			public void run()
 			{
-				routeActivity.updateLocation(locationB);
+				locationListener.onLocationChanged(locationB);
 			}
 		});
 		
@@ -168,7 +137,6 @@ public class UseRouteTest extends ActivityInstrumentationTestCase2<MainActivity>
 		solo.clickOnView(startButton);
 		solo.clickOnView(stopButton);
 		solo.clickOnButton("No");
-		solo.assertCurrentActivity("Expected MainActivity", MainActivity.class);
 	}
 
 }

@@ -19,32 +19,32 @@
 
 package se.team05.test.util;
 
-import se.team05.activity.RouteActivity;
+import java.util.ArrayList;
+
 import se.team05.listener.MapLocationListener;
+import se.team05.overlay.CheckPoint;
 import android.app.Service;
 import android.content.Context;
 import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
-import android.os.Bundle;
 
 public class MockLocationUtil
 {
 	public static final String PROVIDER_NAME = "testProvider";
 	public static final String TAG = "testProvider";
 
-	public static void publishMockLocation(double latitude, double longitude, Context context)
+	public static void publishMockLocation(double latitude, double longitude, Context context, ArrayList<CheckPoint> checkPoints, MapLocationListener locationListener)
 	{
-		LocationManager mLocationManager = (LocationManager) context.getSystemService(Service.LOCATION_SERVICE);
-		if (mLocationManager.getProvider(PROVIDER_NAME) != null)
+		LocationManager locationManager = (LocationManager) context.getSystemService(Service.LOCATION_SERVICE);
+		if (locationManager.getProvider(PROVIDER_NAME) != null)
 		{
-			mLocationManager.removeTestProvider(PROVIDER_NAME);
+			locationManager.removeTestProvider(PROVIDER_NAME);
 		}
-		if (mLocationManager.getProvider(PROVIDER_NAME) == null)
+		if (locationManager.getProvider(PROVIDER_NAME) == null)
 		{
-			mLocationManager.addTestProvider(PROVIDER_NAME, "requiresNetwork" == "", "requiresSatellite" == "", "requiresCell" == "",
+			locationManager.addTestProvider(PROVIDER_NAME, "requiresNetwork" == "", "requiresSatellite" == "", "requiresCell" == "",
 					"hasMonetaryCost" == "", "supportsAltitude" == "", "supportsSpeed" == "", "supportsBearing" == "",
 					android.location.Criteria.POWER_LOW, android.location.Criteria.ACCURACY_FINE);
 		}
@@ -55,10 +55,10 @@ public class MockLocationUtil
 		newLocation.setTime(System.currentTimeMillis());
 		newLocation.setAccuracy(25);
 
-		mLocationManager.setTestProviderEnabled(PROVIDER_NAME, true);
-		mLocationManager.setTestProviderStatus(PROVIDER_NAME, LocationProvider.AVAILABLE, null, System.currentTimeMillis());
-		mLocationManager.requestLocationUpdates(PROVIDER_NAME, 0, 0, new MapLocationListener((RouteActivity) context));
-		mLocationManager.setTestProviderLocation(PROVIDER_NAME, newLocation);
+		locationManager.setTestProviderEnabled(PROVIDER_NAME, true);
+		locationManager.setTestProviderStatus(PROVIDER_NAME, LocationProvider.AVAILABLE, null, System.currentTimeMillis());
+		locationManager.requestLocationUpdates(PROVIDER_NAME, 0, 0, locationListener);
+		locationManager.setTestProviderLocation(PROVIDER_NAME, newLocation);
 	}
 
 	public Location getLastKnownLocationInApplication(Context ctx)
@@ -83,25 +83,6 @@ public class MockLocationUtil
 		else
 		{
 			return realLoc;
-		}
-	}
-
-	private static class MockLocationListener implements LocationListener
-	{
-		public void onLocationChanged(Location location)
-		{
-		}
-
-		public void onProviderDisabled(String provider)
-		{
-		}
-
-		public void onProviderEnabled(String provider)
-		{
-		}
-
-		public void onStatusChanged(String provider, int status, Bundle extras)
-		{
 		}
 	}
 }

@@ -19,13 +19,14 @@
 package se.team05.dialog;
 
 import se.team05.R;
-import se.team05.content.Result;
+import se.team05.content.Route;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.EditText;
@@ -39,7 +40,7 @@ import android.widget.Toast;
  * which decides if the results that the user had (time, length) should also be
  * saved with the route.
  * 
- * @author Daniel Kvist
+ * @author Daniel Kvist, Patrik Thitusson, Markus Schutzer
  * 
  */
 public class SaveRouteDialog extends Dialog implements View.OnClickListener
@@ -51,7 +52,7 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 	 */
 	public interface Callbacks
 	{
-		public void onSaveRoute(String name, String description, boolean saveResult);
+		public void onSaveRoute(Route route, boolean saveResult);
 
 		public void onDismissRoute();
 
@@ -60,10 +61,10 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 
 	private Context context;
 	private Callbacks callbacks;
-	private Result result;
-	private EditText nameOfEditText;
-	private EditText descriptionOfEditText;
+	private EditText nameEditTextView;
+	private EditText descriptionEditTextView;
 	private CheckedTextView checkedSaveResult;
+	private Route route;
 
 	/**
 	 * The constructor of the dialog takes a Context and a Callbacks as a
@@ -78,12 +79,12 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 	 * @param result
 	 *            the results from the route including speed, distance, time
 	 */
-	public SaveRouteDialog(Context context, Callbacks callbacks, Result result)
+	public SaveRouteDialog(Context context, Callbacks callbacks, Route route)
 	{
 		super(context);
 		this.context = context;
 		this.callbacks = callbacks;
-		this.result = result;
+		this.route = route;
 	}
 
 	/**
@@ -98,43 +99,45 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.dialog_save_route);
 		setTitle(context.getString(R.string.save_route));
+		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
 		((Button) findViewById(R.id.discard_button)).setOnClickListener(this);
 		((Button) findViewById(R.id.save_button)).setOnClickListener(this);
 
 		TextView timeTextView = (TextView) findViewById(R.id.time);
+		timeTextView.setText(route.getTimePassedAsString());
+		
 		TextView distanceTextView = (TextView) findViewById(R.id.runneddistance);
-		TextView speedTextView = (TextView) findViewById(R.id.speed);
-
-		nameOfEditText = ((EditText) findViewById(R.id.name));
-		descriptionOfEditText = ((EditText) findViewById(R.id.description));
-		checkedSaveResult = (CheckedTextView) findViewById(R.id.save_result);
-
-		int routeDistance = result.getDistance();
+		int routeDistance = (int) route.getTotalDistance();
 		String distanceText = String.valueOf(routeDistance);
 		distanceTextView.setText(distanceText + context.getString(R.string.km));
-
-		int time = result.getTime();
-		int min = time / 60;
-		int sec = time % 60;
-
-		String resultat = String.format("%02d:%02d", min, sec);
-		timeTextView.setText(resultat);
-
-		double speed = (routeDistance / time) * 3.6;
+		
+		TextView speedTextView = (TextView) findViewById(R.id.speed);
+		double speed = (routeDistance / route.getTimePassed()) * 3.6;
 		String speedText = String.valueOf(speed);
 		speedTextView.setText(speedText + context.getString(R.string.km) + "/" + context.getString(R.string.h));
-		setCanceledOnTouchOutside(false);
-		// Make the check box toggle on click.
-		CheckedTextView checkBox = (CheckedTextView) findViewById(R.id.save_result);
-		checkBox.setOnClickListener(new View.OnClickListener()
+		
+		TextView calorieTextView = (TextView) findViewById(R.id.calories);
+		int calories = (int) route.getCalories();
+		String calorieText = String.valueOf(calories);
+		calorieTextView.setText(calorieText);
+
+		nameEditTextView = ((EditText) findViewById(R.id.name));
+		nameEditTextView.setText(route.getName());
+		
+		descriptionEditTextView = ((EditText) findViewById(R.id.description));
+		descriptionEditTextView.setText(route.getDescription());
+		
+		checkedSaveResult = (CheckedTextView) findViewById(R.id.save_result);
+		checkedSaveResult.setOnClickListener(new View.OnClickListener()
 		{
 			public void onClick(View v)
 			{
 				((CheckedTextView) v).toggle();
 			}
 		});
-
+		
+		setCanceledOnTouchOutside(false);
 	}
 
 	/**
@@ -169,18 +172,17 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 				alertDialog.show();
 				break;
 			case R.id.save_button:
-				String name = getNameOfEditText();
-
-				if (testStringForName(name))
+				String name = nameEditTextView.getText().toString();
+				if (isValidName(name))
 				{
-					String description = getDescriptionOfEditText();
+					String description = descriptionEditTextView.getText().toString();
 					boolean saveResult = isSaveResultChecked();
-					callbacks.onSaveRoute(name, description, saveResult);
+					route.setName(name);
+					route.setDescription(description);
+					callbacks.onSaveRoute(route, saveResult);
 					dismiss();
 				}
 
-				break;
-			default:
 				break;
 		}
 	}
@@ -194,17 +196,14 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 	 *            the string to be tested
 	 * @return true if string has some character in it, otherwise false
 	 */
-	public boolean testStringForName(String name)
+	private boolean isValidName(String name)
 	{
 		if (name.equals("") || name == null)
 		{
-			CharSequence text = getContext().getString(R.string.must_use_a_valid_name);
-			int duration = Toast.LENGTH_SHORT;
-
-			Toast toast = Toast.makeText(context, text, duration);
-			toast.show();
+			Toast.makeText(context, getContext().getString(R.string.must_use_a_valid_name), Toast.LENGTH_SHORT).show();
 			return false;
-		} else
+		}
+		else
 		{
 			return true;
 		}
@@ -217,39 +216,6 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 	}
 
 	/**
-	 * @return the text in nameOfEditText
-	 */
-	public String getNameOfEditText()
-	{
-		return nameOfEditText.getText().toString();
-	}
-
-	/**
-	 * @param nameText
-	 *            the nameText to set in nameOfEditText
-	 */
-	public void setNameOfEditText(String nameText)
-	{
-		this.nameOfEditText.setText(nameText);
-	}
-
-	/**
-	 * @return the descriptionText
-	 */
-	public String getDescriptionOfEditText()
-	{
-		return descriptionOfEditText.getText().toString();
-	}
-
-	/**
-	 * @param descriptionText
-	 *            the descriptionText to set in descriptionOfEditText
-	 */
-	public void setDescriptionOfEditText(String descriptionText)
-	{
-		this.descriptionOfEditText.setText(descriptionText);
-	}
-	/**
 	 * 
 	 * @return true if saveResult checkbox is checked
 	 */
@@ -257,13 +223,26 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 	{
 		return checkedSaveResult.isChecked();
 	}
+
 	/**
 	 * 
-	 * @param check sets the checkbox to true or false
+	 * @param check
+	 *            sets the checkbox to true or false
 	 */
 	public void setSaveResultChecked(boolean check)
 	{
 		checkedSaveResult.setChecked(check);
 	}
 
+	/**
+	 * Gets the route
+	 * 
+	 * @return the route
+	 */
+	public Route getRoute()
+	{
+		route.setName(nameEditTextView.getText().toString());
+		route.setDescription(descriptionEditTextView.getText().toString());
+		return route;
+	}
 }

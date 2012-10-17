@@ -31,6 +31,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -95,7 +96,8 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.dialog_edit_checkpoint);
 		setTitle("Edit CheckPoint");
-
+		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN); 
+		
 		Button deleteButton = (Button) findViewById(R.id.delete_button);
 		deleteButton.setOnClickListener(this);
 		findViewById(R.id.save_button).setOnClickListener(this);
@@ -223,43 +225,10 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 		super.onBackPressed();
 	}
 
-	/**
-	 * @return the nameTextField«s String value
-	 */
-	public String getNameText()
+	public CheckPoint getCheckPoint()
 	{
-		return nameTextField.getText().toString();
+		checkPoint.setName(nameTextField.getText().toString());
+		checkPoint.setRadius(seekBar.getProgress());
+		return checkPoint;
 	}
-
-	/**
-	 * @param nameTextField the nameTextField to set
-	 */
-	public void setNameText(String nameText)
-	{
-		this.nameTextField.setText(nameText);
-	}
-
-	/**
-	 * @return the radiusTextField String value
-	 */
-	public String getRadiusText()
-	{
-		return radiusTextField.getText().toString();
-	}
-
-	/**
-	 * Sets the radiusTextField and seekbar to String radiusText
-	 * @param radiusTextField the radiusText to set
-	 */
-	public void setRadiusTextField(String radiusText)
-	{
-		this.radiusTextField.setText(radiusText);
-		seekBar.setProgress(Integer.parseInt(radiusText));
-	}
-
-
-
-	
-	
-
 }
