@@ -24,10 +24,10 @@ import se.team05.activity.RouteActivity;
 import se.team05.activity.SettingsActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
-import android.graphics.PorterDuff;
 
 /**
  * This is the listener class for the main activity and it takes a Context as a
