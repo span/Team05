@@ -115,4 +115,5 @@
     <string name="kilograms">Kilograms</string>
     <string name="pounds">Pounds</string>
     <string name="calories_burned_">"Calories: "</string>
+    <string name="click_to_use_settings">Click to use settings</string>
 </resources>

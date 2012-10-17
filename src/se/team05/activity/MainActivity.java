@@ -21,9 +21,7 @@ package se.team05.activity;
 import se.team05.R;
 import se.team05.listener.MainActivityButtonListener;
 import android.app.Activity;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.widget.Button;
 import android.widget.ImageView;
 
 /**
@@ -55,14 +53,13 @@ public class MainActivity extends Activity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
+		MainActivityButtonListener listener = new MainActivityButtonListener(this);
 		newRouteButton = (ImageView) findViewById(R.id.image_new_route);
-		newRouteButton.setOnClickListener(new MainActivityButtonListener(this));
-
+		newRouteButton.setOnClickListener(listener);
 		useExistingButton = (ImageView) findViewById(R.id.image_existing_route);
-		useExistingButton.setOnClickListener(new MainActivityButtonListener(this));
-		
+		useExistingButton.setOnClickListener(listener);
 		settingsButton = (ImageView) findViewById(R.id.image_settings);
-		settingsButton.setOnClickListener(new MainActivityButtonListener(this));
+		settingsButton.setOnClickListener(listener);
 	}
 	
 	/**

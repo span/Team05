@@ -56,15 +56,14 @@
             android:paddingTop="32dp"
             android:src="@drawable/btn_use_route" />
 
-
         <ImageView
             android:id="@+id/image_settings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/image_existing_route"
+            android:contentDescription="@string/click_to_use_settings"
             android:paddingTop="32dp"
-            android:src="@drawable/btn_settings" />
-
+            android:src="@drawable/ic_settings" />
     </RelativeLayout>
 
     <LinearLayout
