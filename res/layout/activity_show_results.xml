@@ -22,93 +22,118 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-<!--     Show time -->
     
-    <LinearLayout
+  	 <!-- TODO up button -->
+
+	<GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
-
+        android:columnCount="2"
+        android:padding="8dp" >
+ 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_gravity="left"
+            android:layout_row="0"
+            android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="@string/time_of_run" />
 
         <TextView
             android:id="@+id/show_time_result_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_column="1"
+            android:layout_gravity="right"
+            android:layout_row="0"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             tools:context=".DisplayMessageActivity" />
-    </LinearLayout>
-    
-<!--     Show distance -->
-    
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
-
+        
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_gravity="left"
+            android:layout_row="1"
+            android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="@string/distance_of_run_result" />
 
         <TextView
             android:id="@+id/show_distance_result_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_column="1"
+            android:layout_gravity="right"
+            android:layout_row="1"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             tools:context=".DisplayMessageActivity" />
-    </LinearLayout>
-    
-<!--     Show speed -->
-    
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
-
+        
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_gravity="left"
+            android:layout_row="2"
+            android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="@string/speed_of_run" />
 
         <TextView
             android:id="@+id/show_speed_result_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_column="1"
+            android:layout_gravity="right"
+            android:layout_row="2"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             tools:context=".DisplayMessageActivity" />
-    </LinearLayout>
-    
-<!-- 	Show date -->
-    
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
-
+        
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_gravity="left"
+            android:layout_row="3"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/calories" />
+
+        <TextView
+            android:id="@+id/show_calories_result_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="1"
+            android:layout_gravity="right"
+            android:layout_row="3"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            tools:context=".DisplayMessageActivity" />
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_gravity="left"
+            android:layout_row="4"
+            android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="@string/date" />
 
         <TextView
             android:id="@+id/show_date_result_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_column="1"
+            android:layout_gravity="right"
+            android:layout_row="4"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             tools:context=".DisplayMessageActivity" />
-    </LinearLayout>
+
+       
+    </GridLayout>
     
-
-
-
-    <Button
+	<Button
         android:id="@+id/delete_results_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/delete_results" />
-
-    
-  	 <!-- TODO up button -->
     
 
 </LinearLayout>
