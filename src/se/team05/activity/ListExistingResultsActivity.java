@@ -19,31 +19,21 @@
 package se.team05.activity;
 
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
-
 import se.team05.R;
 import se.team05.content.Result;
 import se.team05.content.Route;
-import se.team05.data.DBAdapter;
 import se.team05.data.DBResultAdapter;
-import se.team05.data.DBRouteAdapter;
-import se.team05.data.Database;
 import se.team05.data.DatabaseHandler;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.View;
 import android.widget.Adapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
@@ -53,7 +43,7 @@ import android.widget.SimpleCursorAdapter.ViewBinder;
  * An activity that will present the user with the option to view results of an old route.
  * Gets results from database and presents them in a listview.
  * 
- * @author Gustaf Werlinder, Henrik Hugo
+ * @author Gustaf Werlinder, Henrik Hugo, Daniel Kvist, Markus Schutser
  *
  */
 public class ListExistingResultsActivity extends ListActivity
@@ -63,7 +53,21 @@ public class ListExistingResultsActivity extends ListActivity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_list_existing_results);		
-		
+	}
+	
+	public void onListItemClick(ListView l, View v, int position, long id)
+	{
+		Context context = this;
+		Intent intent;
+		intent = new Intent(context, ShowResultsActivity.class);
+		intent.putExtra(Result.RESULT_ID, id);
+		context.startActivity(intent);
+	}
+	
+	@Override
+	public void onResume()
+	{
+		super.onResume();
 		long rid = getIntent().getLongExtra(Route.EXTRA_ID, -1);
 		DatabaseHandler db = new DatabaseHandler(this);
 		
@@ -114,33 +118,5 @@ public class ListExistingResultsActivity extends ListActivity
 		
 		setListAdapter(adapter);
 		//cursor.close();
-	}
-	
-	public void onListItemClick(ListView l, View v, int position, long id)
-	{
-		Context context = this;
-		Intent intent;
-		intent = new Intent(context, ShowResultsActivity.class);
-		intent.putExtra(Result.RESULT_ID, id);
-		context.startActivity(intent);
-	}
-	
-	//TODO Remove maybe...
-	@Override
-	public void onResume()
-	{
-		super.onResume();
-		long rid = getIntent().getLongExtra(Route.EXTRA_ID, -1);
-		DatabaseHandler db = new DatabaseHandler(this);
-		Cursor cursor = db.getAllResultsCursorByRid(rid);
-		
-		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,
-						android.R.layout.simple_list_item_1,
-						cursor,
-						new String[] {DBResultAdapter.COLUMN_ID},
-						new int[] {android.R.id.text1},
-						Adapter.NO_SELECTION);
-		
-		setListAdapter(adapter);
 	}
 }
