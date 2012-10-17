@@ -18,26 +18,26 @@
 */
 package se.team05.activity;
 
+import java.util.List;
+
+import org.achartengine.GraphicalView;
+
 import se.team05.R;
 import se.team05.content.Result;
 import se.team05.content.Route;
-import se.team05.data.DBAdapter;
 import se.team05.data.DBResultAdapter;
-import se.team05.data.DBRouteAdapter;
-import se.team05.data.Database;
 import se.team05.data.DatabaseHandler;
+import se.team05.view.TimeStretchChartView;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Adapter;
-import android.widget.ListAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
 
 /**
  * An activity that will present the user with the option to view results of an old route.
@@ -68,6 +68,13 @@ public class ListExistingResultsActivity extends ListActivity
 		
 		setListAdapter(adapter);
 		//cursor.close();
+		List<Result> allResults = db.getAllResultsByRid(rid);
+		if(allResults!=null&&allResults.size()>0)
+		{
+			LinearLayout chartContainer = (LinearLayout) findViewById(R.id.chart);
+			GraphicalView timeStretchChartView = TimeStretchChartView.getNewInstance(this, allResults, db.getRoute(rid).getName());
+			chartContainer.addView(timeStretchChartView);
+		}
 	}
 	
 	public void onListItemClick(ListView l, View v, int position, long id)

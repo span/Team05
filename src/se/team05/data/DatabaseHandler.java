@@ -226,8 +226,10 @@ public class DatabaseHandler
 
 		dbResultAdapter.open();
 		Cursor cursor = dbResultAdapter.fetchResultById(id);
+		cursor.moveToFirst();
 		result = createResultFromCursor(cursor);
-//		dbResultAdapter.close();
+		cursor.close();
+		dbResultAdapter.close();
 
 		return result;
 	}
@@ -252,18 +254,15 @@ public class DatabaseHandler
 	public ArrayList<Result> getAllResultsByRid(long rid)
 	{
 		ArrayList<Result> resultList = null;
-
 		dbResultAdapter.open();
 		Cursor cursor = dbResultAdapter.fetchResultByRid(rid);
-		dbResultAdapter.close();
-
 		if (cursor != null && cursor.getCount() != 0)
 		{
 			resultList = new ArrayList<Result>();
 			Result result;
 			cursor.moveToFirst();
 
-			while (!cursor.isLast())
+			while (!cursor.isAfterLast())
 			{
 				result = createResultFromCursor(cursor);
 				resultList.add(result);
@@ -271,6 +270,8 @@ public class DatabaseHandler
 			}
 		}
 		cursor.close();
+		dbResultAdapter.close();
+		
 		//return (Result[]) resultList.toArray();
 		return resultList;
 	}
@@ -286,7 +287,6 @@ public class DatabaseHandler
 	 */
 	private Result createResultFromCursor(Cursor cursor)
 	{
-		cursor.moveToFirst();
 		Result result = new Result(
 				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_ID)),
 				cursor.getLong(cursor.getColumnIndex(DBResultAdapter.COLUMN_RID)),
@@ -295,9 +295,6 @@ public class DatabaseHandler
 				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_DISTANCE)),
 				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_CALORIES))
 		);
-		
-		//Temporary during development
-		Result result2 = new Result(10,20L,1261440000L,3600,6000,60);
 		
 		return result;
 	}
