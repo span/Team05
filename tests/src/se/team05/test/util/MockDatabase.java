@@ -19,7 +19,7 @@ public class MockDatabase
 	public static Route getRoute(ActivityInstrumentationTestCase2 testCase, Activity activity)
 	{
 		DatabaseHandler databaseHandler = new DatabaseHandler(activity);
-		Route route = new Route("name", "description");
+		Route route = new Route("name", "description", activity);
 		route.setId(databaseHandler.saveRoute(route));
 		
 		ArrayList<ParcelableGeoPoint> geoPointList = new ArrayList<ParcelableGeoPoint>();

@@ -23,7 +23,10 @@ import java.util.HashMap;
 
 import junit.framework.Assert;
 import se.team05.content.Route;
-import se.team05.data.*;
+import se.team05.data.DBRouteAdapter;
+import se.team05.data.Database;
+import se.team05.data.DatabaseHandler;
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.test.InstrumentationTestCase;
 
@@ -57,10 +60,11 @@ public class TestDatabaseHandler extends InstrumentationTestCase {
 		SQLiteDatabase db0 =  new Database(this.getInstrumentation().getTargetContext()).getWritableDatabase();
 		db0.delete(DBRouteAdapter.TABLE_ROUTES, null, null);
 		db0.close();
-		
-		this.r1 = new Route("Hello route", "Hello description", -1, -1, -1);
-		this.r2 = new Route("Hello route2", "Hello description2", -1, -1, -1);
-		this.r3 = new Route("Hello route3", "Hello description3", -1, -1, -1);
+
+		Context context = this.getInstrumentation().getTargetContext();
+		this.r1 = new Route("Hello route", "Hello description", -1, -1, -1, context);
+		this.r2 = new Route("Hello route2", "Hello description2", -1, -1, -1, context);
+		this.r3 = new Route("Hello route3", "Hello description3", -1, -1, -1, context);
 		
 		this.db = new DatabaseHandler(this.getInstrumentation().getTargetContext());
 	}
