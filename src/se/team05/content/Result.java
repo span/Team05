@@ -28,7 +28,7 @@ package se.team05.content;
  * @author Gustaf Werlinder (guswer)
  *
  */
-public class Result {
+public class Result implements Comparable<Result>{
 	
 	public static String RESULT_ID = "id";
 	
@@ -186,6 +186,12 @@ public class Result {
 	public void setDistance(int distance)
 	{
 		this.distance = distance;
+	}
+
+	@Override
+	public int compareTo(Result anotherResult)
+	{
+		return this.time - anotherResult.getTime();
 	}
 	
 }

@@ -22,11 +22,14 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.List;
+import org.achartengine.GraphicalView;
 import se.team05.R;
 import se.team05.content.Result;
 import se.team05.content.Route;
 import se.team05.data.DBResultAdapter;
 import se.team05.data.DatabaseHandler;
+import se.team05.view.TimeStretchChartView;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -38,6 +41,7 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.SimpleCursorAdapter.ViewBinder;
+import android.widget.LinearLayout;
 
 /**
  * An activity that will present the user with the option to view results of an old route.
@@ -55,6 +59,10 @@ public class ListExistingResultsActivity extends ListActivity
 		setContentView(R.layout.activity_list_existing_results);		
 	}
 	
+	/**
+	 * This method is activated when a list item - a saved route result - is clicked.
+	 * It will start an activity where the contents of the specific route result is presented.
+	 */
 	public void onListItemClick(ListView l, View v, int position, long id)
 	{
 		Context context = this;
@@ -118,5 +126,12 @@ public class ListExistingResultsActivity extends ListActivity
 		
 		setListAdapter(adapter);
 		//cursor.close();
+		List<Result> allResults = db.getAllResultsByRid(rid);
+		if(allResults!=null&&allResults.size()>0)
+		{
+			LinearLayout chartContainer = (LinearLayout) findViewById(R.id.chart);
+			GraphicalView timeStretchChartView = TimeStretchChartView.getNewInstance(this, allResults, db.getRoute(rid).getName());
+			chartContainer.addView(timeStretchChartView);
+		}
 	}
 }

@@ -78,7 +78,7 @@ public class ShowResultsActivityTest extends ActivityInstrumentationTestCase2<Ma
 	public void testShowingAndDeletingResults()
 	{
 		DatabaseHandler databaseHandler = new DatabaseHandler(getActivity());
-		Route route = new Route("name", "description");
+		Route route = new Route("name", "description", getActivity());
 		route.setId(databaseHandler.saveRoute(route));
 		
 		Result result = new Result(route.getId(), 200000000L, 3700, 1000, 0);		
