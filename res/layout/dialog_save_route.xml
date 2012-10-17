@@ -34,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="6dp"
-            android:text="@string/name" />
+            android:text="@string/route_information" />
 
         <EditText
             android:id="@+id/name"
@@ -43,19 +43,12 @@
             android:inputType="text"
             android:maxLines="1" />
 
-        <TextView
-            style="?android:attr/listSeparatorTextViewStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="6dp"
-            android:text="@string/description" />
-
         <EditText
             android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
-            android:maxLines="3" />
+            android:maxLines="1" />
 
         <TextView
             style="?android:attr/listSeparatorTextViewStyle"
@@ -152,7 +145,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_marginTop="2dp" >
+        android:layout_marginTop="12dp" >
 
         <View
             android:layout_width="match_parent"

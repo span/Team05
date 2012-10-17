@@ -135,7 +135,7 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 		setContentView(R.layout.activity_route);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		databaseHandler = new DatabaseHandler(this);
-		route = new Route(getString(R.string.new_route), getString(R.string.this_is_a_new_route), this);
+		route = new Route(getString(R.string.route_name), getString(R.string.route_description), this);
 		wakeLock = Utils.acquireWakeLock(this);
 
 		setupMapView();

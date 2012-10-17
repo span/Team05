@@ -23,6 +23,9 @@
     <string name="title_activity_main">Personal Trainer</string>
     <string name="new_route">New route</string>
     <string name="use_route">Use route</string>
+    <string name="route_name">Route name</string>
+    <string name="route_description">Route description</string>
+    <string name="route_information">Route information</string>
     <string name="save">Save</string>
     <string name="delete">Delete</string>
     <string name="select">Select</string>
