@@ -594,9 +594,7 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 		route.setId(databaseHandler.saveRoute(route));
 		if (saveResult)
 		{
-			Result result = new Result(-1, -1, route.getTimePassed(), (int) route.getTotalDistance(), 0);
-			result.setRid(route.getId());
-			result.setTimestamp((int) System.currentTimeMillis() / 1000);
+			Result result = new Result(route.getId(), (int) System.currentTimeMillis() / 1000, route.getTimePassed(), (int) route.getTotalDistance(), route.getCalories());
 			databaseHandler.saveResult(result);
 		}
 		databaseHandler.saveGeoPoints(route.getId(), route.getGeoPoints());

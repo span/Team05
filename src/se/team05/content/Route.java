@@ -20,9 +20,8 @@ package se.team05.content;
 
 import java.util.ArrayList;
 
-import android.content.Context;
-
 import se.team05.overlay.CheckPoint;
+import android.content.Context;
 
 /**
  * An activity that will present the user with the option to choose and old
@@ -61,9 +60,7 @@ public class Route
 	 */
 	public Route(String name, String description, Context context)
 	{
-		this(name, description, 0, -1, -1);
-		this.context = context;
-		calorieCounter = new CalorieCounter(context);
+		this(name, description, 0, -1, -1, context);
 	}
 
 	/**
@@ -75,9 +72,9 @@ public class Route
 	 * @param timecoach
 	 * @param lengthcoach
 	 */
-	public Route(String name, String description, int type, int timecoach, int lengthcoach)
+	public Route(String name, String description, int type, int timecoach, int lengthcoach, Context context)
 	{
-		this(-1, name, description, type, timecoach, lengthcoach);
+		this(-1, name, description, type, timecoach, lengthcoach, context);
 	}
 
 	/**
@@ -90,7 +87,7 @@ public class Route
 	 * @param timecoach
 	 * @param lengthcoach
 	 */
-	public Route(long _id, String name, String description, int type, int timecoach, int lengthcoach)
+	public Route(long _id, String name, String description, int type, int timecoach, int lengthcoach, Context context)
 	{
 		this._id = _id;
 		this.name = name;
@@ -103,7 +100,7 @@ public class Route
 		this.started = false;
 		this.geoPoints = new ArrayList<ParcelableGeoPoint>();
 		this.checkPoints = new ArrayList<CheckPoint>();
-		this.calorieCounter = new CalorieCounter();
+		this.calorieCounter = new CalorieCounter(context);
 	}
 
 	public String toString()

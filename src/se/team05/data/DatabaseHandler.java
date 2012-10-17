@@ -48,6 +48,7 @@ public class DatabaseHandler
 	private DBResultAdapter dbResultAdapter;
 	private DBCheckPointAdapter dbCheckPointAdapter;
 	private DBGeoPointAdapter dbGeoPointAdapter;
+	private Context context;
 
 	/**
 	 * Constructor of the class which takes a context to operate in as a
@@ -58,6 +59,7 @@ public class DatabaseHandler
 	 */
 	public DatabaseHandler(Context context)
 	{
+		this.context = context;
 		dBRouteAdapter = new DBRouteAdapter(context);
 		dbTrackAdapter = new DBTrackAdapter(context);
 		dbResultAdapter = new DBResultAdapter(context);
@@ -114,12 +116,7 @@ public class DatabaseHandler
 		if (cursor != null && cursor.getCount() != 0)
 		{
 			cursor.moveToFirst();
-			route = new Route(cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_ID)), cursor.getString(cursor
-					.getColumnIndex(DBRouteAdapter.COLUMN_NAME)), cursor.getString(cursor
-					.getColumnIndex(DBRouteAdapter.COLUMN_DESCRIPTION)), cursor.getInt(cursor
-					.getColumnIndex(DBRouteAdapter.COLUMN_TYPE)), cursor.getInt(cursor
-					.getColumnIndex(DBRouteAdapter.COLUMN_TIMECOACH)), cursor.getInt(cursor
-					.getColumnIndex(DBRouteAdapter.COLUMN_LENGTHCOACH)));
+			route = createRouteFromCursor(cursor);
 
 			cursor.close();
 
@@ -128,7 +125,7 @@ public class DatabaseHandler
 		}
 		dBRouteAdapter.close();
 		return route;
-	}
+	}	
 
 	/**
 	 * Get all routes from the database.
@@ -148,13 +145,7 @@ public class DatabaseHandler
 
 			while (!cursor.isAfterLast())
 			{
-				route = new Route(cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_ID)),
-						cursor.getString(cursor.getColumnIndex(DBRouteAdapter.COLUMN_NAME)), cursor.getString(cursor
-								.getColumnIndex(DBRouteAdapter.COLUMN_DESCRIPTION)), cursor.getInt(cursor
-								.getColumnIndex(DBRouteAdapter.COLUMN_TYPE)), cursor.getInt(cursor
-								.getColumnIndex(DBRouteAdapter.COLUMN_TIMECOACH)), cursor.getInt(cursor
-								.getColumnIndex(DBRouteAdapter.COLUMN_LENGTHCOACH)));
-
+				route = createRouteFromCursor(cursor);
 				routeList.add(route);
 				cursor.moveToNext();
 			}
@@ -548,5 +539,23 @@ public class DatabaseHandler
 		checkPoint.setId(cursor.getLong(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_ID)));
 		checkPoint.addTracks(getTracks(checkPoint.getId()));
 		return checkPoint;
+	}
+	
+	/**
+	 * Creates a route object from the passed in cursor.
+	 * 
+	 * @param cursor the cursor pointing to the row
+	 * @return a new route
+	 */
+	private Route createRouteFromCursor(Cursor cursor)
+	{
+		return new Route(
+				cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_ID)), 
+				cursor.getString(cursor.getColumnIndex(DBRouteAdapter.COLUMN_NAME)), 
+				cursor.getString(cursor.getColumnIndex(DBRouteAdapter.COLUMN_DESCRIPTION)), 
+				cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_TYPE)), 
+				cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_TIMECOACH)), 
+				cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_LENGTHCOACH)),
+				context);
 	}
 }

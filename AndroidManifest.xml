@@ -68,7 +68,7 @@
             android:label="@string/settings" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.lekerlite.MainActivity" />
+                android:value=".activity.MainActivity" />
         </activity>
     </application>
 
