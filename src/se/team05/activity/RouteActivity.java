@@ -291,7 +291,7 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 	 */
 	private void showSaveResultDialog(long rid)
 	{
-		Result result = new Result(rid, (int) System.currentTimeMillis() / 1000, route.getTimePassed(), (int) route.getTotalDistance(), 0);
+		Result result = new Result(rid,System.currentTimeMillis() / 1000, route.getTimePassed(), (int) route.getTotalDistance(), 0);
 		saveResultDialog = AlertDialogFactory.newSaveResultDialog(this, route, result);
 		saveResultDialog.show();
 		route.setStarted(false);
@@ -595,6 +595,8 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 		if (saveResult)
 		{
 			Result result = new Result(route.getId(), (int) System.currentTimeMillis() / 1000, route.getTimePassed(), (int) route.getTotalDistance(), route.getCalories());
+			result.setRid(route.getId());
+			result.setTimestamp(System.currentTimeMillis() / 1000);
 			databaseHandler.saveResult(result);
 		}
 		databaseHandler.saveGeoPoints(route.getId(), route.getGeoPoints());
