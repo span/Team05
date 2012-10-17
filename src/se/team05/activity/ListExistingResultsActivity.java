@@ -75,7 +75,26 @@ public class ListExistingResultsActivity extends ListActivity
 		Context context = this;
 		Intent intent;
 		intent = new Intent(context, ShowResultsActivity.class);
-		intent.putExtra(Result.RESULT_ID, 1);
+		intent.putExtra(Result.RESULT_ID, id);
 		context.startActivity(intent);
+	}
+	
+	//TODO Remove maybe...
+	@Override
+	public void onResume()
+	{
+		super.onResume();
+		long rid = getIntent().getLongExtra(Route.EXTRA_ID, -1);
+		DatabaseHandler db = new DatabaseHandler(this);
+		Cursor cursor = db.getAllResultsCursorByRid(rid);
+		
+		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,
+						android.R.layout.simple_list_item_1,
+						cursor,
+						new String[] {DBResultAdapter.COLUMN_ID},
+						new int[] {android.R.id.text1},
+						Adapter.NO_SELECTION);
+		
+		setListAdapter(adapter);
 	}
 }

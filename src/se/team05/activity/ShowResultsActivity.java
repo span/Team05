@@ -31,6 +31,8 @@ import se.team05.listener.ShowResultActivityButtonListener;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -68,16 +70,17 @@ public class ShowResultsActivity extends Activity
 		this.intent = getIntent();
 		this.databaseHandler = new DatabaseHandler(this);
 		
-		this.id = intent.getLongExtra(Result.RESULT_ID, 1);
-	
+		this.id = intent.getLongExtra(Result.RESULT_ID, -1);
+		System.out.println("Ett id ja: " + id);
+		
 		this.result = databaseHandler.getResultById(id);
-				
+//				
 		showResults();
-		
-		
-		//TODO App is unstable if this listener is invoked. Needs to be fixed! /Gustaf
-//		Button deleteResultsButton = (Button) findViewById(R.id.delete_results_button);
-//		deleteResultsButton.setOnClickListener(new ShowResultActivityButtonListener(this, id));	
+//		
+//		
+//		//TODO App is unstable if this listener is invoked. Needs to be fixed! /Gustaf
+		Button deleteResultsButton = (Button) findViewById(R.id.delete_results_button);
+		deleteResultsButton.setOnClickListener(new ShowResultActivityButtonListener(this, id));	
 		
 	}
 
@@ -121,6 +124,23 @@ public class ShowResultsActivity extends Activity
 	public void onDestroy()
 	{
 		super.onDestroy();
+	}
+	
+	/**
+	 * This method is called when an item in the action bar (options menu) has
+	 * been pressed. Currently this only takes the user to the parent activity
+	 * (main activity).
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		switch (item.getItemId())
+		{
+			case android.R.id.home:
+				NavUtils.navigateUpFromSameTask(this);
+				return true;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 	
 }

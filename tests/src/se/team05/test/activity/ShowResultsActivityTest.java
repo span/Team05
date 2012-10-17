@@ -19,120 +19,196 @@
 
 package se.team05.test.activity;
 
-//import se.team05.activity.ListExistingRoutesActivity;
-//import se.team05.activity.MainActivity;
-//import se.team05.activity.RouteActivity;
+import java.util.ArrayList;
+
+import se.team05.R;
+import se.team05.activity.ListExistingResultsActivity;
+import se.team05.activity.ListExistingRoutesActivity;
+import se.team05.activity.MainActivity;
+import se.team05.activity.RouteActivity;
 import se.team05.activity.ShowResultsActivity;
+import se.team05.content.ParcelableGeoPoint;
 import se.team05.content.Result;
 import se.team05.content.Route;
+import se.team05.content.Track;
+import se.team05.data.DBCheckPointAdapter;
+import se.team05.data.DBGeoPointAdapter;
+import se.team05.data.DBRouteAdapter;
+import se.team05.data.Database;
 import se.team05.data.DatabaseHandler;
+import se.team05.listener.MapLocationListener;
+import se.team05.overlay.CheckPoint;
+import se.team05.test.util.MockLocationUtil;
+import android.app.Activity;
+import android.app.ListActivity;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.location.Location;
+import android.provider.MediaStore;
 import android.test.ActivityInstrumentationTestCase2;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 
+import com.google.android.maps.GeoPoint;
 import com.jayway.android.robotium.solo.Solo;
 
-/**
- * This test class utilizes Robotium for simple UI-testing of
- * the ShowResultsActivity class. This class is called upon by JUnit
- * automatically.
- * @author Markus && Gustaf
- *
- */
-
-public class ShowResultsActivityTest extends ActivityInstrumentationTestCase2<ShowResultsActivity> {
-	
+public class ShowResultsActivityTest extends ActivityInstrumentationTestCase2<MainActivity>
+{
 	private Solo solo;
-	
-	private ShowResultsActivity showResultsActivity;
-	
-	private ImageView newRouteButton;
-	private ImageView useExistingButton;
-	private Button deleteResultsButton;
-	private DatabaseHandler databaseHandler;
-	private Route route;
-	private Result result;
-	
-	/**
-	 * Making sure to call inherited parent constructor, nothing more.
-	 */
+	private ImageView oldRouteImage;
+
 	public ShowResultsActivityTest()
 	{
-		super(ShowResultsActivity.class);
+		super(MainActivity.class);
 	}
-	
-	/**
-	 * Runs automatically by JUnit before each testcase.
-	 * Sets up the testing environment before each individual test
-	 * by getting a Solo instance for Robotium and setting variables
-	 * for use in test-methods.
-	 */
+
 	@Override
 	protected void setUp() throws Exception
 	{
 		super.setUp();
-		solo = new Solo(this.getInstrumentation(), getActivity());
 		
-		this.setActivityInitialTouchMode(false);
-		
-		showResultsActivity = this.getActivity();
-		
-		deleteResultsButton = (Button) showResultsActivity.findViewById(
-				se.team05.R.id.delete_results_button
-		);
-		
-		databaseHandler = new DatabaseHandler(this);
-		Route route = new Route("testRoute", "enGoRunda", -1, -1, -1);
-		databaseHandler.saveRoute(route);
-		result = new Result(route.getId(), 1000000, 3700, 1000, 0);
-		databaseHandler.saveResult(result);	
-	}
-	
-	/**
-	 * Runs automatically by JUnit after each testcase.
-	 * Finalizes the activity, releasing the object, and then
-	 * calls parent tear down method to do its thing.
-	 */
-	@Override
-	protected void tearDown() throws Exception
-	{
-		showResultsActivity.finish();
-		super.tearDown();
-	}
-	
-	/**
-	 * Checks the environment to make sure all resources necessary
-	 * for testing are actually loaded. A valid environment is
-	 * required for other test-methods to pass.
-	 */
-	public void testPreConditions()
-	{
-		solo.assertCurrentActivity("ShowResultsActivity expected", ShowResultsActivity.class);
-		assertNotNull(deleteResultsButton);
+		Activity activity = getActivity();
+		solo = new Solo(this.getInstrumentation(), activity);
+		oldRouteImage = (ImageView) activity.findViewById(R.id.image_existing_route);
+
+		SQLiteDatabase db = new Database(this.getInstrumentation().getTargetContext()).getWritableDatabase();
+		db.delete(DBRouteAdapter.TABLE_ROUTES, null, null);
+		db.delete(DBCheckPointAdapter.TABLE_CHECKPOINTS, null, null);
+		db.delete(DBGeoPointAdapter.TABLE_GEOPOINTS, null, null);
 	}
 
-	/**
-	 * Makes sure the go back function is working and that the result
-	 * crated in the set up of this class still exists in database.
-	 */
-	public void testSoloGoBack()
+	@Override
+	protected void tearDown()
 	{
-		solo.goBack();
-		solo.assertCurrentActivity("wrong class", ListExistingResultActivity.class);		
-		assertEquals(result.getId(), databaseHandler.getResultById(result.getId()));		
+		SQLiteDatabase db = new Database(this.getInstrumentation().getTargetContext()).getWritableDatabase();
+		db.delete(DBRouteAdapter.TABLE_ROUTES, null, null);
+		db.delete(DBCheckPointAdapter.TABLE_CHECKPOINTS, null, null);
+		db.delete(DBGeoPointAdapter.TABLE_GEOPOINTS, null, null);
+		solo.finishOpenedActivities();
 	}
-	
-	/**
-	 * Makes sure the deleteResultsButton behaves as expected using
-	 * Robotium. It Should delete the result being viewed and return to
-	 * ListExistingResultActivity. The result being deleted is the one
-	 * we set up at the beginning of this test.
-	 */
-	public void testDeleteResultButton()
+
+//	public void testUseRouteIfNonExisting()
+//	{
+//		solo.clickOnView(oldRouteImage);
+//		solo.assertCurrentActivity("Expected ListExistingRoutesActivity", ListExistingRoutesActivity.class);
+//		solo.clickOnText("Click to add a route");
+//		solo.assertCurrentActivity("Expected RouteActivity", RouteActivity.class);
+//		solo.clickOnActionBarHomeButton();
+//		solo.assertCurrentActivity("Expected MainActivity", MainActivity.class);
+//	}
+//	
+//	public void testUseExistingRoute() throws Throwable
+//	{
+//		DatabaseHandler databaseHandler = new DatabaseHandler(getActivity());
+//		Route route = new Route("name", "description");
+//		route.setId(databaseHandler.saveRoute(route));
+//		
+//		ArrayList<ParcelableGeoPoint> geoPointList = new ArrayList<ParcelableGeoPoint>();
+//		ParcelableGeoPoint gpA = new ParcelableGeoPoint((int)(47.975 * 1E6), (int)(17.056 * 1E6));
+//		ParcelableGeoPoint gpB = new ParcelableGeoPoint((int)(48.975 * 1E6), (int)(17.056 * 1E6));
+//		geoPointList.add(gpA);
+//		geoPointList.add(gpB);
+//		databaseHandler.saveGeoPoints(route.getId(), geoPointList);
+//		
+//		CheckPoint checkPoint = new CheckPoint(new GeoPoint((int) (48.975 * 1E6), (int) (17.056 * 1E6)));
+//		checkPoint.setRid(route.getId());
+//		long cid = databaseHandler.saveCheckPoint(checkPoint);
+//		
+//		Cursor cursor = getActivity().getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, new String[] { MediaStore.Audio.Media.DATA }, null, null, null);
+//		cursor.moveToFirst();
+//		if(cursor.getCount() < 1)
+//		{
+//			fail("Could not find media in the media store, please add media to your device and reboot before testing again.");
+//		}
+//		else
+//		{
+//			Track track = new Track("id", "artist", "album", "title", cursor.getString(0), "displayName", "duration");
+//			databaseHandler.saveTrack(cid, track);
+//		}
+//		
+//		route.setCheckPoints(databaseHandler.getCheckPoints(route.getId()));
+//		
+//		solo.clickOnView(oldRouteImage);
+//		solo.assertCurrentActivity("ListExistingRoutesActivity expected", ListExistingRoutesActivity.class);
+//		solo.clickInList(0);
+//		solo.assertCurrentActivity("Expected RouteActivity", RouteActivity.class);
+//		
+//		final RouteActivity routeActivity = (RouteActivity) solo.getCurrentActivity();
+//		
+//		Button startButton = (Button) solo.getView(R.id.start_button);
+//		Button stopButton = (Button) solo.getView(R.id.stop_button);
+//		assertEquals(startButton.getVisibility(), View.VISIBLE);
+//		assertEquals(stopButton.getVisibility(), View.GONE);
+//		solo.clickOnView(startButton);
+//		assertEquals(startButton.getVisibility(), View.GONE);
+//		assertEquals(stopButton.getVisibility(), View.VISIBLE);
+//
+//		final MapLocationListener locationListener = new MapLocationListener(routeActivity, false, route.getCheckPoints());
+//		MockLocationUtil mockLocation = new MockLocationUtil();
+//		MockLocationUtil.publishMockLocation(47.975, 17.056, routeActivity, route.getCheckPoints(), locationListener);
+//		Thread.sleep(1500);
+//		Location locationA = mockLocation.getLastKnownLocationInApplication(routeActivity);
+//		assertEquals(47.975, locationA.getLatitude());
+//		assertEquals(17.056, locationA.getLongitude());
+//		
+//		MockLocationUtil.publishMockLocation(48.975, 17.056, routeActivity, route.getCheckPoints(), locationListener);
+//		Thread.sleep(1500);
+//		final Location locationB = mockLocation.getLastKnownLocationInApplication(routeActivity);
+//		assertEquals(48.975, locationB.getLatitude());
+//		assertEquals(17.056, locationB.getLongitude());
+//		
+//		runTestOnUiThread(new Runnable()
+//		{
+//			@Override
+//			public void run()
+//			{
+//				locationListener.onLocationChanged(locationB);
+//			}
+//		});
+//		
+//		
+//		solo.clickOnView(stopButton);
+//		solo.clickOnButton("Yes");
+//		assertEquals(startButton.getVisibility(), View.VISIBLE);
+//		assertEquals(stopButton.getVisibility(), View.GONE);
+//		
+//		solo.clickOnView(startButton);
+//		solo.clickOnView(stopButton);
+//		solo.clickOnButton("No");
+//	}
+
+	public void testShowingAndDeletingResults()
 	{
-		assertTrue(cursor!=null && cursor.getCount()>0);
-		solo.clickOnView(deleteResultsButton);
-		solo.clickOnText("Yes");
-		solo.assertCurrentActivity("wrong class", ListExistingResultActivity.class);
-		assertTrue(cursor==null || cursor.getCount()<1);
-	}	
+		DatabaseHandler databaseHandler = new DatabaseHandler(getActivity());
+		Route route = new Route("name", "description");
+		route.setId(databaseHandler.saveRoute(route));
+		
+		Result result = new Result(route.getId(), 200000000L, 3700, 1000, 0);		
+		long id = databaseHandler.saveResult(result);
+		result = databaseHandler.getResultById(id);
+		
+		Result result2 = new Result(route.getId(), 200000000L, 3700, 1000, 0);		
+		long id2 = databaseHandler.saveResult(result);
+		result2 = databaseHandler.getResultById(id2);
+		
+		solo.clickOnView(oldRouteImage);
+		solo.assertCurrentActivity("Expected ListExistingRoutesActivity", ListExistingRoutesActivity.class);
+		solo.clickInList(0);
+		solo.assertCurrentActivity("Expected RouteActivity", RouteActivity.class);
+		Button showResultButton =(Button) solo.getView(R.id.show_result_button);
+		solo.clickOnView(showResultButton);
+		solo.assertCurrentActivity("Expected ListExistingResultsActivity", ListExistingResultsActivity.class);
+		solo.clickInList(0);
+		
+		solo.assertCurrentActivity("Expected ShowResultsActivity", ShowResultsActivity.class);
+		Button deleteButton =(Button) solo.getView(R.id.delete_results_button);
+		solo.clickOnView(deleteButton);
+		solo.assertCurrentActivity("Expected ListExistingResultsActivity", ListExistingResultsActivity.class);
+		
+		solo.clickInList(0);
+		solo.assertCurrentActivity("Expected ShowResultsActivity", ShowResultsActivity.class);
+		solo.clickOnActionBarHomeButton();		
+		solo.assertCurrentActivity("Expected MainActivity", MainActivity.class);		
+	}
 }

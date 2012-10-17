@@ -311,12 +311,14 @@ public class DatabaseHandler
 	 * @param result
 	 *            the result to save
 	 */
-	public void saveResult(Result result)
+	public long saveResult(Result result)
 	{
+		long id = -1;
 		dbResultAdapter.open();
-		dbResultAdapter.instertResult(result.getRid(), result.getTimestamp(), result.getTime(), result.getDistance(),
+		id = dbResultAdapter.instertResult(result.getRid(), result.getTimestamp(), result.getTime(), result.getDistance(),
 				result.getCalories());
 		dbResultAdapter.close();
+		return id;
 	}
 
 	/**
