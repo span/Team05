@@ -62,6 +62,9 @@
         <activity
             android:name=".activity.ShowResultsActivity"
             android:label="@string/results" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.MainActivity" />
         </activity>
         <activity
             android:name=".activity.SettingsActivity"

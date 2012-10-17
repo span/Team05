@@ -92,6 +92,7 @@
 	<string name="to_use_an_old_route">" to use an old route"</string>
 	<string name="click_to_add_route">Click to add route</string>
 	<string name="click_to_use_an_existing_route">Click to use an existing route</string>
+	<string name="calories">Calories</string>
 	<string name="title_activity_settings">SettingsActivity</string>
     <string name="settings">Settings</string>
     <string name="enter_name_">Enter name:</string>
