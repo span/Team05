@@ -96,6 +96,7 @@ public class ShowResultsActivity extends Activity
 		double speed = (distanceInMeters / timeInSeconds) * 3.6;
 		long timestamp = result.getTimestamp();
 		Date date = new Date(timestamp * 1000);
+		int calories = result.getCalories();
 
 		//Present date
 		TextView dateView = (TextView) findViewById(R.id.show_date_result_textview);
@@ -117,7 +118,12 @@ public class ShowResultsActivity extends Activity
 		//Present speed
 		TextView speedView = (TextView) findViewById(R.id.show_speed_result_textview);		
 		String speedString = String.valueOf(speed);
-		speedView.setText(speedString);		
+		speedView.setText(speedString);	
+		
+		//Present calories
+		TextView caloriesView = (TextView) findViewById(R.id.show_calories_result_textview);
+		String caloriesString = String.valueOf(calories);
+		caloriesView.setText(caloriesString);
 	}
 	
 	@Override
