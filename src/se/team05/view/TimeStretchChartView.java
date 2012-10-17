@@ -1,3 +1,21 @@
+/**
+	This file is part of Personal Trainer.
+
+    Personal Trainer is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    Personal Trainer is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
+
+    (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
+ */
 package se.team05.view;
 
 import java.util.Collections;
@@ -19,6 +37,13 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint.Align;
 
+/**
+ * This class uses the library achartengine and draws a time chart with the time
+ * passed on each result.
+ * 
+ * @author Patrik Thituson
+ * 
+ */
 public class TimeStretchChartView extends GraphicalView
 {
 	private static final String DATE_FORMAT = "yyyy-MM-dd";
@@ -28,6 +53,12 @@ public class TimeStretchChartView extends GraphicalView
 	private static long maxTimeStamp;
 	private static XYMultipleSeriesRenderer renderer;
 
+	/**
+	 * The Constructor which is not used for now
+	 * 
+	 * @param context
+	 * @param abstractChart
+	 */
 	private TimeStretchChartView(Context context, AbstractChart abstractChart)
 	{
 		super(context, abstractChart);
@@ -35,39 +66,45 @@ public class TimeStretchChartView extends GraphicalView
 	}
 
 	/**
-	 * This method returns a new graphical view as a pie chart view. It uses the
-	 * income and costs and the static color constants of the class to create
-	 * the chart.
+	 * This method returns a new graphical view as a time chart view. It uses
+	 * the time passed and Date to create the chart.
 	 * 
 	 * @param context
-	 *            the context
-	 * @param income
-	 *            the total income
-	 * @param costs
-	 *            the total cost
-	 * @return a GraphicalView object as a pie chart
+	 * @param results
+	 *            the list of results that should be drawn on the chart
+	 * @param nameOfRoute
+	 *            the name of the route to display the name
+	 * @return
 	 */
 	public static GraphicalView getNewInstance(Context context, List<Result> results, String nameOfRoute)
 	{
-		if (results.size()!=1)
-		{	
-			int resultMaxTime = Collections.max(results).getTime()/60;
-			maxTime = resultMaxTime >= maxTime ? resultMaxTime:maxTime;
+		if (results.size() != 1)
+		{
+			int resultMaxTime = Collections.max(results).getTime() / 60;
+			maxTime = resultMaxTime >= maxTime ? resultMaxTime : maxTime;
 		}
 		minTimeStamp = results.get(0).getTimestamp() * 1000;
 		maxTimeStamp = results.get(results.size() - 1).getTimestamp() * 1000;
-		String title = "Route: "+nameOfRoute;
+		String title = "Route: " + nameOfRoute;
 		renderer = createRendere();
-
-
 		setChartSettings();
-		renderer.setXLabels(5);
-		renderer.setYLabels(10);
+
 		SimpleSeriesRenderer seriesRenderer = renderer.getSeriesRendererAt(0);
 		seriesRenderer.setDisplayChartValues(true);
 		return ChartFactory.getTimeChartView(context, createDateTimeSet(title, results), renderer, DATE_FORMAT);
 	}
 
+	/**
+	 * This method creates a XYMultipleSeriesDataset which contains pair of time
+	 * passed and date (the X and Y value)
+	 * 
+	 * @param title
+	 *            the title of the route
+	 * @param results
+	 *            a list of results wich should be added to the series
+	 * @return XYMultipleSeriesDataset 
+	 * 			  the dataset with the data that should be drawn up
+	 */
 	protected static XYMultipleSeriesDataset createDateTimeSet(String title, List<Result> results)
 	{
 		XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
@@ -81,6 +118,10 @@ public class TimeStretchChartView extends GraphicalView
 		return dataset;
 	}
 
+	/**
+	 * 
+	 * @return XYMultipleSeriesRenderer
+	 */
 	protected static XYMultipleSeriesRenderer createRendere()
 	{
 
@@ -105,8 +146,13 @@ public class TimeStretchChartView extends GraphicalView
 		return renderer;
 	}
 
+	/**
+	 * Sets the settings of the chart.
+	 */
 	protected static void setChartSettings()
 	{
+		renderer.setXLabels(5);
+		renderer.setYLabels(10);
 		renderer.setChartTitle("TimePassed");
 		renderer.setYTitle("Minutes");
 		renderer.setXAxisMin(minTimeStamp);
