@@ -34,6 +34,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Adapter;
 import android.widget.LinearLayout;
@@ -52,7 +54,8 @@ public class ListExistingResultsActivity extends ListActivity
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_list_existing_results);		
+		setContentView(R.layout.activity_list_existing_results);	
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 	
 	/**
@@ -93,4 +96,22 @@ public class ListExistingResultsActivity extends ListActivity
 			chartContainer.addView(timeStretchChartView);
 		}
 	}
+	
+	/**
+	 * This method is called when an item in the action bar (options menu) has
+	 * been pressed. Currently this only takes the user to the parent activity
+	 * (main activity).
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		switch (item.getItemId())
+		{
+			case android.R.id.home:
+				NavUtils.navigateUpFromSameTask(this);
+				return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+	
 }
