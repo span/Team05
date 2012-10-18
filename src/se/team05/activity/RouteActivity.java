@@ -715,7 +715,14 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 	@Override
 	public void onBackPressed()
 	{
-		AlertDialog alertDialog = AlertDialogFactory.newConfirmBackDialog(this);
-		alertDialog.show();
+		if(route.isStarted())
+		{
+			AlertDialog alertDialog = AlertDialogFactory.newConfirmBackDialog(this);
+			alertDialog.show();
+		}
+		else
+		{
+			super.onBackPressed();
+		}
 	}
 }
