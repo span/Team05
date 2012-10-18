@@ -57,7 +57,7 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 
 	private static final String TAG = "Personal Trainer";
 	public static final int MODE_ADD = 0;
-	public static final int MODE_EDIT = 1;	
+	public static final int MODE_EDIT = 1;
 
 	private Callbacks callBack;
 	private CheckPoint checkPoint;
@@ -135,25 +135,33 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 		switch (v.getId())
 		{
 			case R.id.record_button:
-				recordSound();
+				if (!soundManager.isRecording())
+				{
+					startRecording();
+				}
+				else
+				{
+					stopRecording();
+				}
 				break;
 			case R.id.select_button:
+				stopRecording();
 				Intent intent = new Intent(parentActivity, MediaSelectorActivity.class);
 				intent.putParcelableArrayListExtra(MediaSelectorActivity.EXTRA_SELECTED_ITEMS, checkPoint.getTracks());
 				parentActivity.startActivityForResult(intent, MediaSelectorActivity.REQUEST_MEDIA);
 				break;
 			case R.id.delete_button:
+				stopRecording();
 				callBack.onDeleteCheckPoint(checkPoint.getId());
 				dismiss();
 				break;
 			case R.id.save_button:
+				stopRecording();
 				int radius = Integer.parseInt(radiusTextField.getText().toString());
 				checkPoint.setName(nameTextField.getText().toString());
 				checkPoint.setRadius(radius);
 				callBack.onSaveCheckPoint(checkPoint);
 				dismiss();
-				break;
-			default:
 				break;
 		}
 	}
@@ -164,13 +172,15 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 	 * the text of the "record" button to allow the user for easy interaction
 	 * while recording.
 	 */
-	private void recordSound()
+	private void startRecording()
 	{
 		if (!soundManager.isRecording())
 		{
 			try
 			{
-				Toast.makeText(getContext(), getContext().getString(R.string.you_are_now_recording_speak_into_the_microphone), Toast.LENGTH_LONG).show();
+				Toast.makeText(getContext(),
+						getContext().getString(R.string.you_are_now_recording_speak_into_the_microphone),
+						Toast.LENGTH_LONG).show();
 				soundManager.startRecording();
 				recordButton.setText(R.string.stop_recording);
 			}
@@ -179,7 +189,14 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 				Log.e(TAG, "Could not start recording: " + e.getMessage());
 			}
 		}
-		else
+	}
+
+	/**
+	 * Stops the current recording if there is one taking place.
+	 */
+	private void stopRecording()
+	{
+		if (soundManager.isRecording())
 		{
 			soundManager.stopRecording();
 			recordButton.setText(R.string.record);
