@@ -79,7 +79,7 @@ public class SettingsActivity extends Activity implements View.OnClickListener
 	@Override
 	public void onClick(View arg0) 
 	{
-		if(testWeight() >= 0)
+		if(testWeight() > 0)
 		{
 		    settings.setUserName(nameEdit.getText().toString());
 			settings.setUserWeight(testWeight());
