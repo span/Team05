@@ -82,8 +82,6 @@ public class MediaSelectorActivity extends Activity implements LoaderCallbacks<C
 			MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.DISPLAY_NAME,
 			MediaStore.Audio.Media.DURATION, MediaStore.Audio.Media.ALBUM_ID };
 	private ArrayList<Track> selectedItems;
-	private boolean albumsLoaded;
-	private Cursor trackCursor;
 	private HashMap<Long, Bitmap> albumArtMap;
 
 	/**
@@ -192,13 +190,13 @@ public class MediaSelectorActivity extends Activity implements LoaderCallbacks<C
 			while (!cursor.isAfterLast())
 			{
 				long albumId = Long.parseLong(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)));
-				if(!albumArtMap.containsKey(albumId))
+				if (!albumArtMap.containsKey(albumId))
 				{
 					albumArtMap.put(albumId, buildBitmapFromUri(albumId));
 				}
 				cursor.moveToNext();
 			}
-			
+
 			adapter = new MediaSelectorAdapter(getApplicationContext(), R.layout.activity_media_selector, cursor, new String[] {
 					MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.TITLE }, new int[] { R.id.text_1,
 					R.id.text_2, R.id.text_3 }, Adapter.NO_SELECTION, selectedItems, albumArtMap);
@@ -209,7 +207,13 @@ public class MediaSelectorActivity extends Activity implements LoaderCallbacks<C
 			adapter.swapCursor(cursor);
 		}
 	}
-	
+
+	/**
+	 * Builds the album art bitmap from the specified URI if it exists.
+	 * 
+	 * @param albumId
+	 * @return the decoded bitmap
+	 */
 	private Bitmap buildBitmapFromUri(long albumId)
 	{
 		Bitmap bitmap = null;
@@ -223,7 +227,7 @@ public class MediaSelectorActivity extends Activity implements LoaderCallbacks<C
 		}
 		catch (FileNotFoundException e)
 		{
-			Log.e(TAG, e.getMessage());
+			Log.d(TAG, e.getMessage());
 		}
 		return bitmap;
 	}

@@ -17,7 +17,7 @@
     (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
 */
 
-package se.team05.test.activity;
+package se.team05.test.ui;
 
 import se.team05.activity.ListExistingRoutesActivity;
 import se.team05.activity.MainActivity;
@@ -111,7 +111,6 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
 		solo.clickOnView(newRouteButton);
 		solo.assertCurrentActivity("wrong class", RouteActivity.class);
 		solo.goBack();
-		solo.clickOnText("Yes");
 		solo.assertCurrentActivity("wrong class", MainActivity.class);
 	}
 	

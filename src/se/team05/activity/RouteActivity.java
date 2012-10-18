@@ -618,12 +618,13 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 
 	/**
 	 * Called by the system when the activity is shut down completely. Releases
-	 * the wake lock.
+	 * the wake lock and stops listening for location updates.
 	 */
 	@Override
 	public void onDestroy()
 	{
 		wakeLock = Utils.releaseWakeLock();
+		locationManager.removeUpdates(mapLocationListener);
 		super.onDestroy();
 	}
 
@@ -714,7 +715,14 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 	@Override
 	public void onBackPressed()
 	{
-		AlertDialog alertDialog = AlertDialogFactory.newConfirmBackDialog(this);
-		alertDialog.show();
+		if(route.isStarted())
+		{
+			AlertDialog alertDialog = AlertDialogFactory.newConfirmBackDialog(this);
+			alertDialog.show();
+		}
+		else
+		{
+			super.onBackPressed();
+		}
 	}
 }
