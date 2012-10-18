@@ -38,6 +38,7 @@ import se.team05.overlay.CheckPointOverlay;
 import se.team05.overlay.RouteOverlay;
 import se.team05.util.Utils;
 import se.team05.view.EditRouteMapView;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -47,6 +48,7 @@ import android.os.Bundle;
 import android.os.PowerManager.WakeLock;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -564,6 +566,13 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 				break;
 		}
 	}
+	
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) 
+    {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
 
 	/**
 	 * This method is called when an item in the action bar (options menu) has
@@ -577,6 +586,16 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 		{
 			case android.R.id.home:
 				NavUtils.navigateUpFromSameTask(this);
+				return true;
+			case R.id.settings:
+				if(route.isStarted())
+				{
+					AlertDialogFactory.newStopRouteAlertDialog(this).show();
+				}
+				else
+				{
+					launchActivity(SettingsActivity.class);
+				}
 				return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -601,7 +620,7 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 		}
 		databaseHandler.saveGeoPoints(route.getId(), route.getGeoPoints());
 		databaseHandler.updateCheckPointRid(route.getId());
-		launchMainActivity();
+		launchActivity(MainActivity.class);
 	}
 
 	/**
@@ -613,7 +632,7 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 	{
 		databaseHandler.deleteRoute(route);
 		databaseHandler.deleteCheckPoints(route.getId());
-		launchMainActivity();
+		launchActivity(MainActivity.class);
 	}
 
 	/**
@@ -629,11 +648,11 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 	}
 
 	/**
-	 * Private helper method to launch the main activity.
+	 * Private helper method to launch the passed in activity.
 	 */
-	private void launchMainActivity()
+	private void launchActivity(Class<? extends Activity> c)
 	{
-		Intent intent = new Intent(this, MainActivity.class);
+		Intent intent = new Intent(this, c);
 		this.startActivity(intent);
 	}
 

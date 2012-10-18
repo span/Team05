@@ -106,4 +106,25 @@ public class AlertDialogFactory
 					}
 				}).create();
 	}
+
+	/**
+	 * Alerts the user that they need to cancel their current route before
+	 * continuing.
+	 * 
+	 * @param context
+	 *            the context to operate in and finish if positive answer
+	 * @return a new alert dialog
+	 */
+	public static AlertDialog newStopRouteAlertDialog(final Context context)
+	{
+		return new AlertDialog.Builder(context).setTitle(R.string.stop_route)
+				.setMessage(R.string.you_must_stop_your_route_before_you_can_enter_the_settings)
+				.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener()
+				{
+					public void onClick(DialogInterface dialog, int id)
+					{
+						dialog.cancel();
+					}
+				}).create();
+	}
 }
