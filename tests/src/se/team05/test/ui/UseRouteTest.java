@@ -29,8 +29,8 @@ import se.team05.data.DBGeoPointAdapter;
 import se.team05.data.DBRouteAdapter;
 import se.team05.data.Database;
 import se.team05.listener.MapLocationListener;
-import se.team05.test.util.MockDatabase;
-import se.team05.test.util.MockLocationUtil;
+import se.team05.mock.MockDatabase;
+import se.team05.mock.MockLocationUtil;
 import android.app.Activity;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
@@ -138,5 +138,4 @@ public class UseRouteTest extends ActivityInstrumentationTestCase2<MainActivity>
 		solo.clickOnView(stopButton);
 		solo.clickOnButton("No");
 	}
-
 }
