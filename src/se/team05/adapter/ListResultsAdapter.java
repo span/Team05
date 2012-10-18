@@ -42,7 +42,7 @@ public class ListResultsAdapter extends SimpleCursorAdapter
 {
 
 	/**
-	 * Constructor which calls the super class to instantiate the adapter.
+	 * Constructor which calls the super class to instantiate the adapter and calls the view binder to set a custom one.
 	 * 
 	 * @param context
 	 *            The context to operate in
@@ -60,6 +60,7 @@ public class ListResultsAdapter extends SimpleCursorAdapter
 	public ListResultsAdapter(Context context, int layout, Cursor c, String[] from, int[] to, int flags)
 	{
 		super(context, layout, c, from, to, flags);
+		setViewBinder(new ResultsViewBinder());
 	}
 
 	/**
@@ -68,7 +69,7 @@ public class ListResultsAdapter extends SimpleCursorAdapter
 	@Override
 	public void setViewBinder(ViewBinder viewBinder)
 	{
-		super.setViewBinder(new ResultsViewBinder());
+		super.setViewBinder(viewBinder);
 	}
 
 	/**
