@@ -15,7 +15,7 @@
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
 
     (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
-*/
+ */
 package se.team05.test.ui;
 
 import se.team05.R;
@@ -30,15 +30,16 @@ import android.widget.ImageView;
 
 import com.jayway.android.robotium.solo.Solo;
 
-public class AddRouteTest extends ActivityInstrumentationTestCase2<MainActivity> {
-	
+public class AddRouteTest extends ActivityInstrumentationTestCase2<MainActivity>
+{
+
 	private static String ROUTE_NAME = "Hello Route";
 	private static String ROUTE_DESC = "Hello Description";
-	
+
 	private Solo solo;
 	private ImageView newRouteImage;
 	private ImageView oldRouteImage;
-	
+
 	/**
 	 * Making sure to call inherited parent constructor, nothing more.
 	 */
@@ -46,7 +47,7 @@ public class AddRouteTest extends ActivityInstrumentationTestCase2<MainActivity>
 	{
 		super(MainActivity.class);
 	}
-	
+
 	/**
 	 * Setting up Robotium for each test and clearing database.
 	 */
@@ -56,45 +57,68 @@ public class AddRouteTest extends ActivityInstrumentationTestCase2<MainActivity>
 		super.setUp();
 		Activity activity = getActivity();
 		solo = new Solo(this.getInstrumentation(), activity);
-		
+
 		newRouteImage = (ImageView) activity.findViewById(R.id.image_new_route);
 		oldRouteImage = (ImageView) activity.findViewById(R.id.image_existing_route);
-		
-		SQLiteDatabase db =  new Database(this.getInstrumentation().getTargetContext()).getWritableDatabase();
+
+		SQLiteDatabase db = new Database(this.getInstrumentation().getTargetContext()).getWritableDatabase();
 		db.delete(DBRouteAdapter.TABLE_ROUTES, null, null);
 	}
-	
+
 	/**
 	 * Clearing database and tell Robotium to finish all activities.
 	 */
 	@Override
 	protected void tearDown()
 	{
-		SQLiteDatabase db =  new Database(this.getInstrumentation().getTargetContext()).getWritableDatabase();
+		SQLiteDatabase db = new Database(this.getInstrumentation().getTargetContext()).getWritableDatabase();
 		db.delete(DBRouteAdapter.TABLE_ROUTES, null, null);
-		
+
 		solo.finishOpenedActivities();
 	}
-	
+
 	/**
-	 * Testing by adding a new route and checking if it appears in 
-	 * the list of existing routes.
+	 * Testing by adding a new route and checking if it appears in the list of
+	 * existing routes.
 	 */
 	public void testAddRoute()
 	{
-			solo.clickOnView(newRouteImage);
-			solo.assertCurrentActivity("Route activity expected", RouteActivity.class);
-			solo.clickOnButton(1);
-			solo.clickOnButton(1);
-			
-			solo.typeText(0, ROUTE_NAME); // TODO static string
-			solo.typeText(1, ROUTE_DESC);
-			
-			solo.clickOnButton("Save");
-			
-			solo.clickOnView(oldRouteImage);
-			
-			solo.searchText(ROUTE_NAME);
+		solo.clickOnView(newRouteImage);
+		solo.assertCurrentActivity("Route activity expected", RouteActivity.class);
+		solo.clickOnButton(1);
+		solo.clickOnButton(1);
+
+		solo.typeText(0, ROUTE_NAME); // TODO static string
+		solo.typeText(1, ROUTE_DESC);
+
+		solo.clickOnButton("Save");
+
+		solo.clickOnView(oldRouteImage);
+
+		solo.searchText(ROUTE_NAME);
+	}
+
+	/**
+	 * Tests if it is possible to enter the add route screen and go back. Then
+	 * tests to make sure a warning is displayed if the route has been started
+	 * when the user presses back. Then stops the recording of the route,
+	 * discards it and goes back to main.
+	 */
+	public void testAddRouteAndDiscard()
+	{
+		solo.clickOnView(newRouteImage);
+		solo.assertCurrentActivity("Route activity expected", RouteActivity.class);
+		solo.goBack();
+		solo.assertCurrentActivity("Main activity expected", MainActivity.class);
+		solo.clickOnView(newRouteImage);
+		solo.clickOnView(solo.getCurrentActivity().findViewById(R.id.start_button));
+		solo.goBack();
+		solo.clickOnText("No");
+		solo.clickOnView(solo.getCurrentActivity().findViewById(R.id.stop_button));
+		solo.goBack();
+		solo.clickOnText("Discard");
+		solo.clickOnText("Yes");
+		solo.assertCurrentActivity("Main activity expected", MainActivity.class);
 	}
 
 }

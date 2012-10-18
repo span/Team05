@@ -33,7 +33,7 @@ public class MockDatabase
 		checkPoint.setRid(route.getId());
 		long cid = databaseHandler.saveCheckPoint(checkPoint);
 		
-		Cursor cursor = activity.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, new String[] { MediaStore.Audio.Media.DATA }, null, null, null);
+		Cursor cursor = activity.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, new String[] { MediaStore.Audio.Media.DATA }, null, null, MediaStore.Audio.Media.ALBUM);
 		cursor.moveToFirst();
 		if(cursor.getCount() < 1)
 		{
