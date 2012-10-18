@@ -21,12 +21,13 @@ package se.team05.listener;
 import se.team05.R;
 import se.team05.activity.ListExistingRoutesActivity;
 import se.team05.activity.RouteActivity;
+import se.team05.activity.SettingsActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
-import android.graphics.PorterDuff;
 
 /**
  * This is the listener class for the main activity and it takes a Context as a
@@ -79,6 +80,11 @@ public class MainActivityButtonListener implements OnClickListener
 			case R.id.image_existing_route:
 				intent = new Intent(context, ListExistingRoutesActivity.class);
 				imageViewButton = (ImageView) v.findViewById(R.id.image_existing_route);
+				imageViewButton.setColorFilter(0x60EDEDED, PorterDuff.Mode.MULTIPLY);
+				break;
+			case R.id.image_settings:
+				intent = new Intent(context, SettingsActivity.class);
+				imageViewButton = (ImageView) v.findViewById(R.id.image_settings);
 				imageViewButton.setColorFilter(0x60EDEDED, PorterDuff.Mode.MULTIPLY);
 				break;
 			default:

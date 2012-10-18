@@ -16,37 +16,32 @@
     
     (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer    
 */
-
 package se.team05.activity;
 
 import java.sql.Date;
-import java.text.DecimalFormat;
 import java.util.concurrent.TimeUnit;
-
 import se.team05.R;
 import se.team05.content.Result;
 import se.team05.data.DatabaseHandler;
-import se.team05.listener.MainActivityButtonListener;
 import se.team05.listener.ShowResultActivityButtonListener;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
-
 
 /**
  * An activity that will present the user with the option to view a result of an old route.
  * Gets results from database and present them.
  * 
- * @author Gustaf Werlinder
+ * @author Gustaf Werlinder, Henrik Hugo, Markus Schutser, Daniel Kvist
  *
  */
 public class ShowResultsActivity extends Activity
 {
-
-	private long id;
-	
+	private long id;	
 	private DatabaseHandler databaseHandler;
 	private Intent intent;
 	private Result result;
@@ -66,24 +61,24 @@ public class ShowResultsActivity extends Activity
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		
 		this.intent = getIntent();
-		this.databaseHandler = new DatabaseHandler(this);
-		
-		this.id = intent.getLongExtra(Result.RESULT_ID, 1);
-	
+		this.databaseHandler = new DatabaseHandler(this);		
+		this.id = intent.getLongExtra(Result.RESULT_ID, -1);		
 		this.result = databaseHandler.getResultById(id);
-				
-		showResults();
 		
+		Button deleteResultsButton = (Button) findViewById(R.id.delete_results_button);
+		deleteResultsButton.setOnClickListener(new ShowResultActivityButtonListener(this, id));	
 		
-		//TODO App is unstable if this listener is invoked. Needs to be fixed! /Gustaf
-//		Button deleteResultsButton = (Button) findViewById(R.id.delete_results_button);
-//		deleteResultsButton.setOnClickListener(new ShowResultActivityButtonListener(this, id));	
-		
+		showResults();	
 	}
 
+	@Override
+	public void onDestroy()
+	{
+		super.onDestroy();
+	}	
 	
-	/**
-	 * 
+	/** 
+	 * This method will calculate and present the values of the result. 
 	 */
 	private void showResults()
 	{
@@ -93,6 +88,7 @@ public class ShowResultsActivity extends Activity
 		double speed = (distanceInMeters / timeInSeconds) * 3.6;
 		long timestamp = result.getTimestamp();
 		Date date = new Date(timestamp * 1000);
+		int calories = result.getCalories();
 
 		//Present date
 		TextView dateView = (TextView) findViewById(R.id.show_date_result_textview);
@@ -114,13 +110,28 @@ public class ShowResultsActivity extends Activity
 		//Present speed
 		TextView speedView = (TextView) findViewById(R.id.show_speed_result_textview);		
 		String speedString = String.valueOf(speed);
-		speedView.setText(speedString);		
+		speedView.setText(speedString);	
+		
+		//Present calories
+		TextView caloriesView = (TextView) findViewById(R.id.show_calories_result_textview);
+		String caloriesString = String.valueOf(calories);
+		caloriesView.setText(caloriesString);
 	}
-	
+		
+	/**
+	 * This method is called when an item in the action bar (options menu) has
+	 * been pressed. Currently this only takes the user to the parent activity
+	 * (main activity).
+	 */
 	@Override
-	public void onDestroy()
+	public boolean onOptionsItemSelected(MenuItem item)
 	{
-		super.onDestroy();
-	}
-	
+		switch (item.getItemId())
+		{
+			case android.R.id.home:
+				NavUtils.navigateUpFromSameTask(this);
+				return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}	
 }

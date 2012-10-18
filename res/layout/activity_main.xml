@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:contentDescription="@string/click_to_add_route"
             android:paddingBottom="32dp"
-            android:src="@drawable/btn_add_route"/>
+            android:src="@drawable/btn_add_route" />
 
         <ImageView
             android:id="@+id/image_existing_route"
@@ -53,9 +53,18 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/image_new_route"
             android:contentDescription="@string/click_to_use_an_existing_route"
+            android:paddingBottom="32dp"
             android:paddingTop="32dp"
             android:src="@drawable/btn_use_route" />
 
+        <ImageView
+            android:id="@+id/image_settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/image_existing_route"
+            android:contentDescription="@string/click_to_use_settings"
+            android:paddingTop="32dp"
+            android:src="@drawable/btn_settings" />
     </RelativeLayout>
 
     <LinearLayout

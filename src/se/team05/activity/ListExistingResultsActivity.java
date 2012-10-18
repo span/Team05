@@ -18,32 +18,32 @@
 */
 package se.team05.activity;
 
+import java.util.List;
+
+import org.achartengine.GraphicalView;
+
 import se.team05.R;
+import se.team05.adapter.ListResultsAdapter;
 import se.team05.content.Result;
 import se.team05.content.Route;
-import se.team05.data.DBAdapter;
 import se.team05.data.DBResultAdapter;
-import se.team05.data.DBRouteAdapter;
-import se.team05.data.Database;
 import se.team05.data.DatabaseHandler;
+import se.team05.view.TimeStretchChartView;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Adapter;
-import android.widget.ListAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
 
 /**
  * An activity that will present the user with the option to view results of an old route.
  * Gets results from database and presents them in a listview.
  * 
- * @author Gustaf Werlinder
+ * @author Gustaf Werlinder, Henrik Hugo, Daniel Kvist, Markus Schutser
  *
  */
 public class ListExistingResultsActivity extends ListActivity
@@ -53,29 +53,44 @@ public class ListExistingResultsActivity extends ListActivity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_list_existing_results);		
-		
-		long rid = getIntent().getLongExtra(Route.EXTRA_ID, -1);
-		DatabaseHandler db = new DatabaseHandler(this);
-		
-		Cursor cursor = db.getAllResultsCursorByRid(rid);
-		
-		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,
-						android.R.layout.simple_list_item_1,
-						cursor,
-						new String[] {DBResultAdapter.COLUMN_ID},
-						new int[] {android.R.id.text1},
-						Adapter.NO_SELECTION);
-		
-		setListAdapter(adapter);
-		//cursor.close();
 	}
 	
+	/**
+	 * This method is activated when a list item - a saved route result - is clicked.
+	 * It will start an activity where the contents of the specific route result is presented.
+	 */
 	public void onListItemClick(ListView l, View v, int position, long id)
 	{
 		Context context = this;
 		Intent intent;
 		intent = new Intent(context, ShowResultsActivity.class);
-		intent.putExtra(Result.RESULT_ID, 1);
+		intent.putExtra(Result.RESULT_ID, id);
 		context.startActivity(intent);
+	}
+	
+	@Override
+	public void onResume()
+	{
+		super.onResume();
+		long rid = getIntent().getLongExtra(Route.EXTRA_ID, -1);
+		DatabaseHandler db = new DatabaseHandler(this);
+		
+		Cursor cursor = db.getAllResultsCursorByRid(rid);
+		
+		ListResultsAdapter adapter = new ListResultsAdapter(this,
+						android.R.layout.simple_list_item_1,
+						cursor,
+						new String[] {DBResultAdapter.COLUMN_TIMESTAMP},
+						new int[] {android.R.id.text1},
+						Adapter.NO_SELECTION);
+		setListAdapter(adapter);
+		//cursor.close();
+		List<Result> allResults = db.getAllResultsByRid(rid);
+		if(allResults != null && allResults.size() > 0)
+		{
+			LinearLayout chartContainer = (LinearLayout) findViewById(R.id.chart);
+			GraphicalView timeStretchChartView = TimeStretchChartView.getNewInstance(this, allResults, db.getRoute(rid).getName());
+			chartContainer.addView(timeStretchChartView);
+		}
 	}
 }
