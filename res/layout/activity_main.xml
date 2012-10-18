@@ -64,7 +64,7 @@
             android:layout_below="@+id/image_existing_route"
             android:contentDescription="@string/click_to_use_settings"
             android:paddingTop="32dp"
-            android:src="@drawable/ic_settings" />
+            android:src="@drawable/btn_settings" />
     </RelativeLayout>
 
     <LinearLayout
