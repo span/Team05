@@ -590,7 +590,7 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 			case R.id.settings:
 				if(route.isStarted())
 				{
-					AlertDialogFactory.newStopRouteAlertDialog(this).show();
+					AlertDialogFactory.newAlertMessageDialog(this, getString(R.string.stop_route), getString(R.string.you_must_stop_your_route_before_you_can_enter_the_settings)).show();
 				}
 				else
 				{
@@ -736,8 +736,7 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 	{
 		if(route.isStarted())
 		{
-			AlertDialog alertDialog = AlertDialogFactory.newConfirmBackDialog(this);
-			alertDialog.show();
+			AlertDialogFactory.newConfirmBackDialog(this).show();
 		}
 		else
 		{
