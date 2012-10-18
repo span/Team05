@@ -58,6 +58,7 @@ public class MapLocationListener implements LocationListener
 	private ArrayList<CheckPoint> checkPoints;
 	private CheckPoint currentCheckPoint;
 	private Location lastLocation;
+	private float totalDistance = 0;
 
 	/**
 	 * The Constructor
@@ -106,12 +107,10 @@ public class MapLocationListener implements LocationListener
 	public void onLocationChanged(Location location)
 	{
 		GeoPoint geoPoint;
-		float totalDistance= 0;
-		String userSpeed = "";
-		String userDistance = "";
+		String userDistance = "0";
 		ParcelableGeoPoint currentGeoPoint = new ParcelableGeoPoint((int) (location.getLatitude() * 1E6),
 				(int) (location.getLongitude() * 1E6));
-		userSpeed = (3.6 * location.getSpeed()) + context.getString(R.string.km) + "/" + context.getString(R.string.h);
+		String userSpeed = (3.6 * location.getSpeed()) + context.getString(R.string.km) + "/" + context.getString(R.string.h);
 		
 		if (lastLocation != null)
 		{

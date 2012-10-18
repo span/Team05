@@ -116,6 +116,11 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 		double speed = (routeDistance / route.getTimePassed()) * 3.6;
 		String speedText = String.valueOf(speed);
 		speedTextView.setText(speedText + context.getString(R.string.km) + "/" + context.getString(R.string.h));
+		
+		TextView calorieTextView = (TextView) findViewById(R.id.calories);
+		int calories = (int) route.getCalories();
+		String calorieText = String.valueOf(calories);
+		calorieTextView.setText(calorieText);
 
 		nameEditTextView = ((EditText) findViewById(R.id.name));
 		nameEditTextView.setText(route.getName());

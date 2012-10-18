@@ -48,6 +48,7 @@ public class DatabaseHandler
 	private DBResultAdapter dbResultAdapter;
 	private DBCheckPointAdapter dbCheckPointAdapter;
 	private DBGeoPointAdapter dbGeoPointAdapter;
+	private Context context;
 
 	/**
 	 * Constructor of the class which takes a context to operate in as a
@@ -58,6 +59,7 @@ public class DatabaseHandler
 	 */
 	public DatabaseHandler(Context context)
 	{
+		this.context = context;
 		dBRouteAdapter = new DBRouteAdapter(context);
 		dbTrackAdapter = new DBTrackAdapter(context);
 		dbResultAdapter = new DBResultAdapter(context);
@@ -114,12 +116,7 @@ public class DatabaseHandler
 		if (cursor != null && cursor.getCount() != 0)
 		{
 			cursor.moveToFirst();
-			route = new Route(cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_ID)), cursor.getString(cursor
-					.getColumnIndex(DBRouteAdapter.COLUMN_NAME)), cursor.getString(cursor
-					.getColumnIndex(DBRouteAdapter.COLUMN_DESCRIPTION)), cursor.getInt(cursor
-					.getColumnIndex(DBRouteAdapter.COLUMN_TYPE)), cursor.getInt(cursor
-					.getColumnIndex(DBRouteAdapter.COLUMN_TIMECOACH)), cursor.getInt(cursor
-					.getColumnIndex(DBRouteAdapter.COLUMN_LENGTHCOACH)));
+			route = createRouteFromCursor(cursor);
 
 			cursor.close();
 
@@ -128,7 +125,7 @@ public class DatabaseHandler
 		}
 		dBRouteAdapter.close();
 		return route;
-	}
+	}	
 
 	/**
 	 * Get all routes from the database.
@@ -148,13 +145,7 @@ public class DatabaseHandler
 
 			while (!cursor.isAfterLast())
 			{
-				route = new Route(cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_ID)),
-						cursor.getString(cursor.getColumnIndex(DBRouteAdapter.COLUMN_NAME)), cursor.getString(cursor
-								.getColumnIndex(DBRouteAdapter.COLUMN_DESCRIPTION)), cursor.getInt(cursor
-								.getColumnIndex(DBRouteAdapter.COLUMN_TYPE)), cursor.getInt(cursor
-								.getColumnIndex(DBRouteAdapter.COLUMN_TIMECOACH)), cursor.getInt(cursor
-								.getColumnIndex(DBRouteAdapter.COLUMN_LENGTHCOACH)));
-
+				route = createRouteFromCursor(cursor);
 				routeList.add(route);
 				cursor.moveToNext();
 			}
@@ -231,8 +222,11 @@ public class DatabaseHandler
 
 		dbResultAdapter.open();
 		Cursor cursor = dbResultAdapter.fetchResultById(id);
+		cursor.moveToFirst();
 		result = createResultFromCursor(cursor);
-		// dbResultAdapter.close();
+		cursor.close();
+		dbResultAdapter.close();
+
 
 		return result;
 	}
@@ -257,18 +251,15 @@ public class DatabaseHandler
 	public ArrayList<Result> getAllResultsByRid(long rid)
 	{
 		ArrayList<Result> resultList = null;
-
 		dbResultAdapter.open();
 		Cursor cursor = dbResultAdapter.fetchResultByRid(rid);
-		dbResultAdapter.close();
-
 		if (cursor != null && cursor.getCount() != 0)
 		{
 			resultList = new ArrayList<Result>();
 			Result result;
 			cursor.moveToFirst();
 
-			while (!cursor.isLast())
+			while (!cursor.isAfterLast())
 			{
 				result = createResultFromCursor(cursor);
 				resultList.add(result);
@@ -276,7 +267,8 @@ public class DatabaseHandler
 			}
 		}
 		cursor.close();
-		// return (Result[]) resultList.toArray();
+		dbResultAdapter.close();
+
 		return resultList;
 	}
 
@@ -291,17 +283,14 @@ public class DatabaseHandler
 	 */
 	private Result createResultFromCursor(Cursor cursor)
 	{
-		cursor.moveToFirst();
-		Result result = new Result(cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_ID)),
-				cursor.getLong(cursor.getColumnIndex(DBResultAdapter.COLUMN_RID)), cursor.getLong(cursor
-						.getColumnIndex(DBResultAdapter.COLUMN_TIMESTAMP)), cursor.getInt(cursor
-						.getColumnIndex(DBResultAdapter.COLUMN_TIME)), cursor.getInt(cursor
-						.getColumnIndex(DBResultAdapter.COLUMN_DISTANCE)), cursor.getInt(cursor
-						.getColumnIndex(DBResultAdapter.COLUMN_CALORIES)));
-
-		// Temporary during development
-		Result result2 = new Result(10, 20L, 1261440000L, 3600, 6000, 60);
-
+		Result result = new Result(
+				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_ID)),
+				cursor.getLong(cursor.getColumnIndex(DBResultAdapter.COLUMN_RID)),
+				cursor.getLong(cursor.getColumnIndex(DBResultAdapter.COLUMN_TIMESTAMP)),
+				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_TIME)),
+				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_DISTANCE)),
+				cursor.getInt(cursor.getColumnIndex(DBResultAdapter.COLUMN_CALORIES))
+		);
 		return result;
 	}
 
@@ -311,12 +300,14 @@ public class DatabaseHandler
 	 * @param result
 	 *            the result to save
 	 */
-	public void saveResult(Result result)
+	public long saveResult(Result result)
 	{
+		long id = -1;
 		dbResultAdapter.open();
-		dbResultAdapter.instertResult(result.getRid(), result.getTimestamp(), result.getTime(), result.getDistance(),
+		id = dbResultAdapter.instertResult(result.getRid(), result.getTimestamp(), result.getTime(), result.getDistance(),
 				result.getCalories());
 		dbResultAdapter.close();
+		return id;
 	}
 
 	/**
@@ -548,5 +539,23 @@ public class DatabaseHandler
 		checkPoint.setId(cursor.getLong(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_ID)));
 		checkPoint.addTracks(getTracks(checkPoint.getId()));
 		return checkPoint;
+	}
+	
+	/**
+	 * Creates a route object from the passed in cursor.
+	 * 
+	 * @param cursor the cursor pointing to the row
+	 * @return a new route
+	 */
+	private Route createRouteFromCursor(Cursor cursor)
+	{
+		return new Route(
+				cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_ID)), 
+				cursor.getString(cursor.getColumnIndex(DBRouteAdapter.COLUMN_NAME)), 
+				cursor.getString(cursor.getColumnIndex(DBRouteAdapter.COLUMN_DESCRIPTION)), 
+				cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_TYPE)), 
+				cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_TIMECOACH)), 
+				cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_LENGTHCOACH)),
+				context);
 	}
 }

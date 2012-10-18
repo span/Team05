@@ -19,8 +19,12 @@
 package se.team05.listener;
 
 
+import se.team05.activity.ListExistingResultsActivity;
+import se.team05.activity.RouteActivity;
 import se.team05.data.DatabaseHandler;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.view.View.OnClickListener;
 
@@ -65,5 +69,7 @@ public class ShowResultActivityButtonListener implements OnClickListener
 	{
 		this.databaseHandler = new DatabaseHandler(context);
 		databaseHandler.deleteResultById(id);
+		Activity a = (Activity)context;
+		a.finish();
 	}
 }
