@@ -15,7 +15,7 @@
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
 
     (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
-*/
+ */
 
 package se.team05.mock;
 
@@ -30,12 +30,39 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 
+/**
+ * This class can publish and retrieve mock locations from an application that
+ * has the allow mock location permission. It is inspired and dervived from this
+ * blog post:
+ * 
+ * http://ballardhack.wordpress.com/2010/09/23/location-gps-and-automated-testing-on-android/
+ * 
+ * @author Daniel Kvist
+ * 
+ */
 public class MockLocationUtil
 {
 	public static final String PROVIDER_NAME = "testProvider";
 	public static final String TAG = "testProvider";
 
-	public static void publishMockLocation(double latitude, double longitude, Context context, ArrayList<CheckPoint> checkPoints, MapLocationListener locationListener)
+	/**
+	 * Publishes a mock location with the given information to the application
+	 * you wish to test.
+	 * 
+	 * @param latitude
+	 *            the latitude of the location
+	 * @param longitude
+	 *            the longitude of the location
+	 * @param context
+	 *            the context to operate in
+	 * @param checkPoints
+	 *            the checkpoints that are needed by the listener in the tested
+	 *            application
+	 * @param locationListener
+	 *            the listener which to listen with and test
+	 */
+	public static void publishMockLocation(double latitude, double longitude, Context context, ArrayList<CheckPoint> checkPoints,
+			MapLocationListener locationListener)
 	{
 		LocationManager locationManager = (LocationManager) context.getSystemService(Service.LOCATION_SERVICE);
 		if (locationManager.getProvider(PROVIDER_NAME) != null)
@@ -61,28 +88,33 @@ public class MockLocationUtil
 		locationManager.setTestProviderLocation(PROVIDER_NAME, newLocation);
 	}
 
-	public Location getLastKnownLocationInApplication(Context ctx)
+	/**
+	 * Gets the last known location from the application you are testing.
+	 * @param context the context you are testing in
+	 * @return the last known location
+	 */
+	public Location getLastKnownLocationInApplication(Context context)
 	{
-		Location testLoc = null;
-		LocationManager lm = (LocationManager) ctx.getSystemService(Context.LOCATION_SERVICE);
+		Location testLocation = null;
+		LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
-		if (lm.getAllProviders().contains(PROVIDER_NAME))
+		if (locationManager.getAllProviders().contains(PROVIDER_NAME))
 		{
-			testLoc = lm.getLastKnownLocation(PROVIDER_NAME);
+			testLocation = locationManager.getLastKnownLocation(PROVIDER_NAME);
 		}
 
-		Criteria crit = new Criteria();
-		crit.setAccuracy(Criteria.ACCURACY_FINE);
-		String provider = lm.getBestProvider(crit, true);
-		Location realLoc = lm.getLastKnownLocation(provider);
+		Criteria criteria = new Criteria();
+		criteria.setAccuracy(Criteria.ACCURACY_FINE);
+		String provider = locationManager.getBestProvider(criteria, true);
+		Location realLocation = locationManager.getLastKnownLocation(provider);
 
-		if (testLoc != null)
+		if (testLocation != null)
 		{
-			return testLoc;
+			return testLocation;
 		}
 		else
 		{
-			return realLoc;
+			return realLocation;
 		}
 	}
 }
