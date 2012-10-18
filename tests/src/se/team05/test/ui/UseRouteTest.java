@@ -138,5 +138,4 @@ public class UseRouteTest extends ActivityInstrumentationTestCase2<MainActivity>
 		solo.clickOnView(stopButton);
 		solo.clickOnButton("No");
 	}
-
 }

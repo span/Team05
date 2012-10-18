@@ -21,6 +21,7 @@ package se.team05.test.ui;
 import se.team05.R;
 import se.team05.activity.MainActivity;
 import se.team05.activity.RouteActivity;
+import se.team05.activity.SettingsActivity;
 import se.team05.data.DBRouteAdapter;
 import se.team05.data.Database;
 import android.app.Activity;
@@ -121,4 +122,18 @@ public class AddRouteTest extends ActivityInstrumentationTestCase2<MainActivity>
 		solo.assertCurrentActivity("Main activity expected", MainActivity.class);
 	}
 
+	public void testAddRouteAndLaunchSettings()
+	{
+		solo.clickOnView(newRouteImage);
+		solo.assertCurrentActivity("Route activity expected", RouteActivity.class);
+		solo.clickOnActionBarItem(R.id.settings);
+		solo.assertCurrentActivity("Settings activity expected", SettingsActivity.class);
+		solo.goBack();
+		solo.clickOnView(solo.getCurrentActivity().findViewById(R.id.start_button));
+		solo.clickOnActionBarItem(R.id.settings);
+		solo.clickOnText(solo.getCurrentActivity().getString(android.R.string.ok));
+		solo.clickOnView(solo.getCurrentActivity().findViewById(R.id.stop_button));
+		solo.clickOnActionBarItem(R.id.settings);
+		solo.assertCurrentActivity("Settings activity expected", SettingsActivity.class);
+	}
 }
