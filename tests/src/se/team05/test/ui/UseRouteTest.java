@@ -15,7 +15,7 @@
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
 
     (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
-*/
+ */
 
 package se.team05.test.ui;
 
@@ -41,6 +41,14 @@ import android.widget.ImageView;
 
 import com.jayway.android.robotium.solo.Solo;
 
+/**
+ * This class is used to test the ui navigation and interactions for a user that
+ * is trying to use a route. It tries to use a route if none has been added and
+ * it tries to use an existing route.
+ * 
+ * @author Daniel Kvist
+ * 
+ */
 public class UseRouteTest extends ActivityInstrumentationTestCase2<MainActivity>
 {
 	private Solo solo;
@@ -51,11 +59,16 @@ public class UseRouteTest extends ActivityInstrumentationTestCase2<MainActivity>
 		super(MainActivity.class);
 	}
 
+	/**
+	 * Sets up the test by tearing down the database tables that we are going to
+	 * use to make sure we have a clean database and also fetches a referenve to
+	 * the navigation button on the main screen.
+	 */
 	@Override
 	protected void setUp() throws Exception
 	{
 		super.setUp();
-		
+
 		Activity activity = getActivity();
 		solo = new Solo(this.getInstrumentation(), activity);
 		oldRouteImage = (ImageView) activity.findViewById(R.id.image_existing_route);
@@ -66,6 +79,10 @@ public class UseRouteTest extends ActivityInstrumentationTestCase2<MainActivity>
 		db.delete(DBGeoPointAdapter.TABLE_GEOPOINTS, null, null);
 	}
 
+	/**
+	 * Deletes all tables that we have been manipulating in the test and finish
+	 * any open activities.
+	 */
 	@Override
 	protected void tearDown()
 	{
@@ -76,6 +93,10 @@ public class UseRouteTest extends ActivityInstrumentationTestCase2<MainActivity>
 		solo.finishOpenedActivities();
 	}
 
+	/**
+	 * Tests the usage of an old route when there is no route added yet. Also
+	 * tests the home/up button functionality.
+	 */
 	public void testUseRouteIfNonExisting()
 	{
 		solo.clickOnView(oldRouteImage);
@@ -85,18 +106,27 @@ public class UseRouteTest extends ActivityInstrumentationTestCase2<MainActivity>
 		solo.clickOnActionBarHomeButton();
 		solo.assertCurrentActivity("Expected MainActivity", MainActivity.class);
 	}
-	
+
+	/**
+	 * Tests the usage of an existing route by setting up a new route in the
+	 * database and execute some navigation. When the route is being used, some
+	 * mock locations are being sent and confirmed that they have been received
+	 * by the application. When a checkpoint is hit in the test the media
+	 * service will start playing since that is triggered in the listener.
+	 * 
+	 * @throws Throwable
+	 */
 	public void testUseExistingRoute() throws Throwable
 	{
 		Route route = MockDatabase.getRoute(this, getActivity());
-		
+
 		solo.clickOnView(oldRouteImage);
 		solo.assertCurrentActivity("ListExistingRoutesActivity expected", ListExistingRoutesActivity.class);
 		solo.clickInList(0);
 		solo.assertCurrentActivity("Expected RouteActivity", RouteActivity.class);
-		
+
 		final RouteActivity routeActivity = (RouteActivity) solo.getCurrentActivity();
-		
+
 		Button startButton = (Button) solo.getView(R.id.start_button);
 		Button stopButton = (Button) solo.getView(R.id.stop_button);
 		assertEquals(startButton.getVisibility(), View.VISIBLE);
@@ -105,20 +135,21 @@ public class UseRouteTest extends ActivityInstrumentationTestCase2<MainActivity>
 		assertEquals(startButton.getVisibility(), View.GONE);
 		assertEquals(stopButton.getVisibility(), View.VISIBLE);
 
-		final MapLocationListener locationListener = new MapLocationListener(routeActivity, false, route.getCheckPoints());
+		final MapLocationListener locationListener = new MapLocationListener(routeActivity, false,
+				route.getCheckPoints());
 		MockLocationUtil mockLocation = new MockLocationUtil();
 		MockLocationUtil.publishMockLocation(47.975, 17.056, routeActivity, route.getCheckPoints(), locationListener);
 		Thread.sleep(1500);
 		Location locationA = mockLocation.getLastKnownLocationInApplication(routeActivity);
 		assertEquals(47.975, locationA.getLatitude());
 		assertEquals(17.056, locationA.getLongitude());
-		
+
 		MockLocationUtil.publishMockLocation(48.975, 17.056, routeActivity, route.getCheckPoints(), locationListener);
 		Thread.sleep(1500);
 		final Location locationB = mockLocation.getLastKnownLocationInApplication(routeActivity);
 		assertEquals(48.975, locationB.getLatitude());
 		assertEquals(17.056, locationB.getLongitude());
-		
+
 		runTestOnUiThread(new Runnable()
 		{
 			@Override
@@ -127,13 +158,12 @@ public class UseRouteTest extends ActivityInstrumentationTestCase2<MainActivity>
 				locationListener.onLocationChanged(locationB);
 			}
 		});
-		
-		
+
 		solo.clickOnView(stopButton);
 		solo.clickOnButton("Yes");
 		assertEquals(startButton.getVisibility(), View.VISIBLE);
 		assertEquals(stopButton.getVisibility(), View.GONE);
-		
+
 		solo.clickOnView(startButton);
 		solo.clickOnView(stopButton);
 		solo.clickOnButton("No");
