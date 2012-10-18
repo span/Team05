@@ -120,4 +120,6 @@
     <string name="you_are_now_recording_speak_into_the_microphone">You are now recording, speak into the microphone.</string>
     <string name="stop_route">Stop route</string>
     <string name="you_must_stop_your_route_before_you_can_enter_the_settings">You must stop your route before you can enter the settings.</string>
+    <string name="radius">Radius</string>
+    <string name="audio">Audio</string>
 </resources>
