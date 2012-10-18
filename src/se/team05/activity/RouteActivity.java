@@ -660,15 +660,15 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 		else if (activeDialog == DIALOG_SAVE_ROUTE)
 		{
 			route = saveRouteDialog.getRoute();
-			if (route.getId() == -1)
-			{
-				route.setId(databaseHandler.saveRoute(route));
-			}
-			else
-			{
-				databaseHandler.updateRoute(route);
-			}
 			outState.putBoolean(BUNDLE_SAVE_RESULT_CHECKED, saveRouteDialog.isSaveResultChecked());
+		}
+		if (route.getId() == -1)
+		{
+			route.setId(databaseHandler.saveRoute(route));
+		}
+		else
+		{
+			databaseHandler.updateRoute(route);
 		}
 		outState.putLong(BUNDLE_RID, route.getId());
 	}
