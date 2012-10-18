@@ -1,4 +1,4 @@
-package se.team05.test.util;
+package se.team05.mock;
 
 import java.util.ArrayList;
 
