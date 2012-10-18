@@ -15,9 +15,8 @@
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
 
     (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
-*/
+ */
 package se.team05.dialog;
-
 
 import java.io.IOException;
 
@@ -30,12 +29,14 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * This is the dialog that pops up when a checkpoint is created or touched. The
@@ -43,7 +44,6 @@ import android.widget.TextView;
  * the checkpoint.
  * 
  * @author Patrik Thituson & Daniel Kvist
- * @version 1.0
  * 
  */
 public class EditCheckPointDialog extends Dialog implements View.OnClickListener, OnSeekBarChangeListener
@@ -55,8 +55,9 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 		public void onSaveCheckPoint(CheckPoint checkPoint);
 	}
 
+	private static final String TAG = "Personal Trainer";
 	public static final int MODE_ADD = 0;
-	public static final int MODE_EDIT = 1;
+	public static final int MODE_EDIT = 1;	
 
 	private Callbacks callBack;
 	private CheckPoint checkPoint;
@@ -96,8 +97,8 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.dialog_edit_checkpoint);
 		setTitle("Edit CheckPoint");
-		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN); 
-		
+		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
 		Button deleteButton = (Button) findViewById(R.id.delete_button);
 		deleteButton.setOnClickListener(this);
 		findViewById(R.id.save_button).setOnClickListener(this);
@@ -169,12 +170,13 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 		{
 			try
 			{
+				Toast.makeText(getContext(), getContext().getString(R.string.you_are_now_recording_speak_into_the_microphone), Toast.LENGTH_LONG).show();
 				soundManager.startRecording();
 				recordButton.setText(R.string.stop_recording);
 			}
 			catch (IOException e)
 			{
-				e.printStackTrace();
+				Log.e(TAG, "Could not start recording: " + e.getMessage());
 			}
 		}
 		else
@@ -225,6 +227,11 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 		super.onBackPressed();
 	}
 
+	/**
+	 * Gets a checkpoint with the current values in the edit text views.
+	 * 
+	 * @return the checkpoint with the new values.
+	 */
 	public CheckPoint getCheckPoint()
 	{
 		checkPoint.setName(nameTextField.getText().toString());
