@@ -77,35 +77,57 @@ public class ShowResultsActivityTest extends ActivityInstrumentationTestCase2<Ma
 
 	public void testShowingAndDeletingResults()
 	{
+		Result resultX = new Result();
+		long idX = 7;
+		resultX.setId(idX);
+		assertTrue(idX == resultX.getId());
+		
 		DatabaseHandler databaseHandler = new DatabaseHandler(getActivity());
 		Route route = new Route("name", "description", getActivity());
 		route.setId(databaseHandler.saveRoute(route));
 		
-		Result result = new Result(route.getId(), 200000000L, 3700, 1000, 0);		
+		Result result = new Result(route.getId(), 200000000L, 0, 0, 0);
+		int time = 25627;
+		result.setTime(time);
+		assertTrue(time == result.getTime());
+		int distance = 12;
+		result.setDistance(distance);
+		assertTrue(distance == result.getDistance());
+		int calories = 144;
+		result.setCalories(calories);
+		assertTrue(calories == result.getCalories());		
 		long id = databaseHandler.saveResult(result);
 		result = databaseHandler.getResultById(id);
 		
-		Result result2 = new Result(route.getId(), 200000000L, 3700, 1000, 0);		
-		long id2 = databaseHandler.saveResult(result);
+		Result result2 = new Result(route.getId(), 400000000L, 6700, 2000, 500);		
+		long id2 = databaseHandler.saveResult(result2);
 		result2 = databaseHandler.getResultById(id2);
-		
-		solo.clickOnView(oldRouteImage);
+				
+		solo.clickOnView(solo.getCurrentActivity().findViewById(R.id.image_existing_route));
 		solo.assertCurrentActivity("Expected ListExistingRoutesActivity", ListExistingRoutesActivity.class);
 		solo.clickInList(0);
 		solo.assertCurrentActivity("Expected RouteActivity", RouteActivity.class);
 		Button showResultButton =(Button) solo.getView(R.id.show_result_button);
 		solo.clickOnView(showResultButton);
 		solo.assertCurrentActivity("Expected ListExistingResultsActivity", ListExistingResultsActivity.class);
-		solo.clickInList(0);
-		
+		solo.clickInList(0);		
 		solo.assertCurrentActivity("Expected ShowResultsActivity", ShowResultsActivity.class);
 		Button deleteButton =(Button) solo.getView(R.id.delete_results_button);
 		solo.clickOnView(deleteButton);
 		solo.assertCurrentActivity("Expected ListExistingResultsActivity", ListExistingResultsActivity.class);
-		
 		solo.clickInList(0);
 		solo.assertCurrentActivity("Expected ShowResultsActivity", ShowResultsActivity.class);
 		solo.clickOnActionBarHomeButton();		
-		solo.assertCurrentActivity("Expected MainActivity", MainActivity.class);		
+		solo.assertCurrentActivity("Expected MainActivity", MainActivity.class);
+				
+		solo.clickOnView(solo.getCurrentActivity().findViewById(R.id.image_existing_route));
+		solo.assertCurrentActivity("Expected ListExistingRoutesActivity", ListExistingRoutesActivity.class);
+		solo.clickInList(0);
+		solo.assertCurrentActivity("Expected RouteActivity", RouteActivity.class);
+		Button showResultButton2 =(Button) solo.getView(R.id.show_result_button);
+		solo.clickOnView(showResultButton2);
+		solo.assertCurrentActivity("Expected ListExistingResultsActivity", ListExistingResultsActivity.class);
+		solo.clickOnActionBarHomeButton();		
+		solo.assertCurrentActivity("Expected MainActivity", MainActivity.class);
 	}
 }
