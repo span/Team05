@@ -15,7 +15,7 @@
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
 
     (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
-*/
+ */
 
 package se.team05.test.activity;
 
@@ -29,6 +29,13 @@ import android.test.ActivityInstrumentationTestCase2;
 import android.view.View;
 import android.widget.ListView;
 
+/**
+ * This test tests the UI elements that are not tested in the UI test for the
+ * media selector.
+ * 
+ * @author Daniel Kvist
+ * 
+ */
 public class MediaSelectorActivityTest extends ActivityInstrumentationTestCase2<MediaSelectorActivity>
 {
 
@@ -41,6 +48,9 @@ public class MediaSelectorActivityTest extends ActivityInstrumentationTestCase2<
 		super(MediaSelectorActivity.class);
 	}
 
+	/**
+	 * Sets up the basic information needed to launch the activity.
+	 */
 	@Override
 	protected void setUp() throws Exception
 	{
@@ -55,11 +65,14 @@ public class MediaSelectorActivityTest extends ActivityInstrumentationTestCase2<
 		done = activity.findViewById(R.id.done);
 	}
 
+	/**
+	 * Tests the actual ui elements that are not tested in the UI test.
+	 */
 	public void testUIElements()
 	{
 		assertTrue("List not found", list != null);
 		assertTrue("Done button not found", done != null);
-		
+
 		Track track = new Track("id", "artist", "album", "title", "data", "displayName", "duration");
 		assertEquals("id", track.getId());
 	}
