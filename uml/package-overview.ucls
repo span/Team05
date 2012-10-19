@@ -1,0 +1,138 @@
+<class-diagram version="1.0.10" icons="true" automaticImage="PNG" always-add-relationships="true" generalizations="true" 
+  realizations="true" associations="true" dependencies="true" nesting-relationships="true">  
+  <package id="1" corner="BOTTOM_RIGHT" language="java" name="se.team05.activity" project="Team05" 
+    file="/Team05/src/se/team05/activity" binary="false">    
+    <position x="785" y="178" width="-1" height="-1"/>    
+    <display autosize="true" stereotype="true"/>  
+  </package>  
+  <package id="2" corner="BOTTOM_RIGHT" language="java" name="se.team05.adapter" project="Team05" 
+    file="/Team05/src/se/team05/adapter" binary="false">    
+    <position x="1321" y="178" width="-1" height="-1"/>    
+    <display autosize="true" stereotype="true"/>  
+  </package>  
+  <package id="3" corner="BOTTOM_RIGHT" language="java" name="se.team05.content" project="Team05" 
+    file="/Team05/src/se/team05/content" binary="false">    
+    <position x="1319" y="359" width="-1" height="-1"/>    
+    <display autosize="true" stereotype="true"/>  
+  </package>  
+  <package id="4" corner="BOTTOM_RIGHT" language="java" name="se.team05.data" project="Team05" 
+    file="/Team05/src/se/team05/data" binary="false">    
+    <position x="693" y="359" width="-1" height="-1"/>    
+    <display autosize="true" stereotype="true"/>  
+  </package>  
+  <package id="5" corner="BOTTOM_RIGHT" language="java" name="se.team05.dialog" project="Team05" 
+    file="/Team05/src/se/team05/dialog" binary="false">    
+    <position x="517" y="359" width="-1" height="-1"/>    
+    <display autosize="true" stereotype="true"/>  
+  </package>  
+  <package id="6" corner="BOTTOM_RIGHT" language="java" name="se.team05.listener" project="Team05" 
+    file="/Team05/src/se/team05/listener" binary="false">    
+    <position x="311" y="359" width="-1" height="-1"/>    
+    <display autosize="true" stereotype="true"/>  
+  </package>  
+  <package id="7" corner="BOTTOM_RIGHT" language="java" name="se.team05.overlay" project="Team05" 
+    file="/Team05/src/se/team05/overlay" binary="false">    
+    <position x="921" y="359" width="-1" height="-1"/>    
+    <display autosize="true" stereotype="true"/>  
+  </package>  
+  <package id="8" corner="BOTTOM_RIGHT" language="java" name="se.team05.service" project="Team05" 
+    file="/Team05/src/se/team05/service" binary="false">    
+    <position x="1103" y="359" width="-1" height="-1"/>    
+    <display autosize="true" stereotype="true"/>  
+  </package>  
+  <package id="9" corner="BOTTOM_RIGHT" language="java" name="se.team05.view" project="Team05" 
+    file="/Team05/src/se/team05/view" binary="false">    
+    <position x="311" y="289" width="-1" height="-1"/>    
+    <display autosize="true" stereotype="true"/>  
+  </package>  
+  <dependency id="10">    
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="7"/>  
+  </dependency>  
+  <dependency id="11">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="9"/>  
+  </dependency>  
+  <dependency id="12">    
+    <end type="SOURCE" refId="9"/>    
+    <end type="TARGET" refId="6"/>  
+  </dependency>  
+  <dependency id="13">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="4"/>  
+  </dependency>  
+  <dependency id="14">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="3"/>  
+  </dependency>  
+  <dependency id="15">    
+    <end type="SOURCE" refId="8"/>    
+    <end type="TARGET" refId="1"/>  
+  </dependency>  
+  <dependency id="16">    
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="1"/>  
+  </dependency>  
+  <dependency id="17">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="7"/>  
+  </dependency>  
+  <dependency id="18">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="7"/>  
+  </dependency>  
+  <dependency id="19">    
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="3"/>  
+  </dependency>  
+  <dependency id="20">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="3"/>  
+  </dependency>  
+  <dependency id="21">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="7"/>  
+  </dependency>  
+  <dependency id="22">    
+    <end type="SOURCE" refId="8"/>    
+    <end type="TARGET" refId="6"/>  
+  </dependency>  
+  <dependency id="23">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="2"/>  
+  </dependency>  
+  <dependency id="24">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="4"/>  
+  </dependency>  
+  <dependency id="25">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="3"/>  
+  </dependency>  
+  <dependency id="26">    
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="4"/>  
+  </dependency>  
+  <dependency id="27">    
+    <end type="SOURCE" refId="8"/>    
+    <end type="TARGET" refId="3"/>  
+  </dependency>  
+  <dependency id="28">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="1"/>  
+  </dependency>  
+  <dependency id="29">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="3"/>  
+  </dependency>  
+  <dependency id="30">    
+    <end type="SOURCE" refId="7"/>    
+    <end type="TARGET" refId="3"/>  
+  </dependency>  
+  <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+    visibility="true">    
+    <attributes public="false" package="false" protected="false" private="false"/>    
+    <operations public="false" package="false" protected="false" private="false"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>

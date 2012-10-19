@@ -127,7 +127,7 @@ public class CheckPointOverlay extends ItemizedOverlay<CheckPoint>
 		setLastFocusedIndex(-1);
 		populate();
 	}
-
+	
 
 
 }

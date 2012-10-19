@@ -15,9 +15,8 @@
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
 
     (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
-*/
+ */
 package se.team05.dialog;
-
 
 import java.io.IOException;
 
@@ -30,12 +29,14 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * This is the dialog that pops up when a checkpoint is created or touched. The
@@ -43,7 +44,6 @@ import android.widget.TextView;
  * the checkpoint.
  * 
  * @author Patrik Thituson & Daniel Kvist
- * @version 1.0
  * 
  */
 public class EditCheckPointDialog extends Dialog implements View.OnClickListener, OnSeekBarChangeListener
@@ -55,6 +55,7 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 		public void onSaveCheckPoint(CheckPoint checkPoint);
 	}
 
+	private static final String TAG = "Personal Trainer";
 	public static final int MODE_ADD = 0;
 	public static final int MODE_EDIT = 1;
 
@@ -96,8 +97,8 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.dialog_edit_checkpoint);
 		setTitle("Edit CheckPoint");
-		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN); 
-		
+		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
 		Button deleteButton = (Button) findViewById(R.id.delete_button);
 		deleteButton.setOnClickListener(this);
 		findViewById(R.id.save_button).setOnClickListener(this);
@@ -134,25 +135,33 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 		switch (v.getId())
 		{
 			case R.id.record_button:
-				recordSound();
+				if (!soundManager.isRecording())
+				{
+					startRecording();
+				}
+				else
+				{
+					stopRecording();
+				}
 				break;
 			case R.id.select_button:
+				stopRecording();
 				Intent intent = new Intent(parentActivity, MediaSelectorActivity.class);
 				intent.putParcelableArrayListExtra(MediaSelectorActivity.EXTRA_SELECTED_ITEMS, checkPoint.getTracks());
 				parentActivity.startActivityForResult(intent, MediaSelectorActivity.REQUEST_MEDIA);
 				break;
 			case R.id.delete_button:
+				stopRecording();
 				callBack.onDeleteCheckPoint(checkPoint.getId());
 				dismiss();
 				break;
 			case R.id.save_button:
+				stopRecording();
 				int radius = Integer.parseInt(radiusTextField.getText().toString());
 				checkPoint.setName(nameTextField.getText().toString());
 				checkPoint.setRadius(radius);
 				callBack.onSaveCheckPoint(checkPoint);
 				dismiss();
-				break;
-			default:
 				break;
 		}
 	}
@@ -163,21 +172,31 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 	 * the text of the "record" button to allow the user for easy interaction
 	 * while recording.
 	 */
-	private void recordSound()
+	private void startRecording()
 	{
 		if (!soundManager.isRecording())
 		{
 			try
 			{
+				Toast.makeText(getContext(),
+						getContext().getString(R.string.you_are_now_recording_speak_into_the_microphone),
+						Toast.LENGTH_LONG).show();
 				soundManager.startRecording();
 				recordButton.setText(R.string.stop_recording);
 			}
 			catch (IOException e)
 			{
-				e.printStackTrace();
+				Log.e(TAG, "Could not start recording: " + e.getMessage());
 			}
 		}
-		else
+	}
+
+	/**
+	 * Stops the current recording if there is one taking place.
+	 */
+	private void stopRecording()
+	{
+		if (soundManager.isRecording())
 		{
 			soundManager.stopRecording();
 			recordButton.setText(R.string.record);
@@ -226,42 +245,14 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 	}
 
 	/**
-	 * @return the nameTextField«s String value
+	 * Gets a checkpoint with the current values in the edit text views.
+	 * 
+	 * @return the checkpoint with the new values.
 	 */
-	public String getNameText()
+	public CheckPoint getCheckPoint()
 	{
-		return nameTextField.getText().toString();
+		checkPoint.setName(nameTextField.getText().toString());
+		checkPoint.setRadius(seekBar.getProgress());
+		return checkPoint;
 	}
-
-	/**
-	 * @param nameTextField the nameTextField to set
-	 */
-	public void setNameText(String nameText)
-	{
-		this.nameTextField.setText(nameText);
-	}
-
-	/**
-	 * @return the radiusTextField String value
-	 */
-	public String getRadiusText()
-	{
-		return radiusTextField.getText().toString();
-	}
-
-	/**
-	 * Sets the radiusTextField and seekbar to String radiusText
-	 * @param radiusTextField the radiusText to set
-	 */
-	public void setRadiusTextField(String radiusText)
-	{
-		this.radiusTextField.setText(radiusText);
-		seekBar.setProgress(Integer.parseInt(radiusText));
-	}
-
-
-
-	
-	
-
 }

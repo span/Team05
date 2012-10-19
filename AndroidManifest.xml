@@ -14,8 +14,7 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION"/>
-    
+    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
 
     <application
         android:icon="@drawable/ic_launcher"
@@ -47,10 +46,16 @@
         <activity
             android:name=".activity.ListExistingRoutesActivity"
             android:label="@string/use_route" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.MainActivity" />
         </activity>
-        <activity 
+        <activity
             android:name=".activity.ListExistingResultsActivity"
-            android:label="@string/result_list" >            
+            android:label="@string/result_list" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.MainActivity" />
         </activity>
         <activity
             android:name=".activity.MediaSelectorActivity"
@@ -58,11 +63,24 @@
         </activity>
         <activity
             android:name=".activity.ShowExistingRouteActivity"
-            android:label="">
+            android:label="" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.MainActivity" />
         </activity>
         <activity
             android:name=".activity.ShowResultsActivity"
             android:label="@string/results" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.MainActivity" />
+        </activity>
+        <activity
+            android:name=".activity.SettingsActivity"
+            android:label="@string/settings" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.MainActivity" />
         </activity>
     </application>
 

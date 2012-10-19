@@ -15,7 +15,7 @@
     You should have received a copy of the GNU General Public License
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
     
-    (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
+    (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -82,6 +82,23 @@
             tools:context=".DisplayMessageActivity" />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/calories_burned_" />
+
+        <TextView
+            android:id="@+id/show_calorie_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:context=".DisplayMessageActivity" />
+    </LinearLayout>
+
     <Button
         android:id="@+id/add_checkpoint"
         android:layout_width="match_parent"
@@ -89,37 +106,23 @@
         android:text="@string/button_addcheckpoint" />
 
     <Button
-        android:id="@+id/start_run_button"
+        android:id="@+id/start_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/button_start_run" />
 
     <Button
-        android:id="@+id/stop_and_save_button"
+        android:id="@+id/stop_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/button_stop_and_save"
         android:visibility="gone" />
 
     <Button
-        android:id="@+id/start_existing_run_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/button_start_run"
-        android:visibility="gone" />
-
-    <Button
-        android:id="@+id/stop_existing_run_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/stop"
-        android:visibility="gone" />
-
-    <Button
         android:id="@+id/show_result_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/show_result" 
-        android:visibility="gone"/>
+        android:text="@string/show_result"
+        android:visibility="gone" />
 
 </LinearLayout>
