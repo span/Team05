@@ -17,7 +17,7 @@
     (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
 */
 
-package se.team05.test.activity;
+package se.team05.test.ui;
 
 import se.team05.R;
 import se.team05.activity.ListExistingResultsActivity;

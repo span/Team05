@@ -1,0 +1,73 @@
+<class-diagram version="1.0.10" icons="true" automaticImage="PNG" always-add-relationships="true" generalizations="true" 
+  realizations="true" associations="true" dependencies="true" nesting-relationships="true">  
+  <interface id="1" corner="BOTTOM_RIGHT" language="java" name="se.team05.overlay.CheckPointOverlay.Callbacks" 
+    project="Team05" file="/Team05/src/se/team05/overlay/CheckPointOverlay.java" binary="false">    
+    <position x="412" y="303" width="-1" height="-1"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </interface>  
+  <class id="2" corner="BOTTOM_RIGHT" language="java" name="se.team05.overlay.CheckPointOverlay" project="Team05" 
+    file="/Team05/src/se/team05/overlay/CheckPointOverlay.java" binary="false">    
+    <position x="509" y="218" width="-1" height="-1"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class id="3" corner="BOTTOM_RIGHT" language="java" name="se.team05.overlay.RouteOverlay" project="Team05" 
+    file="/Team05/src/se/team05/overlay/RouteOverlay.java" binary="false">    
+    <position x="742" y="218" width="-1" height="-1"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <class id="4" corner="BOTTOM_RIGHT" language="java" name="se.team05.overlay.CheckPoint" project="Team05" 
+    file="/Team05/src/se/team05/overlay/CheckPoint.java" binary="false">    
+    <position x="573" y="303" width="-1" height="-1"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <association id="5">    
+    <end type="SOURCE" refId="2" navigable="false">      
+      <attribute id="6" name="callback">        
+        <position x="385" y="244" width="49" height="14"/>      
+      </attribute>      
+      <multiplicity id="7" minimum="0" maximum="1">        
+        <position x="441" y="245" width="20" height="14"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="1" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <dependency id="8">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="4"/>  
+  </dependency>  
+  <association id="9">    
+    <end type="SOURCE" refId="2" navigable="false">      
+      <attribute id="10" name="checkPointList">        
+        <position x="559" y="264" width="83" height="14"/>      
+      </attribute>      
+      <multiplicity id="11" minimum="0" maximum="2147483647">        
+        <position x="563" y="248" width="18" height="14"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="4" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <nesting id="12">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="1"/>  
+  </nesting>  
+  <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+    visibility="true">    
+    <attributes public="false" package="false" protected="false" private="false"/>    
+    <operations public="false" package="false" protected="false" private="false"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>

@@ -1,4 +1,4 @@
-package se.team05.dialog;
+package se.team05.test.ui;
 
 /**
  This file is part of Personal Trainer.

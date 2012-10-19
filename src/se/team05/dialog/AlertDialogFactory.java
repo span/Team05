@@ -54,8 +54,8 @@ public class AlertDialogFactory
 	 */
 	public static AlertDialog newSaveResultDialog(final Context context, final Route route, final Result result)
 	{
-		String giveUserDistanceString = context.getString(R.string.distance_of_run) + String.valueOf((int) route.getTotalDistance())
-				+ context.getString(R.string.km) + "\n";
+		String giveUserDistanceString = context.getString(R.string.distance_of_run)
+				+ String.valueOf((int) route.getTotalDistance()) + context.getString(R.string.km) + "\n";
 		String giveUserTimeString = context.getString(R.string.time_) + route.getTimePassedAsString() + "\n\n";
 		String giveUserResultData = giveUserDistanceString + giveUserTimeString;
 
@@ -67,7 +67,8 @@ public class AlertDialogFactory
 					{
 						DatabaseHandler databaseHandler = new DatabaseHandler(context);
 						databaseHandler.saveResult(result);
-						Toast.makeText(context, context.getString(R.string.result_saved) + " " + route.getName(), Toast.LENGTH_LONG).show();
+						Toast.makeText(context, context.getString(R.string.result_saved) + " " + route.getName(),
+								Toast.LENGTH_LONG).show();
 					}
 				}).setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
 				{
@@ -99,6 +100,30 @@ public class AlertDialogFactory
 						((Activity) context).finish();
 					}
 				}).setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
+				{
+					public void onClick(DialogInterface dialog, int id)
+					{
+						dialog.cancel();
+					}
+				}).create();
+	}
+
+	/**
+	 * Alerts the user that they need to do something that is specified in the
+	 * message to do something.
+	 * 
+	 * @param context
+	 *            the context to operate in and finish if positive answer
+	 * @param title
+	 *            the title of the dialog
+	 * @param message
+	 *            the message of the dialog
+	 * @return a new alert dialog
+	 */
+	public static AlertDialog newAlertMessageDialog(final Context context, String title, String message)
+	{
+		return new AlertDialog.Builder(context).setTitle(title).setMessage(message)
+				.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener()
 				{
 					public void onClick(DialogInterface dialog, int id)
 					{

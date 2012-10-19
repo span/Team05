@@ -38,16 +38,19 @@ import com.google.android.maps.GeoPoint;
 
 /**
  * The MapLocationListener class is a LocationListener which uses callback to
- * update the location
+ * update the location. It also checks to see if the current location matches a
+ * checkpoint location in which case it starts the music service if tracks are
+ * set to play.
  * 
- * @author Patrik Thituson, Daniel Kvist
+ * @author Patrik Thituson, Daniel Kvist, Markus Schutzer
  * 
  */
 public class MapLocationListener implements LocationListener
 {
 	public interface Callbacks
 	{
-		public void onLocationChanged(ParcelableGeoPoint geoPoint, String userSpeed, String userDistance, float totalDistance);
+		public void onLocationChanged(ParcelableGeoPoint geoPoint, String userSpeed, String userDistance,
+				float totalDistance);
 	}
 
 	private static final String TAG = "Personal trainer";
@@ -94,7 +97,7 @@ public class MapLocationListener implements LocationListener
 		Location.distanceBetween(latitudeA, longitudeA, latitudeB, longitudeB, distance);
 		return distance[0];
 	}
-	
+
 	public void stopService()
 	{
 		context.stopService(serviceIntent);
@@ -107,6 +110,7 @@ public class MapLocationListener implements LocationListener
 	public void onLocationChanged(Location location)
 	{
 		GeoPoint geoPoint;
+		float totalDistance = 0;
 		String userDistance = "0";
 		ParcelableGeoPoint currentGeoPoint = new ParcelableGeoPoint((int) (location.getLatitude() * 1E6),
 				(int) (location.getLongitude() * 1E6));
@@ -117,7 +121,7 @@ public class MapLocationListener implements LocationListener
 			totalDistance = totalDistance + lastLocation.distanceTo(location);
 			userDistance = new DecimalFormat("#.##").format(totalDistance / 1000);
 		}
-		
+
 		if (!newRoute)
 		{
 			for (CheckPoint checkPoint : checkPoints)

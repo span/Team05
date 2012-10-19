@@ -18,13 +18,12 @@
 */
 package se.team05.activity;
 
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
-import java.util.TimeZone;
 import java.util.List;
+
 import org.achartengine.GraphicalView;
+
 import se.team05.R;
+import se.team05.adapter.ListResultsAdapter;
 import se.team05.content.Result;
 import se.team05.content.Route;
 import se.team05.data.DBResultAdapter;
@@ -35,13 +34,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Adapter;
-import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
-import android.widget.SimpleCursorAdapter.ViewBinder;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 
 /**
  * An activity that will present the user with the option to view results of an old route.
@@ -56,7 +54,8 @@ public class ListExistingResultsActivity extends ListActivity
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_list_existing_results);		
+		setContentView(R.layout.activity_list_existing_results);	
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 	
 	/**
@@ -81,57 +80,38 @@ public class ListExistingResultsActivity extends ListActivity
 		
 		Cursor cursor = db.getAllResultsCursorByRid(rid);
 		
-		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,
+		ListResultsAdapter adapter = new ListResultsAdapter(this,
 						android.R.layout.simple_list_item_1,
 						cursor,
 						new String[] {DBResultAdapter.COLUMN_TIMESTAMP},
 						new int[] {android.R.id.text1},
 						Adapter.NO_SELECTION);
-		
-		// Hook method for formatting the timestamp retreived from the database
-		// in the cursor into human readable date and time.
-		adapter.setViewBinder(new ViewBinder() {
-
-			@Override
-			public boolean setViewValue(View view, Cursor cursor, int columnIndex)
-			{
-				int timestamp_index = cursor.getColumnIndex(DBResultAdapter.COLUMN_TIMESTAMP);
-				
-				if(timestamp_index == columnIndex)
-				{
-					//Retrieve timestamp
-					String createDate = cursor.getString(timestamp_index);
-					TextView textView = (TextView) view;
-					
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US);
-					sdf.setTimeZone(TimeZone.getDefault());
-					
-					String result = sdf.format(
-							new Timestamp(
-									Long.parseLong( // To long
-											createDate.trim() //Trim excess of string
-									)*1000 // Convert to milliseconds instead of seconds
-							)
-					);
-					
-					// Update textview
-					textView.setText(result);
-					return true;
-				}
-				
-				return false;
-			}
-			
-		});
-		
 		setListAdapter(adapter);
 		//cursor.close();
 		List<Result> allResults = db.getAllResultsByRid(rid);
-		if(allResults!=null&&allResults.size()>0)
+		if(allResults != null && allResults.size() > 0)
 		{
 			LinearLayout chartContainer = (LinearLayout) findViewById(R.id.chart);
 			GraphicalView timeStretchChartView = TimeStretchChartView.getNewInstance(this, allResults, db.getRoute(rid).getName());
 			chartContainer.addView(timeStretchChartView);
 		}
 	}
+	
+	/**
+	 * This method is called when an item in the action bar (options menu) has
+	 * been pressed. Currently this only takes the user to the parent activity
+	 * (main activity).
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		switch (item.getItemId())
+		{
+			case android.R.id.home:
+				NavUtils.navigateUpFromSameTask(this);
+				return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+	
 }
