@@ -14,6 +14,14 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+/**
+ * This class represents what user has stored in his or her settings. It acts mainly
+ * as a visual representation of what is stored and allows the user to make changes.
+ * The acutal storing is made in the settings class
+ * 
+ * @author Markus
+ *
+ */
 public class SettingsActivity extends Activity implements View.OnClickListener
 {
 	EditText nameEdit;
@@ -42,6 +50,9 @@ public class SettingsActivity extends Activity implements View.OnClickListener
 		super.onResume();
 	}
 
+	/**
+	 * Sets up the button and radio listeners
+	 */
 	private void setUpButtons()
 	{
 		radioWalking = (RadioButton) findViewById(R.id.radio_walking);
@@ -59,6 +70,10 @@ public class SettingsActivity extends Activity implements View.OnClickListener
 
 	}
 
+	/**
+	 * Listener for the save settings button, it will check that the values are ok
+	 * and if not will make an alertdialog telling the user this
+	 */
 	@Override
 	public void onClick(View arg0)
 	{
@@ -88,11 +103,23 @@ public class SettingsActivity extends Activity implements View.OnClickListener
 		}
 	}
 
+	/**
+	 * Listener for the Radio buttons, not used at the moment
+	 * 
+	 * @param view
+	 */
 	public void onRadioButtonClicked(View view)
 	{
 
 	}
 
+	/**
+	 * This tests that the user has not input any illegal values, as of now it checks
+	 * if user has not chosen a value less than zero or any letters for the weight which
+	 * should be an integer
+	 * 
+	 * @return -1 if test failed
+	 */
 	private int testWeight()
 	{
 		int userWeight;
@@ -107,6 +134,9 @@ public class SettingsActivity extends Activity implements View.OnClickListener
 		return userWeight;
 	}
 
+	/**
+	 * The UP/HOME Button
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
