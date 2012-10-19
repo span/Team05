@@ -687,6 +687,7 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 		outState.putParcelableArrayList(BUNDLE_GEOPOINT_LIST, route.getGeoPoints());
 		if (activeDialog == DIALOG_CHECKPOINT)
 		{
+			checkPointDialog.stopRecording();
 			currentCheckPoint = checkPointDialog.getCheckPoint();
 			onSaveCheckPoint(currentCheckPoint);
 			outState.putLong(BUNDLE_CID, currentCheckPoint.getId());
