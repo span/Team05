@@ -30,6 +30,7 @@ import se.team05.content.Track;
 import android.app.Activity;
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.CursorLoader;
@@ -83,6 +84,7 @@ public class MediaSelectorActivity extends Activity implements LoaderCallbacks<C
 			MediaStore.Audio.Media.DURATION, MediaStore.Audio.Media.ALBUM_ID };
 	private ArrayList<Track> selectedItems;
 	private HashMap<Long, Bitmap> albumArtMap;
+	private ProgressDialog progressDialog;
 
 	/**
 	 * The onCreate method loads the xml layout which contains the listview. It
@@ -155,6 +157,11 @@ public class MediaSelectorActivity extends Activity implements LoaderCallbacks<C
 	 */
 	public Loader<Cursor> onCreateLoader(int i, Bundle bundle)
 	{
+		progressDialog = new ProgressDialog(this);
+		progressDialog.setCancelable(false);
+		progressDialog.setTitle("Loading media");
+		progressDialog.setMessage("Please wait while we load the media on your device.");
+		progressDialog.show();
 		CursorLoader cursorLoader = null;
 		switch (i)
 		{
@@ -182,6 +189,7 @@ public class MediaSelectorActivity extends Activity implements LoaderCallbacks<C
 	 */
 	public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor)
 	{
+		progressDialog.dismiss();
 		if (adapter == null)
 		{
 			albumArtMap = new HashMap<Long, Bitmap>();
