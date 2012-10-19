@@ -107,8 +107,9 @@ public class AddCheckPointUITest extends ActivityInstrumentationTestCase2<MainAc
 	 * checkpoint. When we have checked that everything is saved we delete the
 	 * checkPoint and press at the same position again and the checkpoint should
 	 * have disappeared or it will fail.
+	 * @throws InterruptedException 
 	 */
-	public void testSaveAndDeleteCheckPoint()
+	public void testSaveAndDeleteCheckPoint() throws InterruptedException
 	{
 		solo.clickOnScreen(400, 600);
 		assertTrue("Could not find the dialog!", solo.searchText("Edit CheckPoint"));
@@ -136,11 +137,17 @@ public class AddCheckPointUITest extends ActivityInstrumentationTestCase2<MainAc
 		String save = routeActivity.getString(se.team05.R.string.save);
 		solo.clickOnButton(save);
 		assertFalse("Could find the dialog!", solo.searchText("Edit CheckPoint"));
-
+		
 		solo.clickOnScreen(400, 600);
+		solo.setActivityOrientation(Solo.LANDSCAPE);
+		Thread.sleep(1500);
 		assertTrue("Wrong Name!", solo.searchEditText("Slottskogen"));
 		assertFalse("SeekBar not changed!", solo.searchText("30"));
-
+		solo.setActivityOrientation(Solo.PORTRAIT);
+		Thread.sleep(1500);
+		assertTrue("Wrong Name!", solo.searchEditText("Slottskogen"));
+		assertFalse("SeekBar not changed!", solo.searchText("30"));
+		
 		String delete = routeActivity.getString(se.team05.R.string.delete);
 		solo.clickOnButton(delete);
 		solo.clickOnScreen(400, 600);
