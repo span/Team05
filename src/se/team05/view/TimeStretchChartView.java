@@ -78,13 +78,17 @@ public class TimeStretchChartView extends GraphicalView
 	 */
 	public static GraphicalView getNewInstance(Context context, List<Result> results, String nameOfRoute)
 	{
+		minTimeStamp = results.get(0).getTimestamp() * 1000;
 		if (results.size() != 1)
 		{
 			int resultMaxTime = Collections.max(results).getTime() / 60;
 			maxTime = resultMaxTime >= maxTime ? resultMaxTime : maxTime;
+			maxTimeStamp = results.get(results.size() - 1).getTimestamp() * 1000 ;
 		}
-		minTimeStamp = results.get(0).getTimestamp() * 1000;
-		maxTimeStamp = results.get(results.size() - 1).getTimestamp() * 1000;
+		else 
+		{
+			maxTimeStamp = minTimeStamp+1000;
+		}
 		String title = "Route: " + nameOfRoute;
 		renderer = createRendere();
 		setChartSettings();
