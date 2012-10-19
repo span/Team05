@@ -287,6 +287,7 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 			case DIALOG_CHECKPOINT:
 				long checkPointId = savedInstanceState.getLong(BUNDLE_CID);
 				currentCheckPoint = databaseHandler.getCheckPoint(checkPointId);
+				checkPointOverlay.addCheckPoint(currentCheckPoint);
 				showCheckPointDialog(currentCheckPoint, EditCheckPointDialog.MODE_EDIT);
 				break;
 			case DIALOG_SAVE_ROUTE:
