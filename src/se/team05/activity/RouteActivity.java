@@ -85,6 +85,7 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 		CheckPointOverlay.Callbacks, MapOnGestureListener.Callbacks, MapLocationListener.Callbacks, Utils.Callbacks,
 		RouteActivityButtonListener.Callbacks
 {
+	
 	private static final int USER_ROUTE_COLOR = 78;
 	private static final int RECORDED_ROUTE_COLOR = 10;
 	private static final String TAG = "Personal trainer";
@@ -96,6 +97,7 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 	private static final String BUNDLE_GEOPOINT_LIST = "geoPointList";
 	private static final String BUNDLE_ACTIVE_DIALOG = "activeDialog";
 	private static final String BUNDLE_SAVE_RESULT_CHECKED = "isSaveResultChecked";
+	private static final String BUNDLE_IS_NEW_ROUTE = "isNewRoute";
 	private static final int DIALOG_NONE = -1;
 	private static final int DIALOG_SAVE_ROUTE = 0;
 	private static final int DIALOG_SAVE_RESULT = 1;
@@ -139,7 +141,8 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 		databaseHandler = new DatabaseHandler(this);
 		route = new Route(getString(R.string.route_name), getString(R.string.route_description), this);
 		wakeLock = Utils.acquireWakeLock(this);
-
+		checkPointOverlay = new CheckPointOverlay(getResources().getDrawable(R.drawable.ic_launcher), this);
+		
 		setupMapView();
 
 		if (savedInstanceState != null)
@@ -149,6 +152,10 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 		else
 		{
 			route.setId(getIntent().getLongExtra(Route.EXTRA_ID, -1));
+			if(!route.isNewRoute())
+			{
+				route = databaseHandler.getRoute(route.getId());
+			}
 		}
 
 		setupRouteAndCheckPoints();
@@ -179,16 +186,14 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 	 */
 	private void setupRouteAndCheckPoints()
 	{
-		checkPointOverlay = new CheckPointOverlay(getResources().getDrawable(R.drawable.ic_launcher), this);
-		overlays.add(checkPointOverlay);
 		if (!route.isNewRoute())
 		{
-			route = databaseHandler.getRoute(route.getId());
 			RouteOverlay recordedRouteOverlay = new RouteOverlay(route.getGeoPoints(), RECORDED_ROUTE_COLOR);
 			overlays.add(recordedRouteOverlay);
 			checkPointOverlay.setCheckPoints(route.getCheckPoints());
 			setTitle(getString(R.string.saved_route_) + route.getName());
 		}
+		overlays.add(checkPointOverlay);
 	}
 
 	/**
@@ -262,9 +267,18 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 		route.setGeoPoints(geoPoints);
 		RouteOverlay routeOverlay3 = new RouteOverlay(route.getGeoPoints(), USER_ROUTE_COLOR);
 		overlays.add(routeOverlay3);
-		if (route.isNewRoute())
+		
+		if (savedInstanceState.getBoolean(BUNDLE_IS_NEW_ROUTE))
 		{
-			checkPointOverlay.setCheckPoints(route.getCheckPoints());
+			databaseHandler.deleteRoute(route);
+			route.setId(-1);
+			ArrayList<CheckPoint> checkPointList = databaseHandler.getCheckPoints(route.getId());
+			if(checkPointList!=null && checkPointList.size() > 0)
+			{
+				checkPointOverlay = new CheckPointOverlay(getResources().getDrawable(R.drawable.ic_launcher), this);
+				route.setCheckPoints(checkPointList);
+				checkPointOverlay.setCheckPoints(checkPointList);
+			}
 		}
 
 		int activeDialog = savedInstanceState.getInt(BUNDLE_ACTIVE_DIALOG);
@@ -681,13 +695,15 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 			route = saveRouteDialog.getRoute();
 			outState.putBoolean(BUNDLE_SAVE_RESULT_CHECKED, saveRouteDialog.isSaveResultChecked());
 		}
-		if (route.getId() == -1)
+		if (route.isNewRoute())
 		{
+			outState.putBoolean(BUNDLE_IS_NEW_ROUTE, true);
 			route.setId(databaseHandler.saveRoute(route));
 		}
 		else
 		{
 			databaseHandler.updateRoute(route);
+			outState.putBoolean(BUNDLE_IS_NEW_ROUTE, false);
 		}
 		outState.putLong(BUNDLE_RID, route.getId());
 	}
