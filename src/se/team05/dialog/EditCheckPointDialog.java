@@ -1,41 +1,42 @@
+/**
+	This file is part of Personal Trainer.
+
+    Personal Trainer is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    Personal Trainer is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
+
+    (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
+ */
 package se.team05.dialog;
 
-/**
- This file is part of Personal Trainer.
-
- Personal Trainer is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- any later version.
-
- Personal Trainer is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-
 import java.io.IOException;
-import java.util.ArrayList;
 
 import se.team05.R;
 import se.team05.activity.MediaSelectorActivity;
 import se.team05.content.SoundManager;
-import se.team05.content.Track;
 import se.team05.overlay.CheckPoint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * This is the dialog that pops up when a checkpoint is created or touched. The
@@ -43,7 +44,6 @@ import android.widget.TextView;
  * the checkpoint.
  * 
  * @author Patrik Thituson & Daniel Kvist
- * @version 1.0
  * 
  */
 public class EditCheckPointDialog extends Dialog implements View.OnClickListener, OnSeekBarChangeListener
@@ -51,11 +51,13 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 	public interface Callbacks
 	{
 		public void onDeleteCheckPoint(long checkPointId);
+
 		public void onSaveCheckPoint(CheckPoint checkPoint);
 	}
 
+	private static final String TAG = "Personal Trainer";
 	public static final int MODE_ADD = 0;
-	public static final int MODE_EDIT = 1;
+	public static final int MODE_EDIT = 1;	
 
 	private Callbacks callBack;
 	private CheckPoint checkPoint;
@@ -65,10 +67,11 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 	private Activity parentActivity;
 	private SoundManager soundManager;
 	private int mode;
-	private ArrayList<Track> selectedTracks;
-	
+	private SeekBar seekBar;
+
 	/**
 	 * The constructor
+	 * 
 	 * @param context
 	 * @param checkPoint
 	 * @param mode
@@ -81,7 +84,6 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 		this.parentActivity = (Activity) context;
 		this.soundManager = new SoundManager(context);
 		this.mode = mode;
-		this.selectedTracks = checkPoint.getTracks();
 		setCanceledOnTouchOutside(false);
 	}
 
@@ -95,22 +97,23 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.dialog_edit_checkpoint);
 		setTitle("Edit CheckPoint");
+		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
 		Button deleteButton = (Button) findViewById(R.id.delete_button);
 		deleteButton.setOnClickListener(this);
 		findViewById(R.id.save_button).setOnClickListener(this);
-		
-		if(mode==MODE_ADD)
+
+		if (mode == MODE_ADD)
 		{
 			deleteButton.setText("Cancel");
 		}
-		
-		nameTextField = (TextView) findViewById(R.id.name);
-		nameTextField.setText(checkPoint.getName());
-		
-		radiusTextField = (TextView) findViewById(R.id.radius_text);
 
-		SeekBar seekBar = (SeekBar) findViewById(R.id.seekBar1);
+		nameTextField = ((TextView) findViewById(R.id.name));
+		nameTextField.setText(checkPoint.getName());
+
+		radiusTextField = ((TextView) findViewById(R.id.radius_text));
+
+		seekBar = ((SeekBar) findViewById(R.id.seekBar1));
 		seekBar.setOnSeekBarChangeListener(this);
 		seekBar.setProgress(checkPoint.getRadius());
 
@@ -136,7 +139,7 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 				break;
 			case R.id.select_button:
 				Intent intent = new Intent(parentActivity, MediaSelectorActivity.class);
-				intent.putParcelableArrayListExtra(MediaSelectorActivity.EXTRA_SELECTED_ITEMS, selectedTracks);
+				intent.putParcelableArrayListExtra(MediaSelectorActivity.EXTRA_SELECTED_ITEMS, checkPoint.getTracks());
 				parentActivity.startActivityForResult(intent, MediaSelectorActivity.REQUEST_MEDIA);
 				break;
 			case R.id.delete_button:
@@ -167,12 +170,13 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 		{
 			try
 			{
+				Toast.makeText(getContext(), getContext().getString(R.string.you_are_now_recording_speak_into_the_microphone), Toast.LENGTH_LONG).show();
 				soundManager.startRecording();
-				recordButton.setText("Stop recording");
+				recordButton.setText(R.string.stop_recording);
 			}
 			catch (IOException e)
 			{
-				e.printStackTrace();
+				Log.e(TAG, "Could not start recording: " + e.getMessage());
 			}
 		}
 		else
@@ -190,42 +194,48 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 	{
 		radiusTextField.setText("" + progress);
 	}
+
 	/**
 	 * Unused method
 	 */
 	@Override
 	public void onStartTrackingTouch(SeekBar seekBar)
 	{
-	
 	}
-	
+
 	/**
 	 * Unused method
 	 */
 	@Override
 	public void onStopTrackingTouch(SeekBar seekBar)
 	{
-	
 	}
-	
+
 	/**
-	 * Uses callback to delete the a checkpoint if it is created when the back button is pressed
-	 * if the dialog is in edit mode the back button is unchanged
+	 * Uses callback to delete the a checkpoint if it is created when the back
+	 * button is pressed if the dialog is in edit mode the back button is
+	 * unchanged
 	 */
 	@Override
 	public void onBackPressed()
 	{
-		if(mode == MODE_ADD)
+		if (mode == MODE_ADD)
 		{
 			callBack.onDeleteCheckPoint(checkPoint.getId());
 		}
-			
+
 		super.onBackPressed();
 	}
 
-	public void setSelectedTracks(ArrayList<Track> selectedTracks)
+	/**
+	 * Gets a checkpoint with the current values in the edit text views.
+	 * 
+	 * @return the checkpoint with the new values.
+	 */
+	public CheckPoint getCheckPoint()
 	{
-		this.selectedTracks = selectedTracks;
+		checkPoint.setName(nameTextField.getText().toString());
+		checkPoint.setRadius(seekBar.getProgress());
+		return checkPoint;
 	}
-
 }

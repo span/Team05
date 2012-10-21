@@ -1,0 +1,10 @@
+Definition of Done
+
+Innan vi avslutar en sprint och mergear till master skall varje feature ha klarat av följande.
+
+Koden fungerar
+JavaDoc som ger 40% kommentarer
+Test som testar så mycket som möjligt med JavaDoc
+Koden granskad av annan utvecklare
+Ren och välformatterad kod
+Bibehållen design/strukur

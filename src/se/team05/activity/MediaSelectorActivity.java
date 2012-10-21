@@ -13,10 +13,16 @@
 
     You should have received a copy of the GNU General Public License
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
+
+    (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
  */
+
 package se.team05.activity;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import se.team05.R;
 import se.team05.adapter.MediaSelectorAdapter;
@@ -24,18 +30,23 @@ import se.team05.content.Track;
 import android.app.Activity;
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Adapter;
 import android.widget.ListView;
-
 
 /**
  * This activity displays a list of the available media on the device. It allows
@@ -54,12 +65,13 @@ import android.widget.ListView;
  */
 public class MediaSelectorActivity extends Activity implements LoaderCallbacks<Cursor>
 {
-	private static final int LOADER_ID_ARTIST = 2;
-	private static final int LOADER_ID_ALBUM = 4;
-	private static final int LOADER_ID_TITLE = 8;
+	private static final int LOADER_ID_ARTIST = 0;
+	private static final int LOADER_ID_ALBUM = 1;
+	private static final int LOADER_ID_TITLE = 2;
 
 	public static final String EXTRA_SELECTED_ITEMS = "selected_media";
 	public static final int REQUEST_MEDIA = 0;
+	private static final String TAG = "Album art decoder";
 
 	private MediaSelectorAdapter adapter;
 	private ListView listView;
@@ -67,8 +79,10 @@ public class MediaSelectorActivity extends Activity implements LoaderCallbacks<C
 
 	private String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0";
 	private String[] projection = { MediaStore.Audio.Media._ID, MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM,
-			MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.DISPLAY_NAME, MediaStore.Audio.Media.DURATION };
+			MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.DISPLAY_NAME,
+			MediaStore.Audio.Media.DURATION, MediaStore.Audio.Media.ALBUM_ID };
 	private ArrayList<Track> selectedItems;
+	private HashMap<Long, Bitmap> albumArtMap;
 
 	/**
 	 * The onCreate method loads the xml layout which contains the listview. It
@@ -84,10 +98,15 @@ public class MediaSelectorActivity extends Activity implements LoaderCallbacks<C
 		loaderManager.initLoader(LOADER_ID_ARTIST, null, this);
 		listView = (ListView) findViewById(R.id.list);
 		selectedItems = getIntent().getParcelableArrayListExtra(EXTRA_SELECTED_ITEMS);
+		if (selectedItems == null)
+		{
+			selectedItems = new ArrayList<Track>();
+		}
 	}
 
 	/**
 	 * This method simply inflates the xml file which contains the menu options.
+	 * The method i
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
@@ -101,7 +120,7 @@ public class MediaSelectorActivity extends Activity implements LoaderCallbacks<C
 	 * This is called when an option item has been selected. Depending on the
 	 * user selection either the selected tracks are passed back to the calling
 	 * activity or a new query is made to the media store to sort on either
-	 * artist, album or title.
+	 * artist, album or title. TODO How format XML-string
 	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
@@ -124,9 +143,8 @@ public class MediaSelectorActivity extends Activity implements LoaderCallbacks<C
 			case R.id.track:
 				loaderManager.initLoader(LOADER_ID_TITLE, null, this);
 				return true;
-			default:
-				return super.onOptionsItemSelected(item);
 		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	/**
@@ -159,22 +177,59 @@ public class MediaSelectorActivity extends Activity implements LoaderCallbacks<C
 	/**
 	 * When the load has finished we create a new adapter of the cursor we
 	 * receive from the media store content provider. The adapter is then set to
-	 * the listvew. The adapter uses ARIST, ALBUM and TITLE to be displayed to the
-	 * user.
+	 * the listvew. The adapter uses ARIST, ALBUM and TITLE to be displayed to
+	 * the user.
 	 */
 	public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor)
 	{
-		if(adapter == null) 
+		if (adapter == null)
 		{
+			albumArtMap = new HashMap<Long, Bitmap>();
+			cursor.moveToFirst();
+
+			while (!cursor.isAfterLast())
+			{
+				long albumId = Long.parseLong(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)));
+				if (!albumArtMap.containsKey(albumId))
+				{
+					albumArtMap.put(albumId, buildBitmapFromUri(albumId));
+				}
+				cursor.moveToNext();
+			}
+
 			adapter = new MediaSelectorAdapter(getApplicationContext(), R.layout.activity_media_selector, cursor, new String[] {
-				MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.TITLE }, new int[] { R.id.text_1,
-				R.id.text_2, R.id.text_3 }, Adapter.NO_SELECTION, selectedItems);
+					MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.TITLE }, new int[] { R.id.text_1,
+					R.id.text_2, R.id.text_3 }, Adapter.NO_SELECTION, selectedItems, albumArtMap);
 			listView.setAdapter(adapter);
 		}
 		else
 		{
 			adapter.swapCursor(cursor);
 		}
+	}
+
+	/**
+	 * Builds the album art bitmap from the specified URI if it exists.
+	 * 
+	 * @param albumId
+	 * @return the decoded bitmap
+	 */
+	private Bitmap buildBitmapFromUri(long albumId)
+	{
+		Bitmap bitmap = null;
+		try
+		{
+			Uri albumArtURI = Uri.parse("content://media/external/audio/albumart");
+			Uri uri = ContentUris.withAppendedId(albumArtURI, albumId);
+			ContentResolver resolver = getContentResolver();
+			InputStream inputStream = resolver.openInputStream(uri);
+			bitmap = BitmapFactory.decodeStream(inputStream);
+		}
+		catch (FileNotFoundException e)
+		{
+			Log.d(TAG, e.getMessage());
+		}
+		return bitmap;
 	}
 
 	/**

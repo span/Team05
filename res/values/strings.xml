@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
     This file is part of Personal Trainer.
 
@@ -13,14 +14,18 @@
 
     You should have received a copy of the GNU General Public License
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
+    
+    (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
 -->
 <resources>
-
     <string name="app_name">Personal Trainer</string>
-    <string name="menu_settings">Settings</string>
-    <string name="title_activity_main">MainActivity</string>
+    
+    <string name="title_activity_main">Personal Trainer</string>
     <string name="new_route">New route</string>
     <string name="use_route">Use route</string>
+    <string name="route_name">Route name</string>
+    <string name="route_description">Route description</string>
+    <string name="route_information">Route information</string>
     <string name="save">Save</string>
     <string name="delete">Delete</string>
     <string name="select">Select</string>
@@ -37,14 +42,14 @@
     <string name="button_start_run">Start Run</string>
     <string name="button_addcheckpoint">Add CP</string>
     <string name="select_media">Select media</string>
-    <string name="speed_of_run">Your Speed: </string>
-    <string name="time_">Time:</string>
+    <string name="speed_of_run">"Your Speed: "</string>
+    <string name="time_">"Time: "</string>
     <string name="distance_">Distance:</string>
     <string name="speed_">Speed:</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
-	<string name="distance_of_run">Total Distance: </string>
-	<string name="time_of_run">Time: </string>
+	<string name="distance_of_run">"Total Distance: "</string>
+	<string name="time_of_run">"Time: "</string>
 	<string name="name">Name</string>
 	<string name="save_results">Save results</string>
 	<string name="results">Results</string>
@@ -52,4 +57,67 @@
 	<string name="description">Description</string>
 	<string name="discard">Discard</string>
 	<string name="button_show_results">Show results</string>
+	<string name="stop">Stop</string>
+	<string name="show_result">Show results</string>
+	<string name="please_add_a_route">Please add a route</string>
+	<string name="click_to_add_a_route">Click to add a route</string>
+	<string name="result_list">Results</string>
+	<string name="km">" Km"</string>
+	<string name="_metres">" metres"</string>
+	<string name="_0_00">0.00</string>
+	<string name="h">h</string>
+	<string name="saved_route_">"Saved Route: "</string>
+	<string name="provider_">"Provider: "</string>
+	<string name="could_not_start_media_service_">"Could not start media service: "</string>
+	<string name="this_is_a_new_route">This is a new route</string>
+	<string name="could_not_acquire_wakelock_">"Could not acquire wakelock: "</string>
+	<string name="id">Id</string>
+	<string name="position">Position</string>
+	<string name="added_new_recording_">"Added new recording: "</string>
+	<string name="stop_recording">Stop recording</string>
+	<string name="delete_results">Delete results</string>
+	<string name="distance_of_run_result">Distance: </string>
+	<string name="date">Date: </string>
+	<string name="save_result_">Save result?</string>
+	<string name="do_you_want_to_save_this_result_">Do you want to save this result?</string>
+	<string name="no_results_registerd">No results registerd</string>
+	<string name="result_saved">Result saved: </string>
+	<string name="must_use_a_valid_name">Must use a valid name</string>
+	<string name="discard_route_">Discard route?</string>
+	<string name="do_you_really_want_to_discard_your_route_">Do you really want to discard your route?</string>
+	<string name="welcome_to_personal_trainer">Welcome to Personal Trainer</string>
+	<string name="start_screen_instructions">Press play to run a new route or the notepad to check out your saved stats and routes</string>
+	<string name="click_">"Click "</string>
+	<string name="_to_add_a_route_and">" to add a route and "</string>
+	<string name="to_use_an_old_route">" to use an old route"</string>
+	<string name="click_to_add_route">Click to add route</string>
+	<string name="click_to_use_an_existing_route">Click to use an existing route</string>
+	<string name="calories">Calories</string>
+	<string name="title_activity_settings">SettingsActivity</string>
+    <string name="settings">Settings</string>
+    <string name="enter_name_">Enter name:</string>
+    <string name="save_settings">Save settings</string>
+    <string name="your_weight_">"Your weight: "</string>
+    <string name="female">Female</string>
+    <string name="male">Male</string>
+    <string name="your_sex_">Your sex:</string>
+    <string name="invalid_values">Invalid values</string>
+    <string name="please_review_your_values_before_submitting">Please review your values before submitting</string>
+    <string name="ok">OK</string>
+    <string name="settings_saved">Settings saved</string>
+    <string name="yards">Yards</string>
+    <string name="kilometres">Kilometres</string>
+    <string name="length_representation_">"Length representation: "</string>
+    <string name="miles">Miles</string>
+    <string name="running">Running</string>
+    <string name="walking">Walking</string>
+    <string name="your_preferred_activity_">Your preferred activity:</string>
+    <string name="weight_representation_">"Weight representation: "</string>
+    <string name="kilograms">Kilograms</string>
+    <string name="pounds">Pounds</string>
+    <string name="calories_burned_">"Calories: "</string>
+    <string name="click_to_use_settings">Click to use settings</string>
+    <string name="you_are_now_recording_speak_into_the_microphone">You are now recording, speak into the microphone.</string>
+    <string name="stop_route">Stop route</string>
+    <string name="you_must_stop_your_route_before_you_can_enter_the_settings">You must stop your route before you can enter the settings.</string>
 </resources>

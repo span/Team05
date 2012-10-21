@@ -13,6 +13,8 @@
 
     You should have received a copy of the GNU General Public License
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
+
+    (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
 */
 package se.team05.activity;
 
@@ -20,7 +22,7 @@ import se.team05.R;
 import se.team05.listener.MainActivityButtonListener;
 import android.app.Activity;
 import android.os.Bundle;
-import android.widget.Button;
+import android.widget.ImageView;
 
 /**
  * This is the launching point of the application. The main activity simply
@@ -33,6 +35,10 @@ import android.widget.Button;
  */
 public class MainActivity extends Activity
 {
+	ImageView newRouteButton;
+	ImageView useExistingButton;
+	ImageView settingsButton;
+	
 	/**
 	 * The onCreate method of the class starts off by setting the XML file which
 	 * has the View content. It then picks up references to the buttons that are
@@ -46,11 +52,27 @@ public class MainActivity extends Activity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
-		Button newRouteButton = (Button) findViewById(R.id.new_route_button);
-		newRouteButton.setOnClickListener(new MainActivityButtonListener(this));
-
-		Button useExistingButton = (Button) findViewById(R.id.use_existing_button);
-		useExistingButton.setOnClickListener(new MainActivityButtonListener(this));
+		
+		MainActivityButtonListener listener = new MainActivityButtonListener(this);
+		newRouteButton = (ImageView) findViewById(R.id.image_new_route);
+		newRouteButton.setOnClickListener(listener);
+		useExistingButton = (ImageView) findViewById(R.id.image_existing_route);
+		useExistingButton.setOnClickListener(listener);
+		settingsButton = (ImageView) findViewById(R.id.image_settings);
+		settingsButton.setOnClickListener(listener);
+	}
+	
+	/**
+	 * For when method resumes and we want the buttons to return to their original colours.
+	 */
+	@Override
+	public void onResume()
+	{
+		super.onResume();
+		
+		newRouteButton.setColorFilter(0x0000000);
+		useExistingButton.setColorFilter(0x0000000); 
+		settingsButton.setColorFilter(0x0000000); 
+		
 	}
 }

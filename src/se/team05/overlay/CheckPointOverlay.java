@@ -13,7 +13,9 @@
 
     You should have received a copy of the GNU General Public License
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
- */
+
+    (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
+*/
 package se.team05.overlay;
 
 import java.util.ArrayList;
@@ -84,6 +86,14 @@ public class CheckPointOverlay extends ItemizedOverlay<CheckPoint>
 		selectedCheckpointIndex = checkPointList.size() - 1;
 		populate();
 	}
+	
+	public void setCheckPoints(ArrayList<CheckPoint> listOfCheckPoints)
+	{
+		for(CheckPoint checkPoint : listOfCheckPoints)
+		{
+			addCheckPoint(checkPoint);
+		}
+	}
 
 	/**
 	 * The onTap method that uses callback to send the checkpoint where the
@@ -117,5 +127,7 @@ public class CheckPointOverlay extends ItemizedOverlay<CheckPoint>
 		setLastFocusedIndex(-1);
 		populate();
 	}
+
+
 
 }

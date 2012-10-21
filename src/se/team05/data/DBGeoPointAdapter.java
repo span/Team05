@@ -13,11 +13,15 @@
 
     You should have received a copy of the GNU General Public License
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
- */
+
+    (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
+*/
+
 package se.team05.data;
 
 import java.util.ArrayList;
 
+import se.team05.content.ParcelableGeoPoint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -62,7 +66,7 @@ public class DBGeoPointAdapter extends DBAdapter
 	 * @param rid
 	 * @param geoPointList
 	 */
-	public void insertGeoPoints(long rid, ArrayList<GeoPoint> geoPointList)
+	public void insertGeoPoints(long rid, ArrayList<ParcelableGeoPoint> geoPointList)
 	{
 		ContentValues values = new ContentValues();
 		db.beginTransaction();

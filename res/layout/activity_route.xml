@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    This file is part of Personal Trainer.
+
+    Personal Trainer is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    Personal Trainer is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
+    
+    (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -45,11 +63,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:context=".DisplayMessageActivity" />
-
     </LinearLayout>
-    
-    
-        <LinearLayout
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
@@ -64,7 +80,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:context=".DisplayMessageActivity" />
+    </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/calories_burned_" />
+
+        <TextView
+            android:id="@+id/show_calorie_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:context=".DisplayMessageActivity" />
     </LinearLayout>
 
     <Button
@@ -74,16 +106,23 @@
         android:text="@string/button_addcheckpoint" />
 
     <Button
-        android:id="@+id/start_run_button"
+        android:id="@+id/start_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/button_start_run" />
 
     <Button
-        android:id="@+id/stop_and_save_button"
+        android:id="@+id/stop_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/button_stop_and_save"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/show_result_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/show_result"
         android:visibility="gone" />
 
 </LinearLayout>

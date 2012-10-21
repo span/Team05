@@ -13,7 +13,9 @@
 
     You should have received a copy of the GNU General Public License
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
-*/
+
+    (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
+ */
 package se.team05.activity;
 
 import se.team05.R;
@@ -25,87 +27,117 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
 /**
- * An activity that will present the user with the option to choose and old route.
- * Gets routes from database and presents them in a listview.
+ * An activity that will present the user with the option to choose and old
+ * route. Gets routes from database and presents them in a listview.
  * 
  * @author Markus, Henrik Hugo
- *
+ * 
  */
 public class ListExistingRoutesActivity extends ListActivity
 {
+	private Context context;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		//requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+		// requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.activity_list_existing_routes);
-		
-		//setProgressBarIndeterminateVisibility(true);
-		
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+
+		// Add empty view with quick link to record a new route
+		this.context = getApplicationContext();
+		TextView emptyView = (TextView) findViewById(R.id.empty_view);
+		emptyView.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				Intent intent = new Intent(context, RouteActivity.class);
+				startActivity(intent);
+			}
+		});
+		getListView().setEmptyView(emptyView);
+
+		// setProgressBarIndeterminateVisibility(true);
+
 		// Setup database connection and get cursor with results
 		DatabaseHandler db = new DatabaseHandler(this);
 		Cursor cursor = db.getAllRoutesCursor();
-		
+
 		// Setup adapter
-		RouteListCursorAdapter routeListCursorAdapter = new RouteListCursorAdapter(
-				this,
-				android.R.layout.simple_list_item_1,
-				cursor,
-				new String[] {DBRouteAdapter.COLUMN_NAME},
-				new int[] {android.R.id.text1}
-		);
-		
+		RouteListCursorAdapter routeListCursorAdapter = new RouteListCursorAdapter(this, android.R.layout.simple_list_item_1, cursor,
+				new String[] { DBRouteAdapter.COLUMN_NAME }, new int[] { android.R.id.text1 });
+
 		this.setListAdapter(routeListCursorAdapter);
-		
-		//setProgressBarIndeterminateVisibility(false);
+
+		// setProgressBarIndeterminateVisibility(false);
 	}
-	
+
 	public void onListItemClick(ListView l, View v, int position, long id)
 	{
-		
+
 		Intent intent;
 		Bundle bundle = new Bundle();
-		
-		bundle.putLong("id", id);
-		
+
+		bundle.putLong(getString(R.string.id), id);
+
 		intent = new Intent(this.getApplicationContext(), RouteActivity.class);
 		intent.putExtra(Route.EXTRA_ID, id);
-		
-		Log.d("Id", String.valueOf(id));
-		Log.d("Position", String.valueOf(position));
-		
+
+		Log.d(getString(R.string.id), String.valueOf(id));
+		Log.d(getString(R.string.position), String.valueOf(position));
+
 		this.startActivity(intent);
 	}
-	
+
 	/**
-	 * Simple class for automatically formating the content, from a cursor returned
-	 * by the database, to a listview.
-	 * @author Henrik Hugo
-	 *
+	 * This method is called when an item in the action bar (options menu) has
+	 * been pressed. Currently this only takes the user to the parent activity
+	 * (main activity).
 	 */
-	private class RouteListCursorAdapter extends SimpleCursorAdapter {
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		switch (item.getItemId())
+		{
+			case android.R.id.home:
+				NavUtils.navigateUpFromSameTask(this);
+				return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+	/**
+	 * Simple class for automatically formating the content, from a cursor
+	 * returned by the database, to a listview.
+	 * 
+	 * @author Henrik Hugo
+	 * 
+	 */
+	private class RouteListCursorAdapter extends SimpleCursorAdapter
+	{
 
 		@SuppressWarnings("deprecation")
-		public RouteListCursorAdapter(Context context, int layout, Cursor c,
-				String[] from, int[] to) {
+		public RouteListCursorAdapter(Context context, int layout, Cursor c, String[] from, int[] to)
+		{
 			super(context, layout, c, from, to);
 		}
-		
+
 		@SuppressWarnings("deprecation")
 		public RouteListCursorAdapter(Context context, int layout, Cursor c)
 		{
 			super(context, layout, c, null, null);
 		}
-
-
 	}
 
 }
-
-

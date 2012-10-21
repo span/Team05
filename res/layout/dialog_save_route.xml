@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    This file is part of Personal Trainer.
+
+    Personal Trainer is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    Personal Trainer is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
+    
+    (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout_root"
     android:layout_width="match_parent"
@@ -16,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="6dp"
-            android:text="@string/name" />
+            android:text="@string/route_information" />
 
         <EditText
             android:id="@+id/name"
@@ -25,19 +43,12 @@
             android:inputType="text"
             android:maxLines="1" />
 
-        <TextView
-            style="?android:attr/listSeparatorTextViewStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="6dp"
-            android:text="@string/description" />
-
         <EditText
             android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
-            android:maxLines="3" />
+            android:maxLines="1" />
 
         <TextView
             style="?android:attr/listSeparatorTextViewStyle"
@@ -59,9 +70,9 @@
 
             <TextView
                 android:id="@+id/time"
-                android:layout_marginLeft="16dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -77,9 +88,9 @@
 
             <TextView
                 android:id="@+id/runneddistance"
-                android:layout_marginLeft="16dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -95,9 +106,27 @@
 
             <TextView
                 android:id="@+id/speed"
-                android:layout_marginLeft="16dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/calories_burned_" />
+
+            <TextView
+                android:id="@+id/calories"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp" />
         </LinearLayout>
 
         <CheckedTextView
@@ -108,6 +137,7 @@
             android:checked="true"
             android:clickable="true"
             android:focusable="true"
+            android:paddingLeft="8dp"
             android:paddingTop="4dp"
             android:text="@string/save_results" />
     </LinearLayout>
@@ -115,7 +145,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_marginTop="24dp" >
+        android:layout_marginTop="12dp" >
 
         <View
             android:layout_width="match_parent"

@@ -13,35 +13,42 @@
 
     You should have received a copy of the GNU General Public License
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
+
+    (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
  */
 package se.team05.activity;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import se.team05.R;
+import se.team05.content.ParcelableGeoPoint;
 import se.team05.content.Result;
 import se.team05.content.Route;
 import se.team05.content.Track;
 import se.team05.data.DatabaseHandler;
+import se.team05.dialog.AlertDialogFactory;
 import se.team05.dialog.EditCheckPointDialog;
 import se.team05.dialog.SaveRouteDialog;
 import se.team05.listener.MapLocationListener;
 import se.team05.listener.MapOnGestureListener;
+import se.team05.listener.RouteActivityButtonListener;
 import se.team05.overlay.CheckPoint;
 import se.team05.overlay.CheckPointOverlay;
 import se.team05.overlay.RouteOverlay;
+import se.team05.util.Utils;
 import se.team05.view.EditRouteMapView;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.location.Criteria;
-import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Handler;
+import android.os.PowerManager.WakeLock;
 import android.support.v4.app.NavUtils;
+import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -53,43 +60,66 @@ import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 
 /**
- * This activity Presents at map to the user. It also tracks the users movement
- * and will paint the geoPointList as the user moves. This is accomplished by
- * using Google's map API.
+ * The main use of this activity and of this application in general is that the
+ * user is supposed to run a route of his or her choice and then be able to save
+ * it. As the main idea is that a user will run a route, we will from here on
+ * refer to this action as "running" or "exercise".
+ * 
+ * This activity Presents a map to the user. In the main menu the user gets the
+ * choice of running a new route or an existing one he/she has saved from
+ * earlier and thusly this activity will serve both functions. If the user
+ * chooses to run a new run he/she will be presented with a map and the
+ * possibility to record a new route. Recording will paint the path that the
+ * user undertakes, as well as time distance and speed. The user can also place
+ * checkpoints, which the user can use to activate music or sound at a given
+ * location. Both checkpoints and paths is represented by geopoints. After
+ * completion, the possibility to save this route will appear and the user gets
+ * transferred to the start screen. If the user chooses an old route instead,
+ * the old one will be painted in grey at the start and a new path in blue will
+ * gradually get painted as the user moves along. When the user is done he or
+ * she will instead be presented with the possibility to save the result
  * 
  * @author Markus Schutzer, Patrik Thitusson, Daniel Kvist
- * 
  */
-public class RouteActivity extends MapActivity implements View.OnClickListener, EditCheckPointDialog.Callbacks,
-		SaveRouteDialog.Callbacks, CheckPointOverlay.Callbacks, MapOnGestureListener.Callbacks,
-		MapLocationListener.Callbacks
+public class RouteActivity extends MapActivity implements EditCheckPointDialog.Callbacks, SaveRouteDialog.Callbacks,
+		CheckPointOverlay.Callbacks, MapOnGestureListener.Callbacks, MapLocationListener.Callbacks, Utils.Callbacks,
+		RouteActivityButtonListener.Callbacks
 {
+	private static final int USER_ROUTE_COLOR = 78;
+	private static final int RECORDED_ROUTE_COLOR = 10;
+	private static final String TAG = "Personal trainer";
+	private static final String BUNDLE_RID = "rid";
+	private static final String BUNDLE_CID = "cid";
+	private static final String BUNDLE_STARTED = "started";
+	private static final String BUNDLE_TIME_PASSED = "timePassed";
+	private static final String BUNDLE_TOTAL_DISTANCE = "totalDistance";
+	private static final String BUNDLE_GEOPOINT_LIST = "geoPointList";
+	private static final String BUNDLE_ACTIVE_DIALOG = "activeDialog";
+	private static final String BUNDLE_SAVE_RESULT_CHECKED = "isSaveResultChecked";
+	private static final int DIALOG_NONE = -1;
+	private static final int DIALOG_SAVE_ROUTE = 0;
+	private static final int DIALOG_SAVE_RESULT = 1;
+	private static final int DIALOG_CHECKPOINT = 2;
 
-	private ArrayList<GeoPoint> geoPointList;
+	private List<Overlay> overlays;
+	private Route route;
+	private WakeLock wakeLock;
+	private MapLocationListener mapLocationListener;
 	private LocationManager locationManager;
-	private String providerName;
 	private EditRouteMapView mapView;
-	private boolean started = false;
 	private MyLocationOverlay myLocationOverlay;
-	private String userSpeed = "0";
-	private String userDistance = "0";
-	private Location lastLocation;
-	private float totalDistance = 0;
-	private String lengthPresentation = DISTANCE_UNIT_METRES;
-	private String userDistanceRun = userDistance + lengthPresentation;
 	private CheckPointOverlay checkPointOverlay;
 	private EditCheckPointDialog checkPointDialog;
-	private Handler handler;
-	private Runnable runnable;
-	int timePassed = 0;
-
-	private static String DISTANCE_UNIT_KILOMETRE = "Km";
-	private static String DISTANCE_UNIT_METRES = " metres";
-	private static float DISTANCE_THRESHOLD_EU = 1000;
-	private ArrayList<Track> selectedTracks = new ArrayList<Track>();
+	private SaveRouteDialog saveRouteDialog;
+	private AlertDialog saveResultDialog;
 	private DatabaseHandler databaseHandler;
 	private CheckPoint currentCheckPoint;
-	private Result routeResults;;
+	private Button stopAndSaveButton;
+	private Button startButton;
+	private TextView speedView;
+	private TextView distanceView;
+	private TextView timeView;
+	private TextView calorieView;
 
 	/**
 	 * Will present a map to the user and will also display a dot representing
@@ -103,54 +133,170 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
-
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_route);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-
-		geoPointList = new ArrayList<GeoPoint>();
-
 		databaseHandler = new DatabaseHandler(this);
+		route = new Route(getString(R.string.route_name), getString(R.string.route_description), this);
+		wakeLock = Utils.acquireWakeLock(this);
 
-		Button stopAndSaveButton = (Button) findViewById(R.id.stop_and_save_button);
-		stopAndSaveButton.setOnClickListener(this);
+		setupMapView();
 
-		Button startRunButton = (Button) findViewById(R.id.start_run_button);
-		startRunButton.setOnClickListener(this);
+		if (savedInstanceState != null)
+		{
+			restoreInstance(savedInstanceState);
+		}
+		else
+		{
+			route.setId(getIntent().getLongExtra(Route.EXTRA_ID, -1));
+		}
 
-		Button addCheckPointButton = (Button) findViewById(R.id.add_checkpoint);
-		addCheckPointButton.setOnClickListener(this);
+		setupRouteAndCheckPoints();
+		setupTextViewsAndButtons();
+		setupMyLocationAndListener();
+		if (route.isStarted())
+		{
+			onStartRouteClick();
+		}
+		mapView.postInvalidate();
+	}
 
+	/**
+	 * Sets up the mapview and fetches the overlays that are used to draw on the
+	 * map.
+	 */
+	private void setupMapView()
+	{
 		mapView = (EditRouteMapView) findViewById(R.id.mapview);
 		mapView.setBuiltInZoomControls(true);
 		mapView.setOnGestureListener(new MapOnGestureListener(this));
+		overlays = mapView.getOverlays();
+	}
 
+	/**
+	 * Sets up the checkpoint overlay and draws the route that the user has
+	 * recorded.
+	 */
+	private void setupRouteAndCheckPoints()
+	{
+		checkPointOverlay = new CheckPointOverlay(getResources().getDrawable(R.drawable.ic_launcher), this);
+		overlays.add(checkPointOverlay);
+		if (!route.isNewRoute())
+		{
+			route = databaseHandler.getRoute(route.getId());
+			RouteOverlay recordedRouteOverlay = new RouteOverlay(route.getGeoPoints(), RECORDED_ROUTE_COLOR);
+			overlays.add(recordedRouteOverlay);
+			checkPointOverlay.setCheckPoints(route.getCheckPoints());
+			setTitle(getString(R.string.saved_route_) + route.getName());
+		}
+	}
+
+	/**
+	 * Initiates the textviews and buttons in the view and adds listeners to
+	 * them.
+	 */
+	private void setupTextViewsAndButtons()
+	{
+		RouteActivityButtonListener clickListener = new RouteActivityButtonListener(this);
+		distanceView = (TextView) findViewById(R.id.show_distance_textview);
+		speedView = (TextView) findViewById(R.id.show_speed_textview);
+		timeView = (TextView) findViewById(R.id.show_time_textview);
+		calorieView = (TextView) findViewById(R.id.show_calorie_textview);
+		Button addCheckPointButton = (Button) findViewById(R.id.add_checkpoint);
+		Button showResultButton = (Button) findViewById(R.id.show_result_button);
+		stopAndSaveButton = (Button) findViewById(R.id.stop_button);
+		startButton = (Button) findViewById(R.id.start_button);
+		stopAndSaveButton.setOnClickListener(clickListener);
+		startButton.setOnClickListener(clickListener);
+		if (route.isNewRoute())
+		{
+			addCheckPointButton.setOnClickListener(clickListener);
+		}
+		else
+		{
+			showResultButton.setOnClickListener(clickListener);
+			showResultButton.setVisibility(View.VISIBLE);
+			addCheckPointButton.setVisibility(View.GONE);
+		}
+	}
+
+	/**
+	 * Sets up the location manager, location lsitener and some criteria that
+	 * ask for the gps provider (fine). Then add overlay for my location and the
+	 * trace of the user's route.
+	 */
+	private void setupMyLocationAndListener()
+	{
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, new MapLocationListener(this));
-
+		mapLocationListener = new MapLocationListener(this, route.isNewRoute(), route.getCheckPoints());
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mapLocationListener);
 		Criteria criteria = new Criteria();
 		criteria.setAccuracy(Criteria.ACCURACY_FINE);
 		criteria.setCostAllowed(false);
-
-		providerName = locationManager.getBestProvider(criteria, true);
-
+		String providerName = locationManager.getBestProvider(criteria, true);
 		if (providerName != null)
 		{
-			System.out.println("NO PROVIDER:" + providerName);
+			Log.d(TAG, getString(R.string.provider_) + providerName);
+		}
+		myLocationOverlay = new MyLocationOverlay(this, mapView);
+		overlays.add(myLocationOverlay);
+		RouteOverlay userRouteOverlay = new RouteOverlay(route.getGeoPoints(), USER_ROUTE_COLOR);
+		overlays.add(userRouteOverlay);
+	}
+
+	/**
+	 * This method restores the instance after a configuration change has
+	 * happen. Important data is saved in the OnSavedInstanceState and contains
+	 * more data if a dialog is shown.
+	 * 
+	 * @param savedInstanceState
+	 */
+	private void restoreInstance(Bundle savedInstanceState)
+	{
+		route = databaseHandler.getRoute(savedInstanceState.getLong(BUNDLE_RID));
+		route.setTotalDistance(savedInstanceState.getFloat(BUNDLE_TOTAL_DISTANCE));
+		route.setTimePassed(savedInstanceState.getInt(BUNDLE_TIME_PASSED));
+		route.setStarted(savedInstanceState.getBoolean(BUNDLE_STARTED));
+
+		ArrayList<ParcelableGeoPoint> geoPoints = savedInstanceState.getParcelableArrayList(BUNDLE_GEOPOINT_LIST);
+		route.setGeoPoints(geoPoints);
+		RouteOverlay routeOverlay3 = new RouteOverlay(route.getGeoPoints(), USER_ROUTE_COLOR);
+		overlays.add(routeOverlay3);
+		if (route.isNewRoute())
+		{
+			checkPointOverlay.setCheckPoints(route.getCheckPoints());
 		}
 
-		List<Overlay> overlays = mapView.getOverlays();
-		Drawable drawable = getResources().getDrawable(R.drawable.ic_launcher);
+		int activeDialog = savedInstanceState.getInt(BUNDLE_ACTIVE_DIALOG);
+		switch (activeDialog)
+		{
+			case DIALOG_CHECKPOINT:
+				long checkPointId = savedInstanceState.getLong(BUNDLE_CID);
+				currentCheckPoint = databaseHandler.getCheckPoint(checkPointId);
+				showCheckPointDialog(currentCheckPoint, EditCheckPointDialog.MODE_EDIT);
+				break;
+			case DIALOG_SAVE_ROUTE:
+				showSaveRouteDialog();
+				saveRouteDialog.setSaveResultChecked(savedInstanceState.getBoolean(BUNDLE_SAVE_RESULT_CHECKED));
+				break;
+			case DIALOG_SAVE_RESULT:
+				showSaveResultDialog(route.getId());
+				break;
+		}
+	}
 
-		RouteOverlay routeOverlay = new RouteOverlay(geoPointList, 78, true);
-		myLocationOverlay = new MyLocationOverlay(this, mapView);
-		checkPointOverlay = new CheckPointOverlay(drawable, this);
-
-		overlays.add(routeOverlay);
-		overlays.add(myLocationOverlay);
-		overlays.add(checkPointOverlay);
-
-		mapView.postInvalidate();
+	/**
+	 * Starts a new alert dialog which shows the distance and time and asks the
+	 * user if the results should be saved or not.
+	 * 
+	 * @param rid
+	 */
+	private void showSaveResultDialog(long rid)
+	{
+		Result result = new Result(rid,System.currentTimeMillis() / 1000, route.getTimePassed(), (int) route.getTotalDistance(), 0);
+		saveResultDialog = AlertDialogFactory.newSaveResultDialog(this, route, result);
+		saveResultDialog.show();
+		route.setStarted(false);
 	}
 
 	/**
@@ -164,7 +310,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == MediaSelectorActivity.REQUEST_MEDIA && resultCode == RESULT_OK)
 		{
-			selectedTracks = data.getParcelableArrayListExtra(MediaSelectorActivity.EXTRA_SELECTED_ITEMS);
+			ArrayList<Track> selectedTracks = data.getParcelableArrayListExtra(MediaSelectorActivity.EXTRA_SELECTED_ITEMS);
 			currentCheckPoint.addTracks(selectedTracks);
 		}
 	}
@@ -181,43 +327,30 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 
 	/**
 	 * This will be called when user changes location. It will create a new
-	 * Geopoint consisting of longitude and latitude represented by integers and
-	 * put it in a list (geoPointList).
+	 * GeoPoint consisting of longitude and latitude represented by integers and
+	 * add it to the route. It will also get the user's speed and total distance
+	 * traveled and convert this data into strings to be presented on the
+	 * screen. As of now this method will be called once every three seconds,
+	 * this number is a tradeoff between fast updates which would be needed for
+	 * doing fast paced activities like cycling and slower like walking. Slow
+	 * activities could do with a lesser update interval and as such preserve
+	 * battery life but as of this version the user does not have the
+	 * possibility to choose what kind of activity to undertake and thus the
+	 * value is hard coded.
 	 * 
 	 * @param location
 	 *            the new location of the user
 	 */
 	@Override
-	public void updateLocation(Location location)
+	public void onLocationChanged(ParcelableGeoPoint geoPoint, String userSpeed, String userDistance, float totalDistance)
 	{
-		if (started)
+		if (route.isStarted())
 		{
-			GeoPoint p = new GeoPoint((int) (location.getLatitude() * 1E6), (int) (location.getLongitude() * 1E6));
-			geoPointList.add(p);
-
-			userSpeed = (3.6 * location.getSpeed()) + DISTANCE_UNIT_KILOMETRE + "/h";
-			if (lastLocation != null)
-			{
-				totalDistance += lastLocation.distanceTo(location);
-				if (totalDistance >= DISTANCE_THRESHOLD_EU)
-				{
-					lengthPresentation = DISTANCE_UNIT_KILOMETRE;
-					userDistance = new DecimalFormat("#.##").format(totalDistance / 1000);
-				} else
-				{
-					userDistance = "" + (int) totalDistance;
-				}
-				userDistanceRun = userDistance + lengthPresentation;
-			}
-
-			lastLocation = location;
-
-			TextView speedView = (TextView) findViewById(R.id.show_speed_textview);
+			route.getGeoPoints().add(geoPoint);
+			route.setTotalDistance(totalDistance);
 			speedView.setText(userSpeed);
-
-			TextView distanceView = (TextView) findViewById(R.id.show_distance_textview);
-			distanceView.setText(userDistanceRun);
-
+			distanceView.setText(userDistance + getString(R.string.km));
+			calorieView.setText(String.valueOf(route.getCalories()));
 			mapView.postInvalidate();
 		}
 	}
@@ -242,88 +375,91 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	}
 
 	/**
-	 * Get method for returning the Routelist consisting of geopoints.
-	 * 
-	 * @return ArrayList representing Geo Points.
+	 * Starts the timer for a new route and change the button Start to
+	 * StopAndSave
 	 */
-	public ArrayList<GeoPoint> getRoute()
+	@Override
+	public void onStartRouteClick()
 	{
-		return geoPointList;
+		wakeLock = Utils.acquireWakeLock(this);
+		route.setStarted(true);
+		startButton.setVisibility(View.GONE);
+		stopAndSaveButton.setVisibility(View.VISIBLE);
+		Utils.startTimer(this);
 	}
 
 	/**
-	 * Button listener for this activity. Will activate the desired outcome of
-	 * any of the three buttons. In the case of Start Run the button will
-	 * disappear and will be replaced by a "Stop Run"-button, start run till
-	 * also start the timer and the recording of the user's locations and start
-	 * drawing his or hers route on the map. If the user presses the Stop
-	 * Run-button the recording will stop and the user will be prompted to
-	 * either save or discard this run. This will also stop the timer. The add
-	 * checkpoint will place a checkpoint at the users current location similar
-	 * to the single tap implementation.
-	 * 
-	 * @param v
-	 *            the button being pressed.
+	 * Stops the route and timer and toggles the buttons. Also releases the wake
+	 * lock.
 	 */
 	@Override
-	public void onClick(View v)
+	public void onStopRouteClick()
 	{
-		switch (v.getId())
+		Utils.stopTimer();
+		route.setStarted(false);
+		startButton.setVisibility(View.VISIBLE);
+		stopAndSaveButton.setVisibility(View.GONE);
+		wakeLock = Utils.releaseWakeLock();
+
+		if (!route.isNewRoute())
 		{
-			case R.id.start_run_button:
-				started = true;
-				View v2 = findViewById(R.id.start_run_button);
-				v2.setVisibility(View.GONE);
-				View v3 = findViewById(R.id.stop_and_save_button);
-				v3.setVisibility(View.VISIBLE);
-
-				runnable = new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						timerTick();
-						handler.postDelayed(this, 1000);
-					}
-				};
-
-				handler = new Handler();
-				handler.postDelayed(runnable, 0);
-
-				break;
-			case R.id.stop_and_save_button:
-				handler.removeCallbacks(runnable);
-				routeResults = new Result(-1, -1, timePassed, (int) totalDistance, 0);
-				SaveRouteDialog saveRouteDialog = new SaveRouteDialog(this, this, routeResults);
-				saveRouteDialog.show();
-				break;
-			case R.id.add_checkpoint:
-				if (myLocationOverlay.isMyLocationEnabled())
-				{
-					GeoPoint geoPoint = myLocationOverlay.getMyLocation();
-					if (geoPoint != null)
-					{
-						createCheckPoint(geoPoint);
-					}
-				}
-				break;
+			mapLocationListener.stopService();
+			showSaveResultDialog(route.getId());
 		}
+		else
+		{
+			showSaveRouteDialog();
+		}
+	}
+
+	/**
+	 * Shows the create checkpoint dialog and passes in the current geo point if
+	 * my location is enabled.
+	 */
+	@Override
+	public void onAddCheckPointClick()
+	{
+		if (myLocationOverlay.isMyLocationEnabled())
+		{
+			GeoPoint geoPoint = myLocationOverlay.getMyLocation();
+			if (geoPoint != null)
+			{
+				createCheckPoint(geoPoint);
+			}
+		}
+	}
+
+	/**
+	 * Launches the activity which shows a list of results for this route.
+	 */
+	@Override
+	public void onShowResultClick()
+	{
+		Intent intent = new Intent(this, ListExistingResultsActivity.class);
+		intent.putExtra(Route.EXTRA_ID, route.getId());
+		startActivity(intent);
+	}
+
+	/**
+	 * Creates a new result and initates the saveRouteDialog
+	 */
+	private void showSaveRouteDialog()
+	{
+		saveRouteDialog = new SaveRouteDialog(this, this, route);
+		saveRouteDialog.show();
 	}
 
 	/**
 	 * Method that gets called to update the UI with how much time that has
 	 * passed and presents this to the user. Will use field timePassed to
-	 * determine time while not alteringthe timePassed variable if we want to
+	 * determine time while not altering the timePassed variable if we want to
 	 * pass that value to the database.
 	 */
-	private void timerTick()
+	@Override
+	public void onTimerTick()
 	{
-		int seconds = timePassed % 60;
-		int minutes = timePassed / 60;
-		TextView timeView = (TextView) findViewById(R.id.show_time_textview);
-		String result = String.format(" %02d:%02d", minutes, seconds);
-		timeView.setText(result);
-		timePassed++;
+		timeView.setText(route.getTimePassedAsString());
+		route.setTimePassed(route.getTimePassed() + 1);
 	}
 
 	/**
@@ -350,12 +486,22 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	@Override
 	public void onSaveCheckPoint(CheckPoint checkPoint)
 	{
-		checkPoint.setId(databaseHandler.saveCheckPoint(checkPoint));
-		for (Track track : selectedTracks)
+		long cid = checkPoint.getId();
+		if (cid > 0)
 		{
-			databaseHandler.saveTrack(checkPoint.getId(), track);
+			databaseHandler.updateCheckPoint(checkPoint);
+			databaseHandler.deleteTracksByCid(cid);
 		}
-		selectedTracks.clear();
+		else
+		{
+			cid = databaseHandler.saveCheckPoint(checkPoint);
+			checkPoint.setId(cid);
+		}
+		for (Track track : checkPoint.getTracks())
+		{
+			databaseHandler.saveTrack(cid, track);
+		}
+		checkPoint.getTracks().clear();
 	}
 
 	/**
@@ -396,6 +542,7 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 		currentCheckPoint = checkPoint;
 		checkPointOverlay.addCheckPoint(checkPoint);
 		showCheckPointDialog(checkPoint, EditCheckPointDialog.MODE_ADD);
+		mapView.postInvalidate();
 	}
 
 	/**
@@ -419,6 +566,13 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 				break;
 		}
 	}
+	
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) 
+    {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
 
 	/**
 	 * This method is called when an item in the action bar (options menu) has
@@ -433,6 +587,16 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 			case android.R.id.home:
 				NavUtils.navigateUpFromSameTask(this);
 				return true;
+			case R.id.settings:
+				if(route.isStarted())
+				{
+					AlertDialogFactory.newStopRouteAlertDialog(this).show();
+				}
+				else
+				{
+					launchActivity(SettingsActivity.class);
+				}
+				return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -444,36 +608,140 @@ public class RouteActivity extends MapActivity implements View.OnClickListener, 
 	 * that, the user is taken back to the main activity.
 	 */
 	@Override
-	public void onSaveRoute(String name, String description, boolean saveResult)
+	public void onSaveRoute(Route route, boolean saveResult)
 	{
-		Route route = new Route(name, description);
 		route.setId(databaseHandler.saveRoute(route));
 		if (saveResult)
 		{
-			routeResults.setRouteId(route.getId());
-			routeResults.setTimestamp((int) System.currentTimeMillis() / 1000);
-			databaseHandler.saveResult(routeResults);
+			Result result = new Result(route.getId(), (int) System.currentTimeMillis() / 1000, route.getTimePassed(), (int) route.getTotalDistance(), route.getCalories());
+			result.setRid(route.getId());
+			result.setTimestamp(System.currentTimeMillis() / 1000);
+			databaseHandler.saveResult(result);
 		}
-		databaseHandler.saveGeoPoints(route.getId(), geoPointList);
-		launchMainActivity();
+		databaseHandler.saveGeoPoints(route.getId(), route.getGeoPoints());
+		databaseHandler.updateCheckPointRid(route.getId());
+		launchActivity(MainActivity.class);
 	}
 
 	/**
-	 * Called from the save geoPointList dialog when a geoPointList has been
-	 * dismissed. This method just launches the main activity.
+	 * Called when a route is being dismissed. This method just launches the
+	 * main activity.
 	 */
 	@Override
 	public void onDismissRoute()
 	{
-		launchMainActivity();
+		databaseHandler.deleteRoute(route);
+		databaseHandler.deleteCheckPoints(route.getId());
+		launchActivity(MainActivity.class);
 	}
 
 	/**
-	 * Private helper method to launch the main activity.
+	 * Called by the system when the activity is shut down completely. Releases
+	 * the wake lock and stops listening for location updates.
 	 */
-	private void launchMainActivity()
+	@Override
+	public void onDestroy()
 	{
-		Intent intent = new Intent(this, MainActivity.class);
+		wakeLock = Utils.releaseWakeLock();
+		locationManager.removeUpdates(mapLocationListener);
+		super.onDestroy();
+	}
+
+	/**
+	 * Private helper method to launch the passed in activity.
+	 */
+	private void launchActivity(Class<? extends Activity> c)
+	{
+		Intent intent = new Intent(this, c);
 		this.startActivity(intent);
+	}
+
+	/**
+	 * Saves all important data to be able to handle configuration changes. if a
+	 * dialog is shown it saves some extra fields to be able to restore the
+	 * dialog with its properties and fields
+	 */
+	@Override
+	protected void onSaveInstanceState(final Bundle outState)
+	{
+		int activeDialog = getActiveDialog();
+		outState.putBoolean(BUNDLE_STARTED, route.isStarted());
+		outState.putFloat(BUNDLE_TOTAL_DISTANCE, route.getTotalDistance());
+		outState.putInt(BUNDLE_TIME_PASSED, route.getTimePassed());
+		outState.putInt(BUNDLE_ACTIVE_DIALOG, activeDialog);
+		outState.putParcelableArrayList(BUNDLE_GEOPOINT_LIST, route.getGeoPoints());
+		if (activeDialog == DIALOG_CHECKPOINT)
+		{
+			currentCheckPoint = checkPointDialog.getCheckPoint();
+			onSaveCheckPoint(currentCheckPoint);
+			outState.putLong(BUNDLE_CID, currentCheckPoint.getId());
+		}
+		else if (activeDialog == DIALOG_SAVE_ROUTE)
+		{
+			route = saveRouteDialog.getRoute();
+			outState.putBoolean(BUNDLE_SAVE_RESULT_CHECKED, saveRouteDialog.isSaveResultChecked());
+		}
+		if (route.getId() == -1)
+		{
+			route.setId(databaseHandler.saveRoute(route));
+		}
+		else
+		{
+			databaseHandler.updateRoute(route);
+		}
+		outState.putLong(BUNDLE_RID, route.getId());
+	}
+
+	/**
+	 * Private helper method to assist in calculating which, if any, dialog is
+	 * shown
+	 * 
+	 * @return the dialog shown constant
+	 */
+	private int getActiveDialog()
+	{
+		int activeDialog = DIALOG_NONE;
+		if (checkPointDialog != null && checkPointDialog.isShowing())
+		{
+			activeDialog = DIALOG_CHECKPOINT;
+		}
+		if (saveRouteDialog != null && saveRouteDialog.isShowing())
+		{
+			activeDialog = DIALOG_SAVE_ROUTE;
+		}
+		if (saveResultDialog != null && saveResultDialog.isShowing())
+		{
+			activeDialog = DIALOG_SAVE_RESULT;
+		}
+		return activeDialog;
+	}
+
+	/**
+	 * Callback method which starts the timer again after back button is pressed
+	 * when a dialog is shown
+	 */
+	@Override
+	public void onResumeTimer()
+	{
+		Utils.startTimer(this);
+	}
+
+	/**
+	 * Shows a alert dialog when back button is pressed to confirm that the user
+	 * wants to discard the route. This is implemented to prevent the user to
+	 * hit the back button by mistake and quit the route.
+	 */
+	@Override
+	public void onBackPressed()
+	{
+		if(route.isStarted())
+		{
+			AlertDialog alertDialog = AlertDialogFactory.newConfirmBackDialog(this);
+			alertDialog.show();
+		}
+		else
+		{
+			super.onBackPressed();
+		}
 	}
 }

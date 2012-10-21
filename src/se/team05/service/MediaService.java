@@ -13,7 +13,10 @@
 
     You should have received a copy of the GNU General Public License
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
+
+    (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
  */
+
 package se.team05.service;
 
 import java.io.IOException;
@@ -21,6 +24,7 @@ import java.util.ArrayList;
 
 import se.team05.R;
 import se.team05.activity.ListExistingRoutesActivity;
+import se.team05.content.Track;
 import se.team05.listener.MediaServicePhoneStateListener;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -51,13 +55,9 @@ import android.telephony.TelephonyManager;
  * It requires a playlist to be passed in as a string array list extra with
  * information about where the media it is supposed to play is located.
  * 
- * NOTE: THIS NEEDS TO CHANGE INTO A LIST OF TRACKS INSTEAD!
- * 
  * @author Daniel Kvist
  * 
  */
-// TODO Handle Track's instead of Strings
-// TODO Handle whole playlist, not just one song
 public class MediaService extends Service implements OnCompletionListener, OnPreparedListener, OnErrorListener,
 		MediaServicePhoneStateListener.Callbacks
 {
@@ -65,9 +65,11 @@ public class MediaService extends Service implements OnCompletionListener, OnPre
 	public static final String DATA_PLAYLIST = "se.team05.service.data.PLAYLIST";
 
 	private MediaPlayer mediaPlayer;
-	private ArrayList<String> playList;
+	private ArrayList<Track> playList;
 	private PhoneStateListener phoneStateListener;
 	private TelephonyManager telephonyManager;
+	private Track currentTrack;
+	private int currentTrackIndex;
 
 	private static final int NOTIFICATION_ID = 1;
 
@@ -91,34 +93,20 @@ public class MediaService extends Service implements OnCompletionListener, OnPre
 	{
 		telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 		phoneStateListener = new MediaServicePhoneStateListener(this);
+		currentTrackIndex = 0;
 
 		initNotification();
 
-		playList = intent.getStringArrayListExtra(DATA_PLAYLIST);
+		playList = intent.getParcelableArrayListExtra(DATA_PLAYLIST);
+		currentTrack = playList.get(currentTrackIndex);
 		if (intent.getAction().equals(ACTION_PLAY))
 		{
 			if (!mediaPlayer.isPlaying())
 			{
-				try
-				{
-					mediaPlayer.setDataSource(getApplicationContext(), Uri.parse(playList.get(0)));
-					mediaPlayer.setOnCompletionListener(this);
-					mediaPlayer.setOnErrorListener(this);
-					mediaPlayer.setOnPreparedListener(this);
-					mediaPlayer.prepareAsync();
-				}
-				catch (IllegalArgumentException e)
-				{
-					e.printStackTrace();
-				}
-				catch (IllegalStateException e)
-				{
-					e.printStackTrace();
-				}
-				catch (IOException e)
-				{
-					e.printStackTrace();
-				}
+				mediaPlayer.setOnCompletionListener(this);
+				mediaPlayer.setOnErrorListener(this);
+				mediaPlayer.setOnPreparedListener(this);
+				initTrack(currentTrack);
 			}
 		}
 		return START_STICKY;
@@ -128,8 +116,8 @@ public class MediaService extends Service implements OnCompletionListener, OnPre
 	 * Initiates a notification with the application launcher icon as a graphic
 	 * and custom messages for the ticker, title and text.
 	 * 
-	 * NOTE: USE TRACK INFORMATION HERE!
 	 */
+	// TODO USE TRACK INFORMATION HERE!
 	private void initNotification()
 	{
 		Context context = getApplicationContext();
@@ -231,18 +219,22 @@ public class MediaService extends Service implements OnCompletionListener, OnPre
 	public boolean onError(MediaPlayer mp, int what, int extra)
 	{
 		// TODO Handle error
-		// ... react appropriately ...
 		// The MediaPlayer has moved to the Error state, must be reset!
 		return false;
 	}
 
 	/**
-	 * The media has reached the end, stop the media.
+	 * The media has reached the end, stop the media, and play the next track in
+	 * the playlist if there is one.
 	 */
 	@Override
 	public void onCompletion(MediaPlayer mp)
 	{
 		stopMedia();
+		if (currentTrackIndex < playList.size())
+		{
+			initTrack(playList.get(currentTrackIndex));
+		}
 	}
 
 	/**
@@ -276,6 +268,35 @@ public class MediaService extends Service implements OnCompletionListener, OnPre
 		}
 
 		cancelNotification();
+	}
+
+	/**
+	 * Private helper method that plays the media from the given Track
+	 * 
+	 * @param track
+	 *            the track to play
+	 */
+	private void initTrack(Track track)
+	{
+		try
+		{
+			mediaPlayer.reset();
+			mediaPlayer.setDataSource(getApplicationContext(), Uri.parse(track.getData()));
+			mediaPlayer.prepareAsync();
+		}
+		catch (IllegalArgumentException e)
+		{
+			e.printStackTrace();
+		}
+		catch (IllegalStateException e)
+		{
+			e.printStackTrace();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		currentTrackIndex++;
 	}
 
 }
