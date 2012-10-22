@@ -41,7 +41,6 @@ public class Settings
 
 	private static SharedPreferences sharedPreferences;
 	private SharedPreferences.Editor editor;
-	private Context context;
 	
 	/**
 	 * Constructor for this class. Sets the file name for the shared preferences to be accessed and
@@ -50,9 +49,7 @@ public class Settings
 	 * @param context the activity calling this class.
 	 */
 	public Settings(Context context)
-	{
-		this.context = context;
-		
+	{	
 		sharedPreferences = context.getSharedPreferences(PREFERENCES_NAME, 0);
 	}
 
