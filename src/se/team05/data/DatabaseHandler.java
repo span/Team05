@@ -471,19 +471,6 @@ public class DatabaseHandler
 		dbCheckPointAdapter.close();
 	}
 
-	/**
-	 * Updates the checkpoints table in the database where the current route id
-	 * is -1. The passed in rid is used instead.
-	 * 
-	 * @param rid
-	 *            the route id to connect the checkpoints with.
-	 */
-	public void updateCheckPointRid(long rid)
-	{
-		dbCheckPointAdapter.open();
-		dbCheckPointAdapter.updateCheckPointRid(rid);
-		dbCheckPointAdapter.close();
-	}
 
 	/**
 	 * Deletes all checkpoints in the database for a route with rid
