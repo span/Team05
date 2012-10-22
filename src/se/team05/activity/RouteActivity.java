@@ -365,7 +365,7 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 			route.setTotalDistance(totalDistance);
 			speedView.setText(userSpeed);
 			distanceView.setText(userDistance + getString(R.string.km));
-			calorieView.setText(String.valueOf(route.getCalories()));
+			calorieView.setText(String.valueOf(route.getCalories()) + getString(R.string.kcal));
 			mapView.postInvalidate();
 		}
 	}
