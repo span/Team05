@@ -124,4 +124,5 @@
     <string name="kcal">" Kcal"</string>
     <string name="demo">Demo</string>
     <string name="your_route_is_being_recorded">Your route is being recorded...</string>
+    <string name="click_here_to_enter_application_and_finish_it">Click here to enter application and finish it.</string>
 </resources>
