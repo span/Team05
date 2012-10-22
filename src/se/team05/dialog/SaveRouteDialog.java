@@ -209,11 +209,12 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 		}
 	}
 
-	@Override
-	public void onBackPressed()
-	{
-		callbacks.onResumeTimer();
-	}
+//	@Override
+//	public void onBackPressed()
+//	{
+//		dismiss();
+//		callbacks.onResumeTimer();
+//	}
 
 	/**
 	 * 
