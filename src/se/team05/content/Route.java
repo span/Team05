@@ -103,66 +103,135 @@ public class Route
 		this.calorieCounter = new CalorieCounter(context);
 	}
 
+	/**
+	 * Get string representation of the route. This is equal to the name
+	 * of the route and is NOT unique.
+	 * 
+	 * @return string representation of route
+	 */
 	public String toString()
 	{
 		return name;
 	}
 
+	/**
+	 * A unique id of the route that is normally set when saving a new
+	 * route in a database or other datasource.
+	 * 
+	 * @return id of the route
+	 */
 	public long getId()
 	{
 		return _id;
 	}
 
+	/**
+	 * The id should be unique and is normally received from the db when
+	 * saving a new route. Be careful when setting this as the id is
+	 * unique.
+	 * @param id must be unique
+	 */
 	public void setId(long id)
 	{
 		this._id = id;
 	}
 
+	/**
+	 * Name of the route is a human redable string representation of
+	 * the route that is NOT unique.
+	 * 
+	 * @return non-unique string representation
+	 */
 	public String getName()
 	{
 		return name;
 	}
 
+	/**
+	 * Name of the route should be a human readable representation
+	 * of the route and does not have to be unique.
+	 * 
+	 * @param non-unique string representation
+	 */
 	public void setName(String name)
 	{
 		this.name = name;
 	}
 
+	/**
+	 * A description of the route is optional and may be empty.
+	 * 
+	 * @return a longer description
+	 */
 	public String getDescription()
 	{
 		return description;
 	}
 
+	/**
+	 * Set a descriptive string of the route.
+	 * 
+	 * @param description
+	 */
 	public void setDescription(String description)
 	{
 		this.description = description;
 	}
 
+	/**
+	 * Check what type of route this is.
+	 * 
+	 * @return integer representation of what type the route is
+	 */
 	public int getType()
 	{
 		return type;
 	}
 
+	/**
+	 * Set type of route.
+	 * 
+	 * @param integer representation of what type the route is
+	 */
 	public void setType(int type)
 	{
 		this.type = type;
 	}
 
+	/**
+	 * Check if timecoach is enabled.
+	 * 
+	 * @return true if timecoach is enabled
+	 */
 	public int isTimecoach()
 	{
 		return timecoach;
 	}
 
+	/**
+	 * Set whether timecoach should be enabled or not.
+	 * @param true to enable timecoach
+	 */
 	public void setTimecoach(int timecoach)
 	{
 		this.timecoach = timecoach;
 	}
 
+	/**
+	 * Check if lengthcoach is enabled.
+	 * 
+	 * @return true if lenthcoach is enabled
+	 */
 	public int isLengthcoach()
 	{
 		return lengthcoach;
 	}
 
+	/**
+	 * Set whether lengthcoach should be enabled or not.
+	 * 
+	 * @param true to enabled lengthcoach
+	 */
 	public void setLengthcoach(int lengthcoach)
 	{
 		this.lengthcoach = lengthcoach;
@@ -298,6 +367,11 @@ public class Route
 		return getId() == -1;
 	}
 
+	/**
+	 * Get the amount of calories burned
+	 * 
+	 * @return amount of calories burned
+	 */
 	public int getCalories()
 	{
 		return calories;
