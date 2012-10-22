@@ -165,6 +165,7 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 		{
 			onStartRouteClick();
 		}
+		mapView.getController().setZoom(17);
 		mapView.postInvalidate();
 	}
 
@@ -264,7 +265,12 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 		route.setStarted(savedInstanceState.getBoolean(BUNDLE_STARTED));
 
 		ArrayList<ParcelableGeoPoint> geoPoints = savedInstanceState.getParcelableArrayList(BUNDLE_GEOPOINT_LIST);
+		if(geoPoints==null)
+		{
+			geoPoints = new ArrayList<ParcelableGeoPoint>();
+		}
 		route.setGeoPoints(geoPoints);
+		
 		RouteOverlay routeOverlay3 = new RouteOverlay(route.getGeoPoints(), USER_ROUTE_COLOR);
 		overlays.add(routeOverlay3);
 		
@@ -361,6 +367,7 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 	{
 		if (route.isStarted())
 		{
+			mapView.getController().animateTo(geoPoint);
 			route.getGeoPoints().add(geoPoint);
 			route.setTotalDistance(totalDistance);
 			speedView.setText(userSpeed);
@@ -377,6 +384,7 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 	{
 		super.onResume();
 		myLocationOverlay.enableMyLocation();
+		
 	}
 
 	/**
