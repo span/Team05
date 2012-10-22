@@ -15,13 +15,15 @@
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
 
     (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
-*/
+ */
 package se.team05.activity;
 
 import se.team05.R;
 import se.team05.listener.MainActivityButtonListener;
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ImageView;
 
 /**
@@ -38,7 +40,7 @@ public class MainActivity extends Activity
 	ImageView newRouteButton;
 	ImageView useExistingButton;
 	ImageView settingsButton;
-	
+
 	/**
 	 * The onCreate method of the class starts off by setting the XML file which
 	 * has the View content. It then picks up references to the buttons that are
@@ -52,7 +54,7 @@ public class MainActivity extends Activity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
+
 		MainActivityButtonListener listener = new MainActivityButtonListener(this);
 		newRouteButton = (ImageView) findViewById(R.id.image_new_route);
 		newRouteButton.setOnClickListener(listener);
@@ -61,18 +63,38 @@ public class MainActivity extends Activity
 		settingsButton = (ImageView) findViewById(R.id.image_settings);
 		settingsButton.setOnClickListener(listener);
 	}
-	
+
 	/**
-	 * For when method resumes and we want the buttons to return to their original colours.
+	 * For when method resumes and we want the buttons to return to their
+	 * original colours.
 	 */
 	@Override
 	public void onResume()
 	{
 		super.onResume();
-		
+
 		newRouteButton.setColorFilter(0x0000000);
-		useExistingButton.setColorFilter(0x0000000); 
-		settingsButton.setColorFilter(0x0000000); 
-		
+		useExistingButton.setColorFilter(0x0000000);
+		settingsButton.setColorFilter(0x0000000);
+
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu)
+	{
+		getMenuInflater().inflate(R.menu.demo, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		switch (item.getItemId())
+		{
+			case R.id.demo:
+				break;
+
+		}
+		return super.onOptionsItemSelected(item);
 	}
 }
