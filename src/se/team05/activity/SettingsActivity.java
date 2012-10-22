@@ -4,7 +4,6 @@ import se.team05.R;
 import se.team05.content.Settings;
 import se.team05.dialog.AlertDialogFactory;
 import android.app.Activity;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
@@ -24,16 +23,19 @@ import android.widget.Toast;
  */
 public class SettingsActivity extends Activity implements View.OnClickListener
 {
-	EditText nameEdit;
-	EditText weightEdit;
+	private EditText nameEdit;
+	private EditText weightEdit;
 
 	private Button saveSettings;
 	private RadioButton radioWalking;
 	private RadioButton radioRunning;
 
-	static SharedPreferences sharedPreferences;
 	private Settings settings;
 
+	/**
+	 * Will fetch the saved values from settings.java if no saved settings have been
+	 * done, will instead fetch default values.
+	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
@@ -51,7 +53,8 @@ public class SettingsActivity extends Activity implements View.OnClickListener
 	}
 
 	/**
-	 * Sets up the button and radio listeners
+	 * Sets up the button and radio listeners and also fills in the edittext
+	 * boxes and radio buttons with the values found in settings class
 	 */
 	private void setUpButtons()
 	{
@@ -67,12 +70,13 @@ public class SettingsActivity extends Activity implements View.OnClickListener
 
 		saveSettings = (Button) findViewById(R.id.save_settings);
 		saveSettings.setOnClickListener(this);
-
 	}
 
 	/**
 	 * Listener for the save settings button, it will check that the values are ok
-	 * and if not will make an alertdialog telling the user this
+	 * and if not will make an alertdialog telling the user this. Will not save anything
+	 * until the user has made sure that the values are correct. Will fire a toast upon
+	 * saving notifying the user of this
 	 */
 	@Override
 	public void onClick(View arg0)
@@ -85,9 +89,8 @@ public class SettingsActivity extends Activity implements View.OnClickListener
 			settings.setUserWeight(testWeight());
 			settings.setPrefActivityRunning(radioRunning.isChecked());
 
-			settings.commitChanges();
-
 			CharSequence text = getString(R.string.settings_saved);
+			
 			int duration = Toast.LENGTH_SHORT;
 
 			Toast toast = Toast.makeText(this, text, duration);
@@ -104,19 +107,19 @@ public class SettingsActivity extends Activity implements View.OnClickListener
 	}
 
 	/**
-	 * Listener for the Radio buttons, not used at the moment
+	 * Listener for the Radio buttons not implemented fully as the calculations are done in the
+	 * onClick method but this method is still needed for when user presses the radio buttons
 	 * 
 	 * @param view
 	 */
 	public void onRadioButtonClicked(View view)
 	{
-
 	}
 
 	/**
 	 * This tests that the user has not input any illegal values, as of now it checks
 	 * if user has not chosen a value less than zero or any letters for the weight which
-	 * should be an integer
+	 * should be a non negative integer
 	 * 
 	 * @return -1 if test failed
 	 */
@@ -135,7 +138,7 @@ public class SettingsActivity extends Activity implements View.OnClickListener
 	}
 
 	/**
-	 * The UP/HOME Button
+	 * The UP/HOME Button which will direct the user to the mainactivity, will not save any input done
 	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)

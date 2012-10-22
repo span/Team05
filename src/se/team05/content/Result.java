@@ -94,37 +94,58 @@ public class Result implements Comparable<Result>{
 		this(-1, rid, timestamp, time, distance, calories);
 	}
 
+	/**
+	 * Get _id of the Result class.
+	 * 
+	 * @return _id
+	 */
 	public long getId() {
 		return _id;
 	}
 
+	/**
+	 * Set _id of the Result class.
+	 * 
+	 * @param id
+	 */
 	public void setId(long id) {
 		this._id = id;
 	}
 	
+	/**
+	 * Get the id of the Route that the result belongs to
+	 * 
+	 * @return rid is the id of the Route that the result belongs to
+	 */
 	public long getRid() {
 		return rid;
 	}
 
+	/**
+	 * Set the id of the Route that the result belongs to
+	 * 
+	 * @param rid is the id of the Route that the result belongs to
+	 */
 	public void setRid(long rid) {
 		this.rid = rid;
 	}
 
 	/**
-	 * Get timestamp.
+	 * Get timestamp that tells when the result was created.
 	 * 
-	 * @return time and date when the result was created 
-	 * 			in the format of seconds passed since year 1970
+	 * @return timestamp is the time when the result was created 
+	 * 	in the format of seconds passed since January 1 year 1970.
 	 */
 	public long getTimestamp() {
 		return timestamp;
 	}
+	
 	/**
-	 * Set timestamp.
+	 * Set timestamp that tells when the result was created.
 	 * 
 	 * @param timestamp
-	 * 		time and date when the result is created
-	 * 		in the format of seconds passed since year 1970
+	 * 		time when the result is created
+	 * 		in the format of seconds passed since January 1 year 1970.
 	 */
 	public void setTimestamp(long timestamp) {
 		this.timestamp = timestamp;
@@ -173,7 +194,9 @@ public class Result implements Comparable<Result>{
 	}
 
 	/**
-	 * @return the distance
+	 * Get the distance (meters) registered during route.
+	 * 
+	 * @return the distance registered during route.
 	 */
 	public int getDistance()
 	{
@@ -181,13 +204,21 @@ public class Result implements Comparable<Result>{
 	}
 
 	/**
-	 * @param distance the distance to set
+	 * Set the distance (meters) registered during route.
+	 * 
+	 * @param distance 
+	 * 			the distance registered during route.
 	 */
 	public void setDistance(int distance)
 	{
 		this.distance = distance;
 	}
 
+	/**
+	 * This method is used to compare one result with another to
+	 * decide which one is the grater. The result with the greater
+	 * time used to complete the route is considered to be the greater result.
+	 */
 	@Override
 	public int compareTo(Result anotherResult)
 	{

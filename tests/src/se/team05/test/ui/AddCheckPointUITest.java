@@ -85,15 +85,15 @@ public class AddCheckPointUITest extends ActivityInstrumentationTestCase2<MainAc
 	 */
 	public void testShowAndCancelDialog()
 	{
-		solo.clickOnScreen(400, 600);
+		solo.clickOnScreen(100, 200);
 		assertTrue("Could not find the dialog!", solo.searchText("Edit CheckPoint"));
 		String cancel = routeActivity.getString(se.team05.R.string.cancel);
 	
 		solo.clickOnButton(cancel);
 		assertFalse("Could find the dialog!", solo.searchText("Edit CheckPoint"));
-		solo.clickOnScreen(400, 600);
+		solo.clickOnScreen(100, 200);
 		solo.goBack();
-		solo.clickOnScreen(400, 600);
+		solo.clickOnScreen(100, 200);
 		solo.clickOnButton(cancel);
 	}
 
@@ -111,7 +111,7 @@ public class AddCheckPointUITest extends ActivityInstrumentationTestCase2<MainAc
 	 */
 	public void testSaveAndDeleteCheckPoint() throws InterruptedException
 	{
-		solo.clickOnScreen(400, 600);
+		solo.clickOnScreen(100, 200);
 		assertTrue("Could not find the dialog!", solo.searchText("Edit CheckPoint"));
 		EditText editText = solo.getEditText("CheckPoint");
 		solo.clearEditText(editText);
@@ -138,7 +138,7 @@ public class AddCheckPointUITest extends ActivityInstrumentationTestCase2<MainAc
 		solo.clickOnButton(save);
 		assertFalse("Could find the dialog!", solo.searchText("Edit CheckPoint"));
 		
-		solo.clickOnScreen(400, 600);
+		solo.clickOnScreen(100, 200);
 		solo.setActivityOrientation(Solo.LANDSCAPE);
 		Thread.sleep(1500);
 		assertTrue("Wrong Name!", solo.searchEditText("Slottskogen"));
@@ -150,7 +150,7 @@ public class AddCheckPointUITest extends ActivityInstrumentationTestCase2<MainAc
 		
 		String delete = routeActivity.getString(se.team05.R.string.delete);
 		solo.clickOnButton(delete);
-		solo.clickOnScreen(400, 600);
+		solo.clickOnScreen(100, 200);
 
 		assertFalse("Wrong Name!", solo.searchEditText("Slottskogen"));
 		assertTrue("SeekBar not changed!", solo.searchText("30"));
