@@ -29,8 +29,6 @@ import se.team05.overlay.CheckPoint;
 import android.content.Context;
 import android.database.Cursor;
 
-import com.google.android.maps.GeoPoint;
-
 /**
  * This class handles the communication between the database, its adapters and
  * the rest of the application. It keeps an instance of each table adapter that
@@ -530,7 +528,7 @@ public class DatabaseHandler
 	 */
 	private CheckPoint createCheckPointFromCursor(Cursor cursor)
 	{
-		GeoPoint geoPoint = new GeoPoint(cursor.getInt(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_LATITUDE)),
+		ParcelableGeoPoint geoPoint = new ParcelableGeoPoint(cursor.getInt(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_LATITUDE)),
 				cursor.getInt(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_LONGITUDE)));
 		CheckPoint checkPoint = new CheckPoint(geoPoint);
 		checkPoint.setRadius(cursor.getInt(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_RADIUS)));

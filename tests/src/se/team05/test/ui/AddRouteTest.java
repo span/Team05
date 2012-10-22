@@ -121,7 +121,6 @@ public class AddRouteTest extends ActivityInstrumentationTestCase2<MainActivity>
 		solo.goBack();
 		solo.clickOnText("No");
 		solo.clickOnView(solo.getCurrentActivity().findViewById(R.id.stop_button));
-		solo.goBack();
 		solo.clickOnText("Discard");
 		solo.clickOnText("Yes");
 		solo.assertCurrentActivity("Main activity expected", MainActivity.class);
