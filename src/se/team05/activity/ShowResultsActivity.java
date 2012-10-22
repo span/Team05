@@ -33,8 +33,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 /**
- * An activity that will present the user with the option to view a result of an old route.
- * Gets results from database and present them.
+ * An activity that will present a result of an old route. Gets results
+ * from database and present them. The activity makes it possible to delete
+ * the results by pressing the Delete button, which activates the external
+ * listener ShowResultActivityButtonListener.
  * 
  * @author Gustaf Werlinder, Henrik Hugo, Markus Schutser, Daniel Kvist
  *
