@@ -19,7 +19,6 @@
 -->
 <resources>
     <string name="app_name">Personal Trainer</string>
-    
     <string name="title_activity_main">Personal Trainer</string>
     <string name="new_route">New route</string>
     <string name="use_route">Use route</string>
@@ -122,4 +121,8 @@
     <string name="you_must_stop_your_route_before_you_can_enter_the_settings">You must stop your route before you can enter the settings.</string>
     <string name="radius">Radius</string>
     <string name="audio">Audio</string>
+    <string name="kcal">" Kcal"</string>
+    <string name="demo">Demo</string>
+    <string name="your_route_is_being_recorded">Your route is being recorded...</string>
+    <string name="click_here_to_enter_application_and_finish_it">Click here to enter application and finish it.</string>
 </resources>

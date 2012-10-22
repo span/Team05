@@ -50,6 +50,9 @@ import android.widget.ListView;
  */
 public class ListExistingResultsActivity extends ListActivity
 {
+	/**
+	 * Init the layout and set content view to correct layout file.
+	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
@@ -71,6 +74,12 @@ public class ListExistingResultsActivity extends ListActivity
 		context.startActivity(intent);
 	}
 	
+	/**
+	 * Extracts route id from intent passed in to the activity and gets
+	 * all results connected to that route. Then displays them in a list
+	 * view through a ListResultsAdapter. Finally displays a chart with all
+	 * the results.
+	 */
 	@Override
 	public void onResume()
 	{

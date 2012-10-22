@@ -99,6 +99,8 @@ public class MediaService extends Service implements OnCompletionListener, OnPre
 
 		playList = intent.getParcelableArrayListExtra(DATA_PLAYLIST);
 		currentTrack = playList.get(currentTrackIndex);
+		initNotification();
+		
 		if (intent.getAction().equals(ACTION_PLAY))
 		{
 			if (!mediaPlayer.isPlaying())
@@ -117,25 +119,23 @@ public class MediaService extends Service implements OnCompletionListener, OnPre
 	 * and custom messages for the ticker, title and text.
 	 * 
 	 */
-	// TODO USE TRACK INFORMATION HERE!
 	private void initNotification()
 	{
 		Context context = getApplicationContext();
 		Intent notificationIntent = new Intent(context, ListExistingRoutesActivity.class);
 		PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-		NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+		NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-		Resources res = context.getResources();
+		Resources resources = context.getResources();
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 
 		builder.setContentIntent(contentIntent).setSmallIcon(R.drawable.ic_launcher)
-				.setLargeIcon(BitmapFactory.decodeResource(res, R.drawable.ic_launcher)).setTicker("My ticker string")
-				.setWhen(System.currentTimeMillis()).setOngoing(true).setContentTitle("My title").setContentText("My content text");
-		Notification n = builder.getNotification();
-
-		nm.notify(NOTIFICATION_ID, n);
-
+				.setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.ic_launcher)).setTicker(getString(R.string.your_route_is_being_recorded))
+				.setWhen(System.currentTimeMillis()).setOngoing(true).setContentTitle(currentTrack.getArtist()).setContentText(currentTrack.getTitle());
+		Notification notification = builder.getNotification();
+		
+		notificationManager.notify(NOTIFICATION_ID, notification);
 	}
 
 	/**

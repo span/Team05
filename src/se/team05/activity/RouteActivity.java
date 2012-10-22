@@ -40,13 +40,19 @@ import se.team05.util.Utils;
 import se.team05.view.EditRouteMapView;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.BitmapFactory;
 import android.location.Criteria;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.PowerManager.WakeLock;
 import android.support.v4.app.NavUtils;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -95,6 +101,7 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 	private static final int DIALOG_SAVE_ROUTE = 0;
 	private static final int DIALOG_SAVE_RESULT = 1;
 	private static final int DIALOG_CHECKPOINT = 2;
+	private static final int NOTIFICATION_ID = 2;
 
 	private List<Overlay> overlays;
 	private Route route;
@@ -326,7 +333,7 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 			route.setTotalDistance(totalDistance, this);
 			speedView.setText(userSpeed);
 			distanceView.setText(userDistance + getString(R.string.km));
-			calorieView.setText(String.valueOf(route.getCalories()));
+			calorieView.setText(String.valueOf(route.getCalories()) + getString(R.string.kcal));
 			mapView.postInvalidate();
 		}
 	}
@@ -378,6 +385,7 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 	@Override
 	public void onStartRouteClick()
 	{
+		initNotification();
 		wakeLock = Utils.acquireWakeLock(this);
 		route.setStarted(true);
 		startButton.setVisibility(View.GONE);
@@ -407,6 +415,7 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 		{
 			showSaveRouteDialog();
 		}
+		cancelNotification();
 	}
 
 	/**
@@ -721,5 +730,38 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 		{
 			super.onBackPressed();
 		}
+	}
+	
+	/**
+	 * Initiates a notification with the application launcher icon as a graphic
+	 * and custom messages for the ticker, title and text.
+	 * 
+	 */
+	private void initNotification()
+	{
+		Context context = getApplicationContext();
+		Intent notificationIntent = new Intent(context, ListExistingRoutesActivity.class);
+		PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+		NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+		Resources resources = context.getResources();
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+
+		builder.setContentIntent(contentIntent).setSmallIcon(R.drawable.ic_launcher)
+				.setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.ic_launcher)).setTicker(getString(R.string.your_route_is_being_recorded))
+				.setWhen(System.currentTimeMillis()).setOngoing(true).setContentTitle(getString(R.string.your_route_is_being_recorded)).setContentText(getString(R.string.click_here_to_enter_application_and_finish_it));
+		Notification notification = builder.getNotification();
+		
+		notificationManager.notify(NOTIFICATION_ID, notification);
+	}
+
+	/**
+	 * Cancels the notification and removes it from the notification area.
+	 */
+	private void cancelNotification()
+	{
+		NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		notificationManager.cancel(NOTIFICATION_ID);
 	}
 }

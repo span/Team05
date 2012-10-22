@@ -1,4 +1,4 @@
-Team05
+﻿Team05
 ======
 
 Team05 repos
@@ -11,6 +11,24 @@ Team05 members: span, snadde, guswer, demonicblue, elefantbilen
 ==================================== ::: ===============================
                                    RELEASES
 ==================================== ::: ===============================
+
+
+#######################################################
+v.0.4.1
+#######################################################
+
+# New features
+User can set a couple of settings in a separate menu
+A simple caloriecounter has been implemented
+List of results saved for a route
+A graph over results implemented in old results list
+
+#Known bugs and limitations
+Map is not zoomed in on user
+Stop route does not reset run
+Some problems with the backbutton
+Graphics for navigation are not properly tested and optimized
+
 
 #######################################################
 v.0.3.1
@@ -36,6 +54,11 @@ When no routes have been recorded, an empty list is shown
 
 ==================================== ::: ===============================
 
+HANDIN 6
+Filerna ligger i handin6final mappen
+
+HANDIN 5
+Filerna ligger i handin5 mappen
 
 HANDIN 4
 Filerna ligger i handin4 mappen
