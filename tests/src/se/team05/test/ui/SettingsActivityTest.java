@@ -29,7 +29,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-
 import com.jayway.android.robotium.solo.Solo;
 
 
@@ -168,8 +167,9 @@ public class SettingsActivityTest extends ActivityInstrumentationTestCase2<MainA
 	 * This test makes sure that the user's settings get transferred to the settings.java model when saving
 	 * and that it retains the data when changing activity and that the settingsactivity presents the 
 	 * saved data correctly to represent the users saved settings.
+	 * @throws InterruptedException 
 	 */
-	public void testSettingsActivitySendDataToSettings()
+	public void testSettingsActivitySendDataToSettings() throws InterruptedException
 	{
 		settingsImage = (ImageView) solo.getView(R.id.image_settings);
 		solo.clickOnView(settingsImage);
@@ -197,9 +197,17 @@ public class SettingsActivityTest extends ActivityInstrumentationTestCase2<MainA
 		solo.typeText(0, name);
 
 		solo.typeText(1, Integer.toString(weight));
-		solo.clickOnRadioButton(RUNNING_INT_REPRESENTATION);
 		Button saveButton = (Button) solo.getView(R.id.save_settings);	
 		solo.clickOnView(saveButton);
+		
+		solo.setActivityOrientation(Solo.LANDSCAPE);
+		Thread.sleep(1500);
+		assertEquals(name, solo.getEditText(0).getText().toString());
+		assertEquals(Integer.toString(weight), solo.getEditText(1).getText().toString());
+		solo.setActivityOrientation(Solo.PORTRAIT);
+		Thread.sleep(1500);
+		assertEquals(name, solo.getEditText(0).getText().toString());
+		assertEquals(Integer.toString(weight), solo.getEditText(1).getText().toString());
 		
 		solo.clickOnActionBarHomeButton();		
 		solo.assertCurrentActivity("Expected MainActivity", MainActivity.class);
