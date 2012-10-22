@@ -97,11 +97,13 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 	private static final String TAG = "Personal trainer";
 	private static final String BUNDLE_ACTIVE_DIALOG = "activeDialog";
 	private static final String BUNDLE_SAVE_RESULT_CHECKED = "isSaveResultChecked";
+	private static final String BUNDLE_STARTED = "started";
 	private static final int DIALOG_NONE = -1;
 	private static final int DIALOG_SAVE_ROUTE = 0;
 	private static final int DIALOG_SAVE_RESULT = 1;
 	private static final int DIALOG_CHECKPOINT = 2;
 	private static final int NOTIFICATION_ID = 2;
+	
 
 	private List<Overlay> overlays;
 	private Route route;
@@ -136,6 +138,7 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+		
 		setContentView(R.layout.activity_route);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		databaseHandler = new DatabaseHandler(this);
@@ -241,6 +244,14 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 			showResultButton.setOnClickListener(clickListener);
 			showResultButton.setVisibility(View.VISIBLE);
 			addCheckPointButton.setVisibility(View.GONE);
+		}
+		
+		boolean started = getIntent().getBooleanExtra(BUNDLE_STARTED, false);
+		if(started)
+		{
+			startButton.setVisibility(View.GONE);
+			stopAndSaveButton.setVisibility(View.VISIBLE);
+			route.setStarted(true);
 		}
 	}
 
@@ -583,7 +594,14 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 		switch (item.getItemId())
 		{
 			case android.R.id.home:
-				NavUtils.navigateUpFromSameTask(this);
+				if(route.isStarted())
+				{
+					AlertDialogFactory.newConfirmBackDialog(this).show();
+				}
+				else
+				{
+					NavUtils.navigateUpFromSameTask(this);
+				}
 				return true;
 			case R.id.settings:
 				if(route.isStarted())
@@ -741,6 +759,7 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 	{
 		Context context = getApplicationContext();
 		Intent notificationIntent = new Intent(context, RouteActivity.class);
+		notificationIntent.putExtra(BUNDLE_STARTED, true);
 		PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
 		NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -759,7 +778,7 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 	/**
 	 * Cancels the notification and removes it from the notification area.
 	 */
-	private void cancelNotification()
+	public void cancelNotification()
 	{
 		NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		notificationManager.cancel(NOTIFICATION_ID);
