@@ -740,7 +740,7 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 	private void initNotification()
 	{
 		Context context = getApplicationContext();
-		Intent notificationIntent = new Intent(context, ListExistingRoutesActivity.class);
+		Intent notificationIntent = new Intent(context, RouteActivity.class);
 		PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
 		NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
