@@ -161,4 +161,5 @@ public class DBCheckPointAdapter extends DBAdapter
 		values.put(COLUMN_RID, rid);
 		db.update(TABLE_CHECKPOINTS, values, COLUMN_RID + "=" + -1, null);
 	}
+
 }

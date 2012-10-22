@@ -20,7 +20,6 @@
 package se.team05.overlay;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 import se.team05.content.ParcelableGeoPoint;
 import se.team05.content.Track;
@@ -206,7 +205,8 @@ public class CheckPoint extends OverlayItem implements Parcelable
 		dest.writeInt(radius);
 		dest.writeLong(rid);
 		dest.writeLong(_id);
-		dest.writeParcelableArray((Track[]) tracks.toArray(), flags);
+		dest.writeList(tracks);
+//		dest.writeParcelableArray((Track[]) tracks.toArray(), flags);
 	}
 
 	/**
@@ -241,8 +241,9 @@ public class CheckPoint extends OverlayItem implements Parcelable
 								  in.readLong());
 		this.setId(in.readLong());
 		ArrayList<Track> tracks = new ArrayList<Track>();
-		Track[] arrayTracks = (Track[])in.readParcelableArray(Track.class.getClassLoader());
-		Collections.addAll(tracks, arrayTracks);
+//		Track[] arrayTracks = (Track[])in.readParcelableArray(Track.class.getClassLoader());
+//		Collections.addAll(tracks, arrayTracks);
+		in.readList(tracks, Track.class.getClassLoader());
 		this.addTracks(tracks);
 	}
 }

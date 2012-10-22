@@ -20,6 +20,7 @@ package se.team05.dialog;
 
 import se.team05.R;
 import se.team05.activity.MainActivity;
+import se.team05.activity.RouteActivity;
 import se.team05.content.Result;
 import se.team05.content.Route;
 import se.team05.data.DatabaseHandler;
@@ -95,7 +96,7 @@ public class AlertDialogFactory
 	 *            the context to operate in and finish if positive answer
 	 * @return a new alert dialog
 	 */
-	public static AlertDialog newConfirmBackDialog(final Context context)
+	public static AlertDialog newConfirmBackDialog(final RouteActivity context)
 	{
 		return new AlertDialog.Builder(context).setTitle(R.string.discard_route_)
 				.setMessage(R.string.do_you_really_want_to_discard_your_route_)

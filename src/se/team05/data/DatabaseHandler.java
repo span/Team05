@@ -34,7 +34,7 @@ import android.database.Cursor;
  * the rest of the application. It keeps an instance of each table adapter that
  * is used for quick and easy access to the database.
  * 
- * @author Daniel Kvist, Gustaf Werlinder, Markus Schutzer, Patrik Thitusson,
+ * @author Daniel Kvist, Gustaf Werlinder, Markus Schutzer, Patrik Thituson,
  *         Henrik Hugo
  * 
  */
@@ -556,4 +556,5 @@ public class DatabaseHandler
 				cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_LENGTHCOACH)),
 				context);
 	}
-}
+
+	}

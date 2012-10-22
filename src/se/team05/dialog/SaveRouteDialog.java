@@ -56,7 +56,6 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 
 		public void onDismissRoute();
 
-		public void onResumeTimer();
 	}
 
 	private Context context;
