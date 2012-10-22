@@ -18,10 +18,9 @@
     (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
 -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-
     <item
         android:id="@+id/demo"
-        android:showAsAction="collapseActionView"
+        android:visible="true"
+        android:showAsAction="always|withText|collapseActionView"
         android:title="@string/demo"/>
-
 </menu>
