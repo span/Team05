@@ -70,12 +70,6 @@ public class ShowResultsActivity extends Activity
 		
 		showResults();	
 	}
-
-	@Override
-	public void onDestroy()
-	{
-		super.onDestroy();
-	}	
 	
 	/** 
 	 * This method will calculate and present the values of the result. 
@@ -105,17 +99,17 @@ public class ShowResultsActivity extends Activity
 		//Present distance
 		TextView distanceView = (TextView) findViewById(R.id.show_distance_result_textview);
 		String formattedDistanceString = String.format(" %,d", distanceInMeters);
-		distanceView.setText(formattedDistanceString);
+		distanceView.setText(formattedDistanceString + getString(R.string.km));
 		
 		//Present speed
 		TextView speedView = (TextView) findViewById(R.id.show_speed_result_textview);		
 		String speedString = String.valueOf(speed);
-		speedView.setText(speedString);	
+		speedView.setText(speedString + getString(R.string.km) + "/" + getString(R.string.h));	
 		
 		//Present calories
 		TextView caloriesView = (TextView) findViewById(R.id.show_calories_result_textview);
 		String caloriesString = String.valueOf(calories);
-		caloriesView.setText(caloriesString);
+		caloriesView.setText(caloriesString + getString(R.string.kcal));
 	}
 		
 	/**
