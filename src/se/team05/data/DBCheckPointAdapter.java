@@ -15,7 +15,7 @@
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
 
     (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
-*/
+ */
 
 package se.team05.data;
 
@@ -78,6 +78,16 @@ public class DBCheckPointAdapter extends DBAdapter
 		values.put(COLUMN_LATITUDE, latitude);
 		values.put(COLUMN_LONGITUDE, longitude);
 		return db.insert(TABLE_CHECKPOINTS, null, values);
+	}
+
+	/**
+	 * Fetches all the checkpoints in no specific order
+	 * 
+	 * @return a cursor pointing to the checkpoints result
+	 */
+	public Cursor fetchAllCheckPoints()
+	{
+		return db.query(TABLE_CHECKPOINTS, null, null, null, null, null, null);
 	}
 
 	/**

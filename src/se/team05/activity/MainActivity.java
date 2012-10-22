@@ -18,12 +18,9 @@
  */
 package se.team05.activity;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-
 import se.team05.R;
-import se.team05.data.DBDemoAdapter;
 import se.team05.listener.MainActivityButtonListener;
+import se.team05.util.DemoDataLoader;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -96,22 +93,11 @@ public class MainActivity extends Activity
 		switch (item.getItemId())
 		{
 			case R.id.demo:
-				loadDemoData();
+				DemoDataLoader demoDataLoader = new DemoDataLoader(this);
+				demoDataLoader.execute();
 				break;
 
 		}
 		return super.onOptionsItemSelected(item);
-	}
-	
-	private void loadDemoData()
-	{
-		DBDemoAdapter dbDemoAdapter = new DBDemoAdapter(this);
-		
-		dbDemoAdapter.clearDB();
-		
-		dbDemoAdapter.loadSQLFile("checkpoint.sql");
-		dbDemoAdapter.loadSQLFile("geopoints.sql");
-		dbDemoAdapter.loadSQLFile("results.sql");
-		dbDemoAdapter.loadSQLFile("routes.sql");
 	}
 }
