@@ -2,7 +2,7 @@
   realizations="true" associations="true" dependencies="false" nesting-relationships="true">  
   <class id="1" corner="BOTTOM_RIGHT" language="java" name="se.team05.activity.MainActivity" project="Team05" 
     file="/Team05/src/se/team05/activity/MainActivity.java" binary="false">    
-    <position x="360" y="112" width="-1" height="-1"/>    
+    <position height="-1" width="-1" x="168" y="173"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
       <attributes public="false" package="false" protected="false" private="false"/>      
       <operations public="false" package="false" protected="false" private="false"/>    
@@ -10,7 +10,7 @@
   </class>  
   <class id="2" corner="BOTTOM_RIGHT" language="java" name="se.team05.activity.RouteActivity" project="Team05" 
     file="/Team05/src/se/team05/activity/RouteActivity.java" binary="false">    
-    <position x="360" y="271" width="-1" height="-1"/>    
+    <position height="-1" width="-1" x="386" y="271"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
       <attributes public="false" package="false" protected="false" private="false"/>      
       <operations public="false" package="false" protected="false" private="false"/>    
@@ -18,7 +18,7 @@
   </class>  
   <class id="3" corner="BOTTOM_RIGHT" language="java" name="se.team05.activity.ListExistingRoutesActivity" 
     project="Team05" file="/Team05/src/se/team05/activity/ListExistingRoutesActivity.java" binary="false">    
-    <position x="360" y="390" width="-1" height="-1"/>    
+    <position height="-1" width="-1" x="386" y="386"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
       <attributes public="false" package="false" protected="false" private="false"/>      
       <operations public="false" package="false" protected="false" private="false"/>    
@@ -26,7 +26,7 @@
   </class>  
   <class id="4" corner="BOTTOM_RIGHT" language="java" name="se.team05.listener.MainActivityButtonListener" 
     project="Team05" file="/Team05/src/se/team05/listener/MainActivityButtonListener.java" binary="false">    
-    <position x="150" y="271" width="-1" height="-1"/>    
+    <position height="-1" width="-1" x="166" y="271"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
       <attributes public="false" package="false" protected="false" private="false"/>      
       <operations public="false" package="false" protected="false" private="false"/>    
@@ -34,7 +34,7 @@
   </class>  
   <interface id="5" corner="BOTTOM_RIGHT" language="java" name="se.team05.dialog.EditCheckPointDialog.Callbacks" 
     project="Team05" file="/Team05/src/se/team05/dialog/EditCheckPointDialog.java" binary="false">    
-    <position x="588" y="390" width="-1" height="-1"/>    
+    <position height="-1" width="-1" x="619" y="387"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
       <attributes public="false" package="false" protected="false" private="false"/>      
       <operations public="false" package="false" protected="false" private="false"/>    
@@ -42,7 +42,7 @@
   </interface>  
   <class id="6" corner="BOTTOM_RIGHT" language="java" name="se.team05.dialog.EditCheckPointDialog" project="Team05" 
     file="/Team05/src/se/team05/dialog/EditCheckPointDialog.java" binary="false">    
-    <position x="591" y="271" width="-1" height="-1"/>    
+    <position height="-1" width="-1" x="622" y="268"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
       <attributes public="false" package="false" protected="false" private="false"/>      
       <operations public="false" package="false" protected="false" private="false"/>    
@@ -50,63 +50,79 @@
   </class>  
   <class id="7" corner="BOTTOM_RIGHT" language="java" name="se.team05.activity.MediaSelectorActivity" project="Team05" 
     file="/Team05/src/se/team05/activity/MediaSelectorActivity.java" binary="false">    
-    <position x="591" y="204" width="-1" height="-1"/>    
+    <position height="-1" width="-1" x="622" y="173"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
       <attributes public="false" package="false" protected="false" private="false"/>      
       <operations public="false" package="false" protected="false" private="false"/>    
     </display>  
   </class>  
-  <association id="8">    
+  <class id="8" corner="BOTTOM_RIGHT" language="java" name="se.team05.activity.SettingsActivity" project="Team05" 
+    file="/Team05/src/se/team05/activity/SettingsActivity.java" binary="false">    
+    <position height="-1" width="-1" x="386" y="173"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false"/>      
+      <operations public="false" package="false" protected="false" private="false"/>    
+    </display>  
+  </class>  
+  <dependency id="9">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="8"/>  
+  </dependency>  
+  <nesting id="10">    
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="5"/>  
+  </nesting>  
+  <realization id="11">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="5"/>  
+  </realization>  
+  <association id="12">    
     <end type="SOURCE" refId="6" navigable="false">      
-      <attribute id="9" name="callBack"/>      
-      <multiplicity id="10" minimum="0" maximum="1"/>    
+      <attribute id="13" name="callBack"/>      
+      <multiplicity id="14" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="5" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <dependency id="11">    
-    <end type="SOURCE" refId="2"/>    
-    <end type="TARGET" refId="1"/>  
-  </dependency>  
-  <dependency id="12">    
-    <end type="SOURCE" refId="3"/>    
-    <end type="TARGET" refId="2"/>  
-  </dependency>  
-  <dependency id="13">    
-    <end type="SOURCE" refId="4"/>    
-    <end type="TARGET" refId="3"/>  
-  </dependency>  
-  <dependency id="14">    
-    <end type="SOURCE" refId="2"/>    
-    <end type="TARGET" refId="7"/>  
-  </dependency>  
-  <dependency id="15">    
-    <end type="SOURCE" refId="4"/>    
-    <end type="TARGET" refId="2"/>  
-  </dependency>  
-  <dependency id="16">    
-    <end type="SOURCE" refId="6"/>    
-    <end type="TARGET" refId="7"/>  
-  </dependency>  
-  <realization id="17">    
-    <end type="SOURCE" refId="2"/>    
-    <end type="TARGET" refId="5"/>  
-  </realization>  
-  <nesting id="18">    
-    <end type="SOURCE" refId="6"/>    
-    <end type="TARGET" refId="5"/>  
-  </nesting>  
-  <association id="19">    
+  <association id="15">    
     <end type="SOURCE" refId="2" navigable="false">      
-      <attribute id="20" name="checkPointDialog"/>      
-      <multiplicity id="21" minimum="0" maximum="1"/>    
+      <attribute id="16" name="checkPointDialog"/>      
+      <multiplicity id="17" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="6" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <dependency id="22">    
+  <dependency id="18">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="7"/>  
+  </dependency>  
+  <dependency id="19">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="3"/>  
+  </dependency>  
+  <dependency id="20">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="1"/>  
+  </dependency>  
+  <dependency id="21">    
     <end type="SOURCE" refId="1"/>    
     <end type="TARGET" refId="4"/>  
+  </dependency>  
+  <dependency id="22">    
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="2"/>  
+  </dependency>  
+  <dependency id="23">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="2"/>  
+  </dependency>  
+  <dependency id="24">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="8"/>  
+  </dependency>  
+  <dependency id="25">    
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="7"/>  
   </dependency>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
     visibility="true">    
