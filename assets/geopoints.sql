@@ -1,13 +1,3 @@
-CREATE TABLE geopoints (
-  id mediumint(8) unsigned NOT NULL auto_increment, 
-  _id MEDIUMINT default NULL,
-  rid varchar(255) default NULL,
-  latitude varchar(255) default NULL,
-  longitude varchar(255) default NULL,
-  PRIMARY KEY (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=1; 
-
-
 INSERT INTO geopoints (_id,rid,latitude,longitude) VALUES ('1','8','2346230','8931685');
 INSERT INTO geopoints (_id,rid,latitude,longitude) VALUES ('2','3','3263594','2460067');
 INSERT INTO geopoints (_id,rid,latitude,longitude) VALUES ('3','6','5999523','6039298');

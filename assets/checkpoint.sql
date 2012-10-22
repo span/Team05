@@ -1,15 +1,3 @@
-CREATE TABLE checkpoints (
-  id mediumint(8) unsigned NOT NULL auto_increment, 
-  _id MEDIUMINT default NULL,
-  rid varchar(255) default NULL,
-  name TEXT default NULL,
-  radius varchar(255) default NULL,
-  latitude varchar(255) default NULL,
-  longitude varchar(255) default NULL,
-  PRIMARY KEY (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=1; 
-
-
 INSERT INTO checkpoints (_id,rid,name,radius,latitude,longitude) VALUES ('1','4','gravida. Aliquam','56','3147957','5611415');
 INSERT INTO checkpoints (_id,rid,name,radius,latitude,longitude) VALUES ('2','2','hymenaeos. Mauris','41','6412361','4553025');
 INSERT INTO checkpoints (_id,rid,name,radius,latitude,longitude) VALUES ('3','2','Donec consectetuer','31','2068182','3345762');
