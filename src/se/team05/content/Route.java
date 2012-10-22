@@ -24,12 +24,12 @@ import se.team05.overlay.CheckPoint;
 import android.content.Context;
 
 /**
- * An activity that will present the user with the option to choose and old
- * route. As of now it is just a button but a future release will include a
- * ListView representing the older routes saved in the database that the user
- * can choose from. TODO Change comments accordingly
+ * This class contains all data related to a single route plus all the geopoints
+ * and checkpoints associated with the route. It also provides several getters
+ * and setters for the various instance variables. It simply acts as a model in
+ * the mvc structure.
  * 
- * @author Henrik Hugo, Daniel Kvist
+ * @author Henrik Hugo, Daniel Kvist, Gustaf Werlinder
  * 
  */
 public class Route
@@ -57,6 +57,7 @@ public class Route
 	 * 
 	 * @param name
 	 * @param description
+	 * @param context
 	 */
 	public Route(String name, String description, Context context)
 	{

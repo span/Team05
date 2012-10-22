@@ -39,7 +39,7 @@
     <string name="title_activity_while_running_old">WhileRunningOldActivity</string>
     <string name="title_activity_activity_while_running_old">ActivityWhileRunningOld</string>
     <string name="button_start_run">Start Run</string>
-    <string name="button_addcheckpoint">Add CP</string>
+    <string name="button_addcheckpoint">Add Checkpoint</string>
     <string name="select_media">Select media</string>
     <string name="speed_of_run">"Your Speed: "</string>
     <string name="time_">"Time: "</string>
