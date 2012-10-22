@@ -32,23 +32,20 @@ import android.content.SharedPreferences;
  */
 public class Settings
 {
-	public static final String PREFERENCES_NAME = "se.team05.activity.PersonalTrainerSettings";
-	public static final String PREFERENCES_USER_WEIGHT = "userWeight";
-	public static final String PREFERENCES_USER_NAME = "userName";
-	public static final String PREFERENCES_USER_PREFERRED_TRAINING_RUNNING = "userPreferredTraining";
-	public static final int PREFERENCES_USER_DEFAULT_WEIGHT = 75;
-	public static final String PREFERENCES_USER_DEFAULT_NAME = "BATMAN";
+	private static final String PREFERENCES_NAME = "se.team05.activity.PersonalTrainerSettings";
+	private static final String PREFERENCES_USER_WEIGHT = "userWeight";
+	private static final String PREFERENCES_USER_NAME = "userName";
+	private static final String PREFERENCES_USER_PREFERRED_TRAINING_RUNNING = "userPreferredTraining";
+	private static final int PREFERENCES_USER_DEFAULT_WEIGHT = 75;
+	private static final String PREFERENCES_USER_DEFAULT_NAME = "BATMAN";
 
-	private String userName;
-	private int userWeight;
-	private boolean isPrefActivityRunning;
-
-	static SharedPreferences sharedPreferences;
-	SharedPreferences.Editor editor;
+	private static SharedPreferences sharedPreferences;
+	private SharedPreferences.Editor editor;
 	private Context context;
 	
 	/**
-	 * Constructor for this class. Sets the file name for the shared preferences to be accessed.
+	 * Constructor for this class. Sets the file name for the shared preferences to be accessed and
+	 * keeps it the same for accessing the same file the next time the application is started.
 	 * 
 	 * @param context the activity calling this class.
 	 */
@@ -57,19 +54,6 @@ public class Settings
 		this.context = context;
 		
 		sharedPreferences = context.getSharedPreferences(PREFERENCES_NAME, 0);
-		userName = sharedPreferences.getString(PREFERENCES_USER_NAME, PREFERENCES_USER_DEFAULT_NAME);
-		userWeight = sharedPreferences.getInt(PREFERENCES_USER_WEIGHT, PREFERENCES_USER_DEFAULT_WEIGHT);
-        isPrefActivityRunning = sharedPreferences.getBoolean(PREFERENCES_USER_PREFERRED_TRAINING_RUNNING, true);
-	    editor = sharedPreferences.edit();
-	}
-
-	/**
-	 * After writing to the shared preferences we must commit to save changes.
-	 * This is called after all writing has been done. Called by calling class.
-	 */
-	public void commitChanges()
-	{
-		editor.commit();
 	}
 
 	/**
@@ -79,27 +63,29 @@ public class Settings
 	 */
 	public String getUserName()
 	{
-		return userName;
+		return sharedPreferences.getString(PREFERENCES_USER_NAME, PREFERENCES_USER_DEFAULT_NAME);
 	}
 
 	/**
 	 * Get method for user's name
 	 * 
-	 * @param userName User's name in a string
+	 * @param userName user's name in string form
 	 */
 	public void setUserName(String userName)
 	{
+		editor = sharedPreferences.edit();
 		editor.putString(PREFERENCES_USER_NAME, userName);
+		editor.commit();
 	}
 
 	/**
 	 * Get method for user's weight
 	 * 
-	 * @return int representing kilograms
+	 * @return int representing weight in kilograms
 	 */
 	public int getUserWeight()
 	{
-		return userWeight;
+		return sharedPreferences.getInt(PREFERENCES_USER_WEIGHT, PREFERENCES_USER_DEFAULT_WEIGHT);
 	}
 
 	/**
@@ -109,7 +95,9 @@ public class Settings
 	 */
 	public void setUserWeight(int userWeight)
 	{
+		editor = sharedPreferences.edit();
 		editor.putInt(PREFERENCES_USER_WEIGHT, userWeight);
+		editor.commit();
 	}
 
 	/**
@@ -119,7 +107,7 @@ public class Settings
 	 */
 	public boolean isPrefActivityRunning()
 	{
-		return isPrefActivityRunning;
+		return sharedPreferences.getBoolean(PREFERENCES_USER_PREFERRED_TRAINING_RUNNING, true);
 	}
 
 	/**
@@ -129,7 +117,9 @@ public class Settings
 	 */
 	public void setPrefActivityRunning(boolean isActivityRunning)
 	{
+		editor = sharedPreferences.edit();
 		editor.putBoolean(PREFERENCES_USER_PREFERRED_TRAINING_RUNNING, isActivityRunning);
+		editor.commit();
 	}
 
 }
