@@ -1,0 +1,12 @@
+#
+# This list is used by git-shortlog to fix a few botched name translations
+# in the git archive, either because the author's full name was messed up
+# and/or not always written the same way, making contributions from the
+# same person appearing not to be so.
+#
+
+Daniel Kvist <daniel@danielkvist.net> <daniel@danielkvist.net>
+Gustaf Werlinder <gustaf_werlinder@hotmail.com> <gustaf_werlinder@hotmail.com> <gus.wer@hotmail.com> <guswer@guswer-E500-J-APE2V.(none)>
+Henrik Hugo <hhugo@chalmers.student.se> <mr.mamulatt@gmail.com>
+Markus Schutzer <markusschytzer@hotmail.com> <markusschytzer@hotmail.com>
+Patrik Thituson <thituson@gmail.com> <thituson@gmail.com>

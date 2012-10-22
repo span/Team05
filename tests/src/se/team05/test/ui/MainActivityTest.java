@@ -22,6 +22,7 @@ package se.team05.test.ui;
 import se.team05.activity.ListExistingRoutesActivity;
 import se.team05.activity.MainActivity;
 import se.team05.activity.RouteActivity;
+import se.team05.activity.SettingsActivity;
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.ImageView;
 
@@ -43,6 +44,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
 	
 	private ImageView newRouteButton;
 	private ImageView useExistingButton;
+	private ImageView settingsButton;
 	
 	/**
 	 * Making sure to call inherited parent constructor, nothing more.
@@ -74,6 +76,10 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
 		
 		useExistingButton = (ImageView) mActivity.findViewById(
 				se.team05.R.id.image_existing_route
+		);
+		
+		settingsButton = (ImageView) mActivity.findViewById(
+				se.team05.R.id.image_settings
 		);
 		
 	}
@@ -124,6 +130,19 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
 		solo.assertCurrentActivity("wrong class", ListExistingRoutesActivity.class);
 		solo.goBack();
 		solo.assertCurrentActivity("wrong class", MainActivity.class);
+	}
+	
+	/**
+	 * Makes sure that the button leading to settings behaves as expected
+	 * using Robotium.
+	 * @throws InterruptedException 
+	 */
+	public void testSettingsButton() throws InterruptedException
+	{
+		solo.clickOnView(settingsButton);
+		solo.assertCurrentActivity("wrong class", SettingsActivity.class);
+		solo.goBack();
+		solo.assertCurrentActivity("wrong class", MainActivity.class);	
 	}
 
 }

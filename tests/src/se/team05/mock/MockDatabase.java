@@ -31,8 +31,6 @@ import android.database.Cursor;
 import android.provider.MediaStore;
 import android.test.ActivityInstrumentationTestCase2;
 
-import com.google.android.maps.GeoPoint;
-
 /**
  * This class is used to construct objects in the database which can be used
  * from the different testing classes.
@@ -64,7 +62,7 @@ public class MockDatabase
 		geoPointList.add(gpB);
 		databaseHandler.saveGeoPoints(route.getId(), geoPointList);
 
-		CheckPoint checkPoint = new CheckPoint(new GeoPoint((int) (48.975 * 1E6), (int) (17.056 * 1E6)));
+		CheckPoint checkPoint = new CheckPoint(new ParcelableGeoPoint((int) (48.975 * 1E6), (int) (17.056 * 1E6)));
 		checkPoint.setRid(route.getId());
 		long cid = databaseHandler.saveCheckPoint(checkPoint);
 

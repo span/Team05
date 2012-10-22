@@ -19,6 +19,8 @@
 package se.team05.dialog;
 
 import se.team05.R;
+import se.team05.activity.MainActivity;
+import se.team05.activity.RouteActivity;
 import se.team05.content.Result;
 import se.team05.content.Route;
 import se.team05.data.DatabaseHandler;
@@ -26,6 +28,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.widget.Toast;
 
 /**
@@ -69,12 +72,16 @@ public class AlertDialogFactory
 						databaseHandler.saveResult(result);
 						Toast.makeText(context, context.getString(R.string.result_saved) + " " + route.getName(),
 								Toast.LENGTH_LONG).show();
+						Intent intent = new Intent(context, MainActivity.class);
+						context.startActivity(intent);
 					}
 				}).setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
 				{
 					public void onClick(DialogInterface dialog, int id)
 					{
 						dialog.cancel();
+						Intent intent = new Intent(context, MainActivity.class);
+						context.startActivity(intent);
 					}
 				}).create();
 	}
@@ -89,7 +96,7 @@ public class AlertDialogFactory
 	 *            the context to operate in and finish if positive answer
 	 * @return a new alert dialog
 	 */
-	public static AlertDialog newConfirmBackDialog(final Context context)
+	public static AlertDialog newConfirmBackDialog(final RouteActivity context)
 	{
 		return new AlertDialog.Builder(context).setTitle(R.string.discard_route_)
 				.setMessage(R.string.do_you_really_want_to_discard_your_route_)

@@ -40,13 +40,19 @@ import se.team05.util.Utils;
 import se.team05.view.EditRouteMapView;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.BitmapFactory;
 import android.location.Criteria;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.PowerManager.WakeLock;
 import android.support.v4.app.NavUtils;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -79,7 +85,7 @@ import com.google.android.maps.Overlay;
  * gradually get painted as the user moves along. When the user is done he or
  * she will instead be presented with the possibility to save the result
  * 
- * @author Markus Schutzer, Patrik Thitusson, Daniel Kvist
+ * @author Markus Schutzer, Patrik Thituson, Daniel Kvist
  */
 public class RouteActivity extends MapActivity implements EditCheckPointDialog.Callbacks, SaveRouteDialog.Callbacks,
 		CheckPointOverlay.Callbacks, MapOnGestureListener.Callbacks, MapLocationListener.Callbacks, Utils.Callbacks,
@@ -89,19 +95,13 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 	private static final int USER_ROUTE_COLOR = 78;
 	private static final int RECORDED_ROUTE_COLOR = 10;
 	private static final String TAG = "Personal trainer";
-	private static final String BUNDLE_RID = "rid";
-	private static final String BUNDLE_CID = "cid";
-	private static final String BUNDLE_STARTED = "started";
-	private static final String BUNDLE_TIME_PASSED = "timePassed";
-	private static final String BUNDLE_TOTAL_DISTANCE = "totalDistance";
-	private static final String BUNDLE_GEOPOINT_LIST = "geoPointList";
 	private static final String BUNDLE_ACTIVE_DIALOG = "activeDialog";
 	private static final String BUNDLE_SAVE_RESULT_CHECKED = "isSaveResultChecked";
-	private static final String BUNDLE_IS_NEW_ROUTE = "isNewRoute";
 	private static final int DIALOG_NONE = -1;
 	private static final int DIALOG_SAVE_ROUTE = 0;
 	private static final int DIALOG_SAVE_RESULT = 1;
 	private static final int DIALOG_CHECKPOINT = 2;
+	private static final int NOTIFICATION_ID = 2;
 
 	private List<Overlay> overlays;
 	private Route route;
@@ -139,34 +139,55 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 		setContentView(R.layout.activity_route);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		databaseHandler = new DatabaseHandler(this);
-		route = new Route(getString(R.string.route_name), getString(R.string.route_description), this);
+		route = new Route(getString(R.string.new_route), getString(R.string.route_description), this);
 		wakeLock = Utils.acquireWakeLock(this);
 		checkPointOverlay = new CheckPointOverlay(getResources().getDrawable(R.drawable.ic_launcher), this);
 		
 		setupMapView();
-
-		if (savedInstanceState != null)
+		route.setId(getIntent().getLongExtra(Route.EXTRA_ID, -1));
+		if(!route.isNewRoute())
 		{
-			restoreInstance(savedInstanceState);
+			route = databaseHandler.getRoute(route.getId());
+			route.setCheckPoints(databaseHandler.getCheckPoints(route.getId()));
 		}
-		else
-		{
-			route.setId(getIntent().getLongExtra(Route.EXTRA_ID, -1));
-			if(!route.isNewRoute())
-			{
-				route = databaseHandler.getRoute(route.getId());
-			}
-		}
-
-		setupRouteAndCheckPoints();
-		setupTextViewsAndButtons();
-		setupMyLocationAndListener();
-		if (route.isStarted())
-		{
-			onStartRouteClick();
-		}
-		mapView.postInvalidate();
+		setTitle(route.getName());
 	}
+	
+	/**
+	 * This method restores the instance after a configuration change has
+	 * happen. Important data is saved in the OnSavedInstanceState and contains
+	 * more data if a dialog is shown.
+	 * 
+	 * @param savedInstanceState
+	 */
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState)
+	{
+		super.onRestoreInstanceState(savedInstanceState);
+		route = savedInstanceState.getParcelable("route");
+		RouteOverlay routeOverlay3 = new RouteOverlay(route.getGeoPoints(), USER_ROUTE_COLOR);
+		overlays.add(routeOverlay3);
+		checkPointOverlay = new CheckPointOverlay(getResources().getDrawable(R.drawable.ic_launcher), this);
+		checkPointOverlay.setCheckPoints(route.getCheckPoints());
+
+		int activeDialog = savedInstanceState.getInt(BUNDLE_ACTIVE_DIALOG);
+		switch (activeDialog)
+		{
+			case DIALOG_CHECKPOINT:
+				currentCheckPoint = savedInstanceState.getParcelable("currentCheckPoint");
+				//checkPointOverlay.addCheckPoint(currentCheckPoint);
+				showCheckPointDialog(currentCheckPoint, EditCheckPointDialog.MODE_EDIT);
+				break;
+			case DIALOG_SAVE_ROUTE:
+				showSaveRouteDialog();
+				saveRouteDialog.setSaveResultChecked(savedInstanceState.getBoolean(BUNDLE_SAVE_RESULT_CHECKED));
+				break;
+			case DIALOG_SAVE_RESULT:
+				showSaveResultDialog(route.getId());
+				break;
+		}
+	}
+	
 
 	/**
 	 * Sets up the mapview and fetches the overlays that are used to draw on the
@@ -179,7 +200,6 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 		mapView.setOnGestureListener(new MapOnGestureListener(this));
 		overlays = mapView.getOverlays();
 	}
-
 	/**
 	 * Sets up the checkpoint overlay and draws the route that the user has
 	 * recorded.
@@ -191,7 +211,6 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 			RouteOverlay recordedRouteOverlay = new RouteOverlay(route.getGeoPoints(), RECORDED_ROUTE_COLOR);
 			overlays.add(recordedRouteOverlay);
 			checkPointOverlay.setCheckPoints(route.getCheckPoints());
-			setTitle(getString(R.string.saved_route_) + route.getName());
 		}
 		overlays.add(checkPointOverlay);
 	}
@@ -247,57 +266,6 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 		overlays.add(myLocationOverlay);
 		RouteOverlay userRouteOverlay = new RouteOverlay(route.getGeoPoints(), USER_ROUTE_COLOR);
 		overlays.add(userRouteOverlay);
-	}
-
-	/**
-	 * This method restores the instance after a configuration change has
-	 * happen. Important data is saved in the OnSavedInstanceState and contains
-	 * more data if a dialog is shown.
-	 * 
-	 * @param savedInstanceState
-	 */
-	private void restoreInstance(Bundle savedInstanceState)
-	{
-		route = databaseHandler.getRoute(savedInstanceState.getLong(BUNDLE_RID));
-		route.setTotalDistance(savedInstanceState.getFloat(BUNDLE_TOTAL_DISTANCE));
-		route.setTimePassed(savedInstanceState.getInt(BUNDLE_TIME_PASSED));
-		route.setStarted(savedInstanceState.getBoolean(BUNDLE_STARTED));
-
-		ArrayList<ParcelableGeoPoint> geoPoints = savedInstanceState.getParcelableArrayList(BUNDLE_GEOPOINT_LIST);
-		route.setGeoPoints(geoPoints);
-		RouteOverlay routeOverlay3 = new RouteOverlay(route.getGeoPoints(), USER_ROUTE_COLOR);
-		overlays.add(routeOverlay3);
-		
-		if (savedInstanceState.getBoolean(BUNDLE_IS_NEW_ROUTE))
-		{
-			databaseHandler.deleteRoute(route);
-			route.setId(-1);
-			ArrayList<CheckPoint> checkPointList = databaseHandler.getCheckPoints(route.getId());
-			if(checkPointList!=null && checkPointList.size() > 0)
-			{
-				checkPointOverlay = new CheckPointOverlay(getResources().getDrawable(R.drawable.ic_launcher), this);
-				route.setCheckPoints(checkPointList);
-				checkPointOverlay.setCheckPoints(checkPointList);
-			}
-		}
-
-		int activeDialog = savedInstanceState.getInt(BUNDLE_ACTIVE_DIALOG);
-		switch (activeDialog)
-		{
-			case DIALOG_CHECKPOINT:
-				long checkPointId = savedInstanceState.getLong(BUNDLE_CID);
-				currentCheckPoint = databaseHandler.getCheckPoint(checkPointId);
-				checkPointOverlay.addCheckPoint(currentCheckPoint);
-				showCheckPointDialog(currentCheckPoint, EditCheckPointDialog.MODE_EDIT);
-				break;
-			case DIALOG_SAVE_ROUTE:
-				showSaveRouteDialog();
-				saveRouteDialog.setSaveResultChecked(savedInstanceState.getBoolean(BUNDLE_SAVE_RESULT_CHECKED));
-				break;
-			case DIALOG_SAVE_RESULT:
-				showSaveResultDialog(route.getId());
-				break;
-		}
 	}
 
 	/**
@@ -362,10 +330,10 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 		if (route.isStarted())
 		{
 			route.getGeoPoints().add(geoPoint);
-			route.setTotalDistance(totalDistance);
+			route.setTotalDistance(totalDistance, this);
 			speedView.setText(userSpeed);
 			distanceView.setText(userDistance + getString(R.string.km));
-			calorieView.setText(String.valueOf(route.getCalories()));
+			calorieView.setText(String.valueOf(route.getCalories()) + getString(R.string.kcal));
 			mapView.postInvalidate();
 		}
 	}
@@ -376,7 +344,28 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 	protected void onResume()
 	{
 		super.onResume();
+		setupRouteAndCheckPoints();
+		setupTextViewsAndButtons();
+		setupMyLocationAndListener();
+		if (route.isStarted())
+		{
+			onStartRouteClick();
+		}
 		myLocationOverlay.enableMyLocation();
+		myLocationOverlay.runOnFirstFix(new Runnable()
+		{
+			
+			@Override
+			public void run()
+			{
+				mapView.getController().animateTo(myLocationOverlay.getMyLocation());
+				
+			}
+		});
+
+		mapView.getController().setZoom(17);
+		mapView.postInvalidate();
+		
 	}
 
 	/**
@@ -396,6 +385,7 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 	@Override
 	public void onStartRouteClick()
 	{
+		initNotification();
 		wakeLock = Utils.acquireWakeLock(this);
 		route.setStarted(true);
 		startButton.setVisibility(View.GONE);
@@ -425,6 +415,7 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 		{
 			showSaveRouteDialog();
 		}
+		cancelNotification();
 	}
 
 	/**
@@ -486,6 +477,7 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 	@Override
 	public void onDeleteCheckPoint(long checkPointId)
 	{
+		route.removeCheckPoint(checkPointId);
 		databaseHandler.deleteCheckPoint(checkPointId);
 		databaseHandler.deleteTracksByCid(checkPointId);
 		checkPointOverlay.deleteCheckPoint();
@@ -495,28 +487,18 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 	/**
 	 * Callback from the checkpoint dialog that tells the activity that the user
 	 * has pressed the save button and thus the checkpoint with all its data
-	 * should now be saved. This method also saves the "tracks" that are related
-	 * to the checkpoint.
+	 * should now be saved into the route. If the checkPoint exists it updates 
+	 * the checkPoint. 
 	 */
 	@Override
 	public void onSaveCheckPoint(CheckPoint checkPoint)
 	{
+		route.addCheckPoint(checkPoint);
 		long cid = checkPoint.getId();
 		if (cid > 0)
 		{
 			databaseHandler.updateCheckPoint(checkPoint);
-			databaseHandler.deleteTracksByCid(cid);
 		}
-		else
-		{
-			cid = databaseHandler.saveCheckPoint(checkPoint);
-			checkPoint.setId(cid);
-		}
-		for (Track track : checkPoint.getTracks())
-		{
-			databaseHandler.saveTrack(cid, track);
-		}
-		checkPoint.getTracks().clear();
 	}
 
 	/**
@@ -553,7 +535,8 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 	 */
 	private void createCheckPoint(GeoPoint geoPoint)
 	{
-		CheckPoint checkPoint = new CheckPoint(geoPoint);
+		ParcelableGeoPoint parcelableGeoPoint = new ParcelableGeoPoint(geoPoint.getLatitudeE6(), geoPoint.getLongitudeE6());
+		CheckPoint checkPoint = new CheckPoint(parcelableGeoPoint);
 		currentCheckPoint = checkPoint;
 		checkPointOverlay.addCheckPoint(checkPoint);
 		showCheckPointDialog(checkPoint, EditCheckPointDialog.MODE_ADD);
@@ -573,7 +556,7 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 				mapView.getController().zoomInFixing(x, y);
 				break;
 			case MapOnGestureListener.EVENT_SINGLE_TAP:
-				if (checkPointDialog == null || !checkPointDialog.isShowing())
+				if ((checkPointDialog == null || !checkPointDialog.isShowing()) && route.isNewRoute())
 				{
 					GeoPoint geoPoint = mapView.getProjection().fromPixels(x, y);
 					createCheckPoint(geoPoint);
@@ -634,7 +617,15 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 			databaseHandler.saveResult(result);
 		}
 		databaseHandler.saveGeoPoints(route.getId(), route.getGeoPoints());
-		databaseHandler.updateCheckPointRid(route.getId());
+		for(CheckPoint checkPoint : route.getCheckPoints())
+		{
+			checkPoint.setRid(route.getId());
+			checkPoint.setId(databaseHandler.saveCheckPoint(checkPoint));
+			for (Track track : checkPoint.getTracks())
+			{
+				databaseHandler.saveTrack(checkPoint.getId(), track);
+			}
+		}
 		launchActivity(MainActivity.class);
 	}
 
@@ -679,34 +670,24 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 	@Override
 	protected void onSaveInstanceState(final Bundle outState)
 	{
+		if(route.isStarted())
+		{
+			Utils.stopTimer();
+		}
 		int activeDialog = getActiveDialog();
-		outState.putBoolean(BUNDLE_STARTED, route.isStarted());
-		outState.putFloat(BUNDLE_TOTAL_DISTANCE, route.getTotalDistance());
-		outState.putInt(BUNDLE_TIME_PASSED, route.getTimePassed());
+		outState.putParcelable("route", route);
 		outState.putInt(BUNDLE_ACTIVE_DIALOG, activeDialog);
-		outState.putParcelableArrayList(BUNDLE_GEOPOINT_LIST, route.getGeoPoints());
 		if (activeDialog == DIALOG_CHECKPOINT)
 		{
-			currentCheckPoint = checkPointDialog.getCheckPoint();
-			onSaveCheckPoint(currentCheckPoint);
-			outState.putLong(BUNDLE_CID, currentCheckPoint.getId());
+			checkPointDialog.stopRecording();
+			currentCheckPoint = checkPointDialog.getCheckPoint();		
+			outState.putParcelable("currentCheckPoint", currentCheckPoint);
 		}
 		else if (activeDialog == DIALOG_SAVE_ROUTE)
 		{
 			route = saveRouteDialog.getRoute();
 			outState.putBoolean(BUNDLE_SAVE_RESULT_CHECKED, saveRouteDialog.isSaveResultChecked());
 		}
-		if (route.isNewRoute())
-		{
-			outState.putBoolean(BUNDLE_IS_NEW_ROUTE, true);
-			route.setId(databaseHandler.saveRoute(route));
-		}
-		else
-		{
-			databaseHandler.updateRoute(route);
-			outState.putBoolean(BUNDLE_IS_NEW_ROUTE, false);
-		}
-		outState.putLong(BUNDLE_RID, route.getId());
 	}
 
 	/**
@@ -734,16 +715,6 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 	}
 
 	/**
-	 * Callback method which starts the timer again after back button is pressed
-	 * when a dialog is shown
-	 */
-	@Override
-	public void onResumeTimer()
-	{
-		Utils.startTimer(this);
-	}
-
-	/**
 	 * Shows a alert dialog when back button is pressed to confirm that the user
 	 * wants to discard the route. This is implemented to prevent the user to
 	 * hit the back button by mistake and quit the route.
@@ -759,5 +730,38 @@ public class RouteActivity extends MapActivity implements EditCheckPointDialog.C
 		{
 			super.onBackPressed();
 		}
+	}
+	
+	/**
+	 * Initiates a notification with the application launcher icon as a graphic
+	 * and custom messages for the ticker, title and text.
+	 * 
+	 */
+	private void initNotification()
+	{
+		Context context = getApplicationContext();
+		Intent notificationIntent = new Intent(context, RouteActivity.class);
+		PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+		NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+		Resources resources = context.getResources();
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+
+		builder.setContentIntent(contentIntent).setSmallIcon(R.drawable.ic_launcher)
+				.setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.ic_launcher)).setTicker(getString(R.string.your_route_is_being_recorded))
+				.setWhen(System.currentTimeMillis()).setOngoing(true).setContentTitle(getString(R.string.your_route_is_being_recorded)).setContentText(getString(R.string.click_here_to_enter_application_and_finish_it));
+		Notification notification = builder.getNotification();
+		
+		notificationManager.notify(NOTIFICATION_ID, notification);
+	}
+
+	/**
+	 * Cancels the notification and removes it from the notification area.
+	 */
+	private void cancelNotification()
+	{
+		NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		notificationManager.cancel(NOTIFICATION_ID);
 	}
 }

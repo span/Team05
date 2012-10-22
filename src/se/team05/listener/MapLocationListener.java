@@ -110,11 +110,13 @@ public class MapLocationListener implements LocationListener
 	public void onLocationChanged(Location location)
 	{
 		GeoPoint geoPoint;
-		float totalDistance = 0;
+
 		String userDistance = "0";
 		ParcelableGeoPoint currentGeoPoint = new ParcelableGeoPoint((int) (location.getLatitude() * 1E6),
 				(int) (location.getLongitude() * 1E6));
-		String userSpeed = (3.6 * location.getSpeed()) + context.getString(R.string.km) + "/" + context.getString(R.string.h);
+		
+		String formatUserSpeed = new DecimalFormat("#.#").format(3.6*location.getSpeed());
+		String userSpeed = (formatUserSpeed + context.getString(R.string.km) + "/" + context.getString(R.string.h));
 		
 		if (lastLocation != null)
 		{

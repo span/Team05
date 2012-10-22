@@ -68,7 +68,7 @@
             android:layout_row="1"
             android:textAppearance="?android:attr/textAppearanceSmall"
             tools:context=".DisplayMessageActivity" />
-        
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -95,7 +95,7 @@
             android:layout_gravity="left"
             android:layout_row="3"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/calories" />
+            android:text="@string/calories_burned_" />
 
         <TextView
             android:id="@+id/show_calories_result_textview"

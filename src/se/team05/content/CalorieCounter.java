@@ -25,7 +25,7 @@ import android.content.Context;
 /**
  * A simple class for calculating calorie expenditure. This was made from a simple 
  * formula for calculating burned calories from walking or running and then calculating
- * two factors, one for running and one for running. Which factor to use is decided by the
+ * two factors, one for running and one for walking. Which factor to use is decided by the
  * user in the settings activity. This factor is then multiplied with user's weight and 
  * distance measured in metres.
  * 
@@ -34,16 +34,10 @@ import android.content.Context;
  */
 public class CalorieCounter
 {
-	private double calorieBurnedFactorWalking = 0.0004108;
-	private double calorieBurnedFactorRunning = 0.00086283;
+	private double calorieBurnedFactorWalking = 0.00041;
+	private double calorieBurnedFactorRunning = 0.00086;
 	private Settings settings;
 
-	/**
-	 * Default constructor
-	 */
-	public CalorieCounter()
-	{
-	}
 	
 	/**
 	 * Constructor, it takes a context from calling method. This is because it calls the settings class
@@ -70,9 +64,11 @@ public class CalorieCounter
 	
 
 	/**
-	 * This is a simple calculator that hopefully will give a rough estimate of of calories burned based on
-	 * users activity (running/walking), weight and distance he or she has walked.
+	 * This is a simple calculator that will give a rough estimate of calories burned based on
+	 * users activity (running/walking), weight and distance he or she has walked. Takes a distance
+	 * represented in float and returns calorie expenditure in int.
 	 * 
+	 * @param distance the distance user has moved, in metres
 	 * @return calories burned represented by a double
 	 */
 	private int caloriesBurned(float distance)
@@ -85,7 +81,6 @@ public class CalorieCounter
 		{
 			return (int) (calorieBurnedFactorWalking * settings.getUserWeight() * distance);
 		}
-
 	}
 
 }

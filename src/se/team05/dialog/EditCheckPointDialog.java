@@ -194,7 +194,7 @@ public class EditCheckPointDialog extends Dialog implements View.OnClickListener
 	/**
 	 * Stops the current recording if there is one taking place.
 	 */
-	private void stopRecording()
+	public void stopRecording()
 	{
 		if (soundManager.isRecording())
 		{

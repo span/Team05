@@ -18,6 +18,8 @@
  */
 package se.team05.dialog;
 
+import java.text.DecimalFormat;
+
 import se.team05.R;
 import se.team05.content.Route;
 import android.app.AlertDialog;
@@ -56,7 +58,6 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 
 		public void onDismissRoute();
 
-		public void onResumeTimer();
 	}
 
 	private Context context;
@@ -108,19 +109,21 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 		timeTextView.setText(route.getTimePassedAsString());
 		
 		TextView distanceTextView = (TextView) findViewById(R.id.runneddistance);
-		int routeDistance = (int) route.getTotalDistance();
+		double routeDistance = route.getTotalDistance();
 		String distanceText = String.valueOf(routeDistance);
+		distanceText = new DecimalFormat("#.##").format(routeDistance / 1000);
 		distanceTextView.setText(distanceText + context.getString(R.string.km));
 		
 		TextView speedTextView = (TextView) findViewById(R.id.speed);
 		double speed = (routeDistance / route.getTimePassed()) * 3.6;
 		String speedText = String.valueOf(speed);
+		speedText = new DecimalFormat("#.#").format(speed);
 		speedTextView.setText(speedText + context.getString(R.string.km) + "/" + context.getString(R.string.h));
-		
+				
 		TextView calorieTextView = (TextView) findViewById(R.id.calories);
 		int calories = (int) route.getCalories();
 		String calorieText = String.valueOf(calories);
-		calorieTextView.setText(calorieText);
+		calorieTextView.setText(calorieText + context.getString(R.string.kcal));
 
 		nameEditTextView = ((EditText) findViewById(R.id.name));
 		nameEditTextView.setText(route.getName());
@@ -209,11 +212,12 @@ public class SaveRouteDialog extends Dialog implements View.OnClickListener
 		}
 	}
 
-	@Override
-	public void onBackPressed()
-	{
-		callbacks.onResumeTimer();
-	}
+//	@Override
+//	public void onBackPressed()
+//	{
+//		dismiss();
+//		callbacks.onResumeTimer();
+//	}
 
 	/**
 	 * 

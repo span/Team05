@@ -15,15 +15,17 @@
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
 
     (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
-*/
+ */
 
 package se.team05.overlay;
 
 import java.util.ArrayList;
 
+import se.team05.content.ParcelableGeoPoint;
 import se.team05.content.Track;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-import com.google.android.maps.GeoPoint;
 import com.google.android.maps.OverlayItem;
 
 /**
@@ -33,14 +35,14 @@ import com.google.android.maps.OverlayItem;
  * @author Patrik Thituson
  * @version 1.0
  */
-public class CheckPoint extends OverlayItem
+public class CheckPoint extends OverlayItem implements Parcelable
 {
 
 	private long _id;
 	private long rid;
 	private String name;
 	private int radius;
-	private GeoPoint geoPoint;
+	private ParcelableGeoPoint geoPoint;
 	private ArrayList<Track> tracks;
 
 	/**
@@ -48,7 +50,7 @@ public class CheckPoint extends OverlayItem
 	 * 
 	 * @param geoPoint
 	 */
-	public CheckPoint(GeoPoint geoPoint)
+	public CheckPoint(ParcelableGeoPoint geoPoint)
 	{
 		this(geoPoint, "CheckPoint", 30, -1);
 	}
@@ -60,7 +62,7 @@ public class CheckPoint extends OverlayItem
 	 * @param radius
 	 * @param rid
 	 */
-	private CheckPoint(GeoPoint geoPoint, String name, int radius, long rid)
+	private CheckPoint(ParcelableGeoPoint geoPoint, String name, int radius, long rid)
 	{
 		super(geoPoint, "", "");
 		this.setName(name);
@@ -76,7 +78,7 @@ public class CheckPoint extends OverlayItem
 	 * @param geoPoint
 	 *            the geo point to set
 	 */
-	private void setGeoPoint(GeoPoint geoPoint)
+	private void setGeoPoint(ParcelableGeoPoint geoPoint)
 	{
 		this.geoPoint = geoPoint;
 	}
@@ -186,5 +188,62 @@ public class CheckPoint extends OverlayItem
 	public ArrayList<Track> getTracks()
 	{
 		return tracks;
+	}
+
+	@Override
+	public int describeContents()
+	{
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags)
+	{
+		dest.writeParcelable(geoPoint, flags);
+		dest.writeString(name);
+		dest.writeInt(radius);
+		dest.writeLong(rid);
+		dest.writeLong(_id);
+		dest.writeList(tracks);
+//		dest.writeParcelableArray((Track[]) tracks.toArray(), flags);
+	}
+
+	/**
+	 * Parcelable construction, this is called automatically by the system when
+	 * needed.
+	 */
+	public static final Parcelable.Creator<CheckPoint> CREATOR = new Parcelable.Creator<CheckPoint>()
+	{
+
+		public CheckPoint createFromParcel(Parcel in)
+		{
+			return new CheckPoint(in);
+		}
+
+		public CheckPoint[] newArray(int size)
+		{
+			return new CheckPoint[size];
+		}
+	};
+
+	/**
+	 * Constructor for the parcelable interface that re-initiates the values
+	 * 
+	 * @param in
+	 *            the Parcel that contains the data
+	 */
+	private CheckPoint(Parcel in)
+	{
+		this((ParcelableGeoPoint) in.readParcelable(ParcelableGeoPoint.class.getClassLoader()), 
+								  in.readString(), 
+								  in.readInt(),
+								  in.readLong());
+		this.setId(in.readLong());
+		ArrayList<Track> tracks = new ArrayList<Track>();
+//		Track[] arrayTracks = (Track[])in.readParcelableArray(Track.class.getClassLoader());
+//		Collections.addAll(tracks, arrayTracks);
+		in.readList(tracks, Track.class.getClassLoader());
+		this.addTracks(tracks);
 	}
 }
