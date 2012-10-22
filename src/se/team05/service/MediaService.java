@@ -94,9 +94,6 @@ public class MediaService extends Service implements OnCompletionListener, OnPre
 		telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 		phoneStateListener = new MediaServicePhoneStateListener(this);
 		currentTrackIndex = 0;
-
-		initNotification();
-
 		playList = intent.getParcelableArrayListExtra(DATA_PLAYLIST);
 		currentTrack = playList.get(currentTrackIndex);
 		initNotification();
