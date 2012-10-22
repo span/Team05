@@ -41,8 +41,8 @@ import android.test.InstrumentationTestCase;
 
 public class TestDatabaseHandler extends InstrumentationTestCase {
 	
-	Route r1, r2, r3;
-	DatabaseHandler db;
+	private Route r1, r2, r3;
+	private DatabaseHandler db;
 	
 	public TestDatabaseHandler()
 	{

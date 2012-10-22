@@ -30,14 +30,13 @@ import android.test.AndroidTestCase;
  */
 public class TrackTest extends AndroidTestCase
 {
-	String id = "id";
-	String artist = "artist";
-	String album = "album";
-	String title = "title";
-	String data = "data";
-	String displayName = "displayName";
-	String duration = "duration";
-
+	private String id = "id";
+	private String artist = "artist";
+	private String album = "album";
+	private String title = "title";
+	private String data = "data";
+	private String displayName = "displayName";
+	private String duration = "duration";
 	private Track track;
 
 	/**
