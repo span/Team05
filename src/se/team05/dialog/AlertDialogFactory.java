@@ -24,7 +24,6 @@ import se.team05.activity.RouteActivity;
 import se.team05.content.Result;
 import se.team05.content.Route;
 import se.team05.data.DatabaseHandler;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -104,7 +103,8 @@ public class AlertDialogFactory
 				{
 					public void onClick(DialogInterface dialog, int id)
 					{
-						((Activity) context).finish();
+						context.cancelNotification();
+						context.finish();
 					}
 				}).setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
 				{

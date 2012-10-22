@@ -1,0 +1,17 @@
+#######################################################
+v.0.6
+#######################################################
+
+# New features
+User can set a couple of settings in a separate menu
+A simple calorie counter has been implemented
+List of results saved for a route
+A graph over results implemented in results list
+Add notification when recording route
+
+# Known bugs and limitations
+Graphics for navigation are not properly tested and optimized
+Location update interval can be optimized
+User name in settings is not fully implemented
+Measurements are in S.I units only
+Drawing on map when using an existing route draws with same color and extends route instead of being drawn as a new route on the side.
