@@ -15,7 +15,7 @@
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
 
     (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
-*/
+ */
 
 package se.team05.listener;
 
@@ -36,6 +36,10 @@ public class MapOnGestureListener implements OnGestureListener, OnDoubleTapListe
 	public static final int EVENT_DOUBLE_TAP = 0;
 	public static final int EVENT_SINGLE_TAP = 1;
 
+	/**
+	 * Defines callbacks for the implementing class to use to communicate with
+	 * this class.
+	 */
 	public interface Callbacks
 	{
 		public void onTap(int x, int y, int eventType);
@@ -63,7 +67,7 @@ public class MapOnGestureListener implements OnGestureListener, OnDoubleTapListe
 		callback.onTap((int) event.getX(), (int) event.getY(), EVENT_DOUBLE_TAP);
 		return true;
 	}
-	
+
 	/**
 	 * Unused method
 	 */
@@ -73,7 +77,7 @@ public class MapOnGestureListener implements OnGestureListener, OnDoubleTapListe
 		// TODO Auto-generated method stub
 		return false;
 	}
-	
+
 	/**
 	 * Detects single tap«s and sends the coordinates and event type SINGLE_TAP
 	 * to the callback«s onTap method
@@ -84,7 +88,7 @@ public class MapOnGestureListener implements OnGestureListener, OnDoubleTapListe
 		callback.onTap((int) event.getX(), (int) event.getY(), EVENT_SINGLE_TAP);
 		return true;
 	}
-	
+
 	/**
 	 * Unused method
 	 */
@@ -94,7 +98,7 @@ public class MapOnGestureListener implements OnGestureListener, OnDoubleTapListe
 		// TODO Auto-generated method stub
 		return false;
 	}
-	
+
 	/**
 	 * Unused method
 	 */
@@ -104,7 +108,7 @@ public class MapOnGestureListener implements OnGestureListener, OnDoubleTapListe
 		// TODO Auto-generated method stub
 		return false;
 	}
-	
+
 	/**
 	 * Unused method
 	 */

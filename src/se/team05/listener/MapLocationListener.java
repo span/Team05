@@ -98,6 +98,9 @@ public class MapLocationListener implements LocationListener
 		return distance[0];
 	}
 
+	/**
+	 * Stops the current service that is running.
+	 */
 	public void stopService()
 	{
 		context.stopService(serviceIntent);
