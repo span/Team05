@@ -1,4 +1,4 @@
-Team05
+﻿Team05
 ======
 
 Team05 repos
@@ -27,6 +27,7 @@ A graph over results implemented in old results list
 Map is not zoomed in on user
 Stop route does not reset run
 Some problems with the backbutton
+Graphics for navigation are not properly tested and optimized
 
 
 #######################################################
