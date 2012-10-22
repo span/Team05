@@ -29,14 +29,12 @@ import se.team05.overlay.CheckPoint;
 import android.content.Context;
 import android.database.Cursor;
 
-import com.google.android.maps.GeoPoint;
-
 /**
  * This class handles the communication between the database, its adapters and
  * the rest of the application. It keeps an instance of each table adapter that
  * is used for quick and easy access to the database.
  * 
- * @author Daniel Kvist, Gustaf Werlinder, Markus Schutzer, Patrik Thitusson,
+ * @author Daniel Kvist, Gustaf Werlinder, Markus Schutzer, Patrik Thituson,
  *         Henrik Hugo
  * 
  */
@@ -473,19 +471,6 @@ public class DatabaseHandler
 		dbCheckPointAdapter.close();
 	}
 
-	/**
-	 * Updates the checkpoints table in the database where the current route id
-	 * is -1. The passed in rid is used instead.
-	 * 
-	 * @param rid
-	 *            the route id to connect the checkpoints with.
-	 */
-	public void updateCheckPointRid(long rid)
-	{
-		dbCheckPointAdapter.open();
-		dbCheckPointAdapter.updateCheckPointRid(rid);
-		dbCheckPointAdapter.close();
-	}
 
 	/**
 	 * Deletes all checkpoints in the database for a route with rid
@@ -530,7 +515,7 @@ public class DatabaseHandler
 	 */
 	private CheckPoint createCheckPointFromCursor(Cursor cursor)
 	{
-		GeoPoint geoPoint = new GeoPoint(cursor.getInt(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_LATITUDE)),
+		ParcelableGeoPoint geoPoint = new ParcelableGeoPoint(cursor.getInt(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_LATITUDE)),
 				cursor.getInt(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_LONGITUDE)));
 		CheckPoint checkPoint = new CheckPoint(geoPoint);
 		checkPoint.setRadius(cursor.getInt(cursor.getColumnIndex(DBCheckPointAdapter.COLUMN_RADIUS)));
@@ -558,4 +543,5 @@ public class DatabaseHandler
 				cursor.getInt(cursor.getColumnIndex(DBRouteAdapter.COLUMN_LENGTHCOACH)),
 				context);
 	}
-}
+
+	}

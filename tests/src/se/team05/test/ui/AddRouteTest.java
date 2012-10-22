@@ -30,7 +30,12 @@ import android.test.ActivityInstrumentationTestCase2;
 import android.widget.ImageView;
 
 import com.jayway.android.robotium.solo.Solo;
-
+/**
+ * This class contains methods for various UI-tests concerning the
+ * creation of a new route.
+ * @author Henrik Hugo, Daniel Kvist
+ *
+ */
 public class AddRouteTest extends ActivityInstrumentationTestCase2<MainActivity>
 {
 
@@ -50,7 +55,7 @@ public class AddRouteTest extends ActivityInstrumentationTestCase2<MainActivity>
 	}
 
 	/**
-	 * Setting up Robotium for each test and clearing database.
+	 * Setting up Robotium for each test and clearing the database.
 	 */
 	@Override
 	protected void setUp() throws Exception
@@ -67,7 +72,7 @@ public class AddRouteTest extends ActivityInstrumentationTestCase2<MainActivity>
 	}
 
 	/**
-	 * Clearing database and tell Robotium to finish all activities.
+	 * Clearing the database and tell Robotium to finish all activities.
 	 */
 	@Override
 	protected void tearDown()
@@ -116,12 +121,17 @@ public class AddRouteTest extends ActivityInstrumentationTestCase2<MainActivity>
 		solo.goBack();
 		solo.clickOnText("No");
 		solo.clickOnView(solo.getCurrentActivity().findViewById(R.id.stop_button));
-		solo.goBack();
 		solo.clickOnText("Discard");
 		solo.clickOnText("Yes");
 		solo.assertCurrentActivity("Main activity expected", MainActivity.class);
 	}
 
+	/**
+	 * Tests if it is possible to enter the settings from the add route screen.
+	 * Then proceeds to testing if a warning id displayed if the users tries to
+	 * enter the settings after the route has been started. Finally stops the
+	 * recording and makes sure the settings can be entered.
+	 */
 	public void testAddRouteAndLaunchSettings()
 	{
 		solo.clickOnView(newRouteImage);

@@ -46,11 +46,15 @@ public class ListExistingRoutesActivity extends ListActivity
 {
 	private Context context;
 
+	/**
+	 * Presents a list of all existing routes to choose from and
+	 * if no routes exist an option to create a new route will
+	 * be presented.
+	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		// requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.activity_list_existing_routes);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -68,32 +72,35 @@ public class ListExistingRoutesActivity extends ListActivity
 		});
 		getListView().setEmptyView(emptyView);
 
-		// setProgressBarIndeterminateVisibility(true);
-
 		// Setup database connection and get cursor with results
 		DatabaseHandler db = new DatabaseHandler(this);
 		Cursor cursor = db.getAllRoutesCursor();
 
 		// Setup adapter
-		RouteListCursorAdapter routeListCursorAdapter = new RouteListCursorAdapter(this, android.R.layout.simple_list_item_1, cursor,
-				new String[] { DBRouteAdapter.COLUMN_NAME }, new int[] { android.R.id.text1 });
+		RouteListCursorAdapter routeListCursorAdapter = new RouteListCursorAdapter(
+				this, android.R.layout.simple_list_item_1, 
+				cursor,
+				new String[] { DBRouteAdapter.COLUMN_NAME },
+				new int[] { android.R.id.text1 }
+		);
 
 		this.setListAdapter(routeListCursorAdapter);
 
-		// setProgressBarIndeterminateVisibility(false);
 	}
-
+	
+	/**
+	 * Is called upon by the system whenever a listitem is clicked
+	 * and will then launch RouteActivity, passing along the id of
+	 * the selected route.
+	 */
 	public void onListItemClick(ListView l, View v, int position, long id)
 	{
-
 		Intent intent;
-		Bundle bundle = new Bundle();
-
-		bundle.putLong(getString(R.string.id), id);
 
 		intent = new Intent(this.getApplicationContext(), RouteActivity.class);
 		intent.putExtra(Route.EXTRA_ID, id);
-
+		
+		// Debugging of values passed in by the system
 		Log.d(getString(R.string.id), String.valueOf(id));
 		Log.d(getString(R.string.position), String.valueOf(position));
 

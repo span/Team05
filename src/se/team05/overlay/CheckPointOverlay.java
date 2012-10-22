@@ -15,7 +15,7 @@
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
 
     (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
-*/
+ */
 package se.team05.overlay;
 
 import java.util.ArrayList;
@@ -86,10 +86,15 @@ public class CheckPointOverlay extends ItemizedOverlay<CheckPoint>
 		selectedCheckpointIndex = checkPointList.size() - 1;
 		populate();
 	}
-	
-	public void setCheckPoints(ArrayList<CheckPoint> listOfCheckPoints)
+
+	/**
+	 * Adds the checkpoints that is used in the overlay.
+	 * 
+	 * @param checkPoints
+	 */
+	public void setCheckPoints(ArrayList<CheckPoint> checkPoints)
 	{
-		for(CheckPoint checkPoint : listOfCheckPoints)
+		for (CheckPoint checkPoint : checkPoints)
 		{
 			addCheckPoint(checkPoint);
 		}
@@ -127,7 +132,4 @@ public class CheckPointOverlay extends ItemizedOverlay<CheckPoint>
 		setLastFocusedIndex(-1);
 		populate();
 	}
-	
-
-
 }

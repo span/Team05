@@ -159,16 +159,4 @@ public class DBCheckPointAdapter extends DBAdapter
 		db.update(TABLE_CHECKPOINTS, values, COLUMN_ID + "=" + id, null);
 	}
 
-	/**
-	 * Updates all the checkpoints with -1 to a 'real' route id in the database
-	 * when a route has been saved.
-	 * 
-	 * @param rid
-	 */
-	public void updateCheckPointRid(long rid)
-	{
-		ContentValues values = new ContentValues();
-		values.put(COLUMN_RID, rid);
-		db.update(TABLE_CHECKPOINTS, values, COLUMN_RID + "=" + -1, null);
-	}
 }

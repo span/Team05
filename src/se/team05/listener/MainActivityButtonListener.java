@@ -42,7 +42,7 @@ import android.widget.ImageView;
 public class MainActivityButtonListener implements OnClickListener
 {
 	private Context context;
-	ImageView imageViewButton;
+	private ImageView imageViewButton;
 
 	/**
 	 * A simple constructor for the listener that takes the Context as a

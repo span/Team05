@@ -38,10 +38,10 @@ import android.widget.ImageView;
  */
 public class MainActivity extends Activity
 {
-	ImageView newRouteButton;
-	ImageView useExistingButton;
-	ImageView settingsButton;
-
+	private ImageView newRouteButton;
+	private ImageView useExistingButton;
+	private ImageView settingsButton;
+	
 	/**
 	 * The onCreate method of the class starts off by setting the XML file which
 	 * has the View content. It then picks up references to the buttons that are

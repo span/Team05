@@ -15,7 +15,7 @@
     along with Personal Trainer.  If not, see <http://www.gnu.org/licenses/>.
 
     (C) Copyright 2012: Daniel Kvist, Henrik Hugo, Gustaf Werlinder, Patrik Thitusson, Markus Schutzer
-*/
+ */
 
 package se.team05.test.ui;
 
@@ -33,6 +33,12 @@ import android.widget.ListView;
 
 import com.jayway.android.robotium.solo.Solo;
 
+/**
+ * This class tests the media selector activity and its navigation.
+ * 
+ * @author Daniel Kvist
+ * 
+ */
 public class MediaSelectorUITest extends ActivityInstrumentationTestCase2<MediaSelectorActivity>
 {
 	private Solo solo;
@@ -40,9 +46,8 @@ public class MediaSelectorUITest extends ActivityInstrumentationTestCase2<MediaS
 	private ListView listView;
 	private MediaSelectorAdapter adapter;
 	private String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0";
-	private String[] projection = { MediaStore.Audio.Media._ID, MediaStore.Audio.Media.ARTIST,
-			MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DATA,
-			MediaStore.Audio.Media.DISPLAY_NAME, MediaStore.Audio.Media.DURATION };
+	private String[] projection = { MediaStore.Audio.Media._ID, MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM,
+			MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.DISPLAY_NAME, MediaStore.Audio.Media.DURATION };
 
 	public MediaSelectorUITest()
 	{
@@ -97,8 +102,8 @@ public class MediaSelectorUITest extends ActivityInstrumentationTestCase2<MediaS
 	 */
 	public void testMediaSelectorListSort() throws InterruptedException
 	{
-		Cursor testCursor = activity.managedQuery(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, selection,
-				null, MediaStore.Audio.Media.ARTIST);
+		Cursor testCursor = activity.managedQuery(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, selection, null,
+				MediaStore.Audio.Media.ARTIST);
 		testCursor.moveToFirst();
 		solo.clickOnMenuItem("Sort by artist");
 		Thread.sleep(3000);
@@ -129,7 +134,7 @@ public class MediaSelectorUITest extends ActivityInstrumentationTestCase2<MediaS
 		testData = testCursor.getString(testCursor.getColumnIndex(MediaStore.Audio.Media.DATA));
 		data = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
 		assertEquals(testData, data);
-		
+
 		solo.clickOnActionBarItem(R.id.done);
 	}
 

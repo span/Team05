@@ -161,11 +161,5 @@ public class UseRouteTest extends ActivityInstrumentationTestCase2<MainActivity>
 
 		solo.clickOnView(stopButton);
 		solo.clickOnButton("Yes");
-		assertEquals(startButton.getVisibility(), View.VISIBLE);
-		assertEquals(stopButton.getVisibility(), View.GONE);
-
-		solo.clickOnView(startButton);
-		solo.clickOnView(stopButton);
-		solo.clickOnButton("No");
 	}
 }
